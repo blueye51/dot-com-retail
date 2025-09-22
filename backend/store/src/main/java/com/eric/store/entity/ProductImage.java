@@ -9,7 +9,7 @@ import java.util.UUID;
 @Table(
         name = "product_images",
         indexes = {
-                @Index(name = "idx_product_images_product_sort", columnList = "product_id, sortOrder"),
+                @Index(name = "idx_product_images_product_sort", columnList = "product_id, sort_order"),
         }
 )
 @Getter
