@@ -2,6 +2,13 @@ spring:
   application:
     name: store
   datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: jdbc:postgresql://localhost:5432/store
+    username: eric
+    password: eric
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+logging:
+    level:
+      org.hibernate.tool.hbm2ddl: DEBUG
