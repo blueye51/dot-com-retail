@@ -31,4 +31,5 @@ public class AuthController {
         User user = authService.login(userLogin);
         return ResponseEntity.status(HttpStatus.OK).body("User logged in successfully: " + user.getName());
     }
+
 }
