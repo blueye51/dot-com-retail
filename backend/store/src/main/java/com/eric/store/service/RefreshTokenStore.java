@@ -5,7 +5,10 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.Optional;
 import java.util.UUID;
+
+import static com.eric.store.util.HashUtils.sha256;
 
 @Service
 @RequiredArgsConstructor
@@ -13,19 +16,19 @@ public class RefreshTokenStore {
     private final RedisTemplate<String,String> redis;
 
     private String key(String hash){
-        return "refresh_token:" + hash;
+        return "refreshToken:" + hash;
     }
 
-    public void save(String token, UUID userId, Duration ttl) {
-        redis.opsForValue().set(key(token), userId.toString(), ttl);
+    public void save(String raw, UUID userId, Duration ttl) {
+        redis.opsForValue().set(key(sha256(raw)), userId.toString(), ttl);
     }
 
-    public UUID validate(String token) {
-        String userId = redis.opsForValue().get(key(token));
-        return userId == null ? null : UUID.fromString(userId);
+    public Optional<UUID> getUserId(String raw) {
+        String userId = redis.opsForValue().get(key(sha256(raw)));
+        return userId == null ? Optional.empty() : Optional.of(UUID.fromString(userId));
     }
 
-    public void revoke(String token) {
-        redis.delete(key(token));
+    public void delete(String raw) {
+        redis.delete(key(sha256(raw)));
     }
 }
