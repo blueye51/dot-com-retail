@@ -4,21 +4,26 @@ import com.eric.store.dto.UserLogin;
 import com.eric.store.dto.UserRegister;
 import com.eric.store.entity.User;
 import com.eric.store.service.AuthService;
+import com.eric.store.service.TokenService;
+import com.eric.store.service.UserService;
+import com.eric.store.util.Cookie;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.Duration;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
-
-    final AuthService authService;
+    private final TokenService tokenService;
+    private final AuthService authService;
+    private final UserService userService;
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@Valid @RequestBody UserRegister userRegister) {
@@ -27,9 +32,32 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@Valid @RequestBody UserLogin userLogin) {
+    public ResponseEntity<Map<String,String>> login(@Valid @RequestBody UserLogin userLogin) {
         User user = authService.login(userLogin);
-        return ResponseEntity.status(HttpStatus.OK).body("User logged in successfully: " + user.getName());
+        var pair = tokenService.issueTokens(user.getId());
+        return ResponseEntity.status(HttpStatus.OK)
+                .header(HttpHeaders.SET_COOKIE, Cookie.makeRefresh(pair.refresh(), Duration.ofDays(30)).toString())
+                .body(Map.of("accessToken", pair.access()));
     }
 
+    @PostMapping("/refresh")
+    public ResponseEntity<Map<String,String>> refresh(@CookieValue(name = Cookie.REFRESH, required = false ) String refreshCookie) {
+        if (refreshCookie == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        try {
+            var pair = tokenService.rotate(refreshCookie);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .header(HttpHeaders.SET_COOKIE, Cookie.makeRefresh(pair.refresh(), Duration.ofDays(30)).toString())
+                    .body(Map.of("accessToken", pair.access()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+
+    @DeleteMapping("/refresh/logout")
+    public ResponseEntity<Void> logout(@CookieValue(name = Cookie.REFRESH, required = false ) String refreshCookie) {
+            if (refreshCookie != null) tokenService.deleteRefresh(refreshCookie);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                    .header(HttpHeaders.SET_COOKIE, Cookie.clearRefresh().toString())
+                    .build();
+        }
 }
