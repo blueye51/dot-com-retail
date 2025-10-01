@@ -1,28 +1,46 @@
-import styles from './Login.module.css';
-import {useState} from "react";
+import styles from './login.module.css';
+import {useEffect, useState} from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setToken } from "../store.jsx";
+import useFetch from "../useFetch.jsx";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
+
+    const navigate = useNavigate();
+    const token = useSelector((state) => state.auth.token);
+    const dispatch = useDispatch();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    async function handleSubmit(event) {
-        console.log('submitted');
-        event.preventDefault();
-        try{
-            const res = await fetch('https://localhost:8443/api/auth/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email, password }),
-            });
-            const data = await res.json();
-            console.log(data);
+    const { data, error, loading, reFetch } = useFetch('/api/auth/login', {
+        method: 'POST',
+        body: { email, password },
+        headers: { 'Content-Type': 'application/json' },
+        withAuth: false,
+        immediate: false,
+    });
 
-        } catch (error) {
-            console.error('Error during login:', error);
-        }
+    useEffect(() => {
+        if (!data) return;
+        dispatch(setToken(data.accessToken));
+        navigate('/', { replace: true });
+    }, [data, dispatch, navigate]);
+
+    useEffect(() => {
+        if (!error) return;
+        console.error('Login error:', error);
+        alert('Login failed: ' + (error.message || 'Unknown error'));
+    }, [error]);
+
+    async function handleSubmit(event) {
+        event.preventDefault();
+        await reFetch();
+    }
+
+    function saveToken(token) {
+        dispatch(setToken(token));
     }
 
 
@@ -57,7 +75,7 @@ function Login() {
                         required
                     />
                 </div>
-                <button type="submit" className={styles.loginButton}>Login</button>
+                <button type="submit">Login</button>
             </form>
         </div>
     );
