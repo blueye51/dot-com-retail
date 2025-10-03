@@ -8,7 +8,9 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.security.Key;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -51,5 +53,17 @@ public class JwtService {
 
     public String subject(String token) {
         return parseAndValidate(token).getSubject();
+    }
+
+    public List<String> roles(String token) {
+        Claims c = parseAndValidate(token);
+        Object rolesClaim = c.get("roles", List.class);
+
+        if (rolesClaim instanceof List<?> list) {
+            return list.stream().map(Object::toString).toList();
+        } else if (rolesClaim instanceof String s) {
+            return Arrays.stream(s.split("[ ,]")).map(String::trim).toList();
+        }
+        return List.of();
     }
 }

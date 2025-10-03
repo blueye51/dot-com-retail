@@ -28,6 +28,10 @@ public class Category {
     @Column(nullable = false, unique = true)
     private String name;
 
+    @NonNull
+    @Column(nullable = false, updatable = false)
+    private boolean isLeaf;
+
     @OneToMany(mappedBy = "category")
     private List<Product> products = new ArrayList<>();
 

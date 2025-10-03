@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -13,11 +14,14 @@ import java.util.UUID;
 public class TokenService {
     private final JwtService jwtService;
     private final RefreshTokenStore refreshTokenStore;
+    private final UserService userService;
 
     public record Pair(String access, String refresh) {}
 
     public Pair issueTokens(UUID userId) {
-        String access = jwtService.generateAccessToken(userId.toString(), Map.of(), 15);
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("roles", userService.getAllRolesFromId(userId));
+        String access = jwtService.generateAccessToken(userId.toString(), claims, 15);
         String refresh = UUID.randomUUID().toString();
         refreshTokenStore.save(refresh, userId, Duration.ofDays(30));
         return new Pair(access, refresh);
@@ -28,7 +32,9 @@ public class TokenService {
         refreshTokenStore.delete(oldRefresh);
         String newRefresh = UUID.randomUUID().toString();
         refreshTokenStore.save(newRefresh, userId, Duration.ofDays(30));
-        String access = jwtService.generateAccessToken(userId.toString(), Map.of(), 15);
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("roles", userService.getAllRolesFromId(userId));
+        String access = jwtService.generateAccessToken(userId.toString(), claims, 15);
         return new Pair(access, newRefresh);
     }
 

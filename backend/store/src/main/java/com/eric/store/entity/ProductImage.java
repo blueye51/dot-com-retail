@@ -1,5 +1,6 @@
 package com.eric.store.entity;
 
+import com.eric.store.dto.ProductImageDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -32,4 +33,9 @@ public class ProductImage {
     @NonNull
     @Column(nullable = false)
     private Integer sortOrder;
+
+    public ProductImage(ProductImageDto productImageDto) {
+        this.imageUrl = productImageDto.imageUrl();
+        this.sortOrder = productImageDto.sortOrder();
+    }
 }

@@ -1,5 +1,6 @@
 package com.eric.store.entity;
 
+import com.eric.store.dto.ProductDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table( name = "products" )
+@Table(name = "products")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -28,26 +29,25 @@ public class Product {
 
     @NonNull
     @Column(nullable = false)
+    private String currency;
+
+    @NonNull
+    @Column(nullable = false)
     private String name;
 
     @NonNull
-    @Column(nullable = false)
-    private String description = "";
+    private String description;
 
     @NonNull
-    @Column(nullable = false)
     private BigDecimal width;
 
     @NonNull
-    @Column(nullable = false)
     private BigDecimal height;
 
     @NonNull
-    @Column(nullable = false)
     private BigDecimal depth;
 
     @NonNull
-    @Column(nullable = false)
     private BigDecimal weight;
 
     @NonNull
@@ -79,5 +79,19 @@ public class Product {
     @PreUpdate
     void preUpdate() {
         this.updatedAt = OffsetDateTime.now(ZoneOffset.UTC);
+    }
+
+
+    public Product(ProductDto productDto) {
+        this.price = new BigDecimal(productDto.price());
+        this.currency = productDto.currency();
+        this.name = productDto.name();
+        this.description = productDto.description();
+        this.width = new BigDecimal(productDto.width());
+        this.height = new BigDecimal(productDto.height());
+        this.depth = new BigDecimal(productDto.depth());
+        this.weight = new BigDecimal(productDto.weight());
+        this.stock = productDto.stock();
+        productDto.images().forEach(productImageDto -> this.images.add(new ProductImage(productImageDto)));
     }
 }
