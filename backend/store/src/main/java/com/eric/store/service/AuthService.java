@@ -2,6 +2,7 @@ package com.eric.store.service;
 
 import com.eric.store.dto.UserLogin;
 import com.eric.store.dto.UserRegister;
+import com.eric.store.entity.Role;
 import com.eric.store.entity.User;
 import com.eric.store.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,8 @@ public class AuthService {
             throw new RuntimeException("Email already registered");
         }
         User user = new User(newUser.email(), newUser.name(), hashedPassword );
+        Role role = new Role("USER");
+        user.getRoles().add(role);
         return userRepository.save(user);
     }
 

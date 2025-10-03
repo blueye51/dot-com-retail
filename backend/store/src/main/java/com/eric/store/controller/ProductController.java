@@ -23,13 +23,13 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<Page<ProductDto>> getPageProducts(
             @RequestParam(required=false) String query,
-            @RequestParam(required=false) String category,
+            @RequestParam(required=false) String categoryId,
             @RequestParam(required=false) Integer page,
             @RequestParam(required=false) Integer size,
             @RequestParam(required=false) String sort,
             @RequestParam(required=false) String order
     ) {
-        ProductQuery productQuery = new ProductQuery(query, category, page, size, sort, order);
+        ProductQuery productQuery = new ProductQuery(query, categoryId, page, size, sort, order);
         Page<ProductDto> products = productService.search(productQuery);
         return ResponseEntity.ok(products);
     }

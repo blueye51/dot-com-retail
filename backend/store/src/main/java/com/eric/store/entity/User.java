@@ -6,9 +6,7 @@ import lombok.*;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
@@ -29,6 +27,11 @@ public class User {
     @NonNull
     @Column(nullable = false)
     private String name;
+
+    @ManyToMany
+    @JoinTable(name="user_roles", joinColumns=@JoinColumn(name="user_id"),
+            inverseJoinColumns=@JoinColumn(name="role_id"))
+    private Set<Role> roles = new HashSet<>();
 
     @NonNull
     @Column(nullable = false)
