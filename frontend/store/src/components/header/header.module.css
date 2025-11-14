@@ -32,3 +32,9 @@
     justify-content: center;
     cursor: pointer;
 }
+
+.extraButtons {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+}

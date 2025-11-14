@@ -1,14 +1,61 @@
 import './App.css'
 import Login from './components/login/login.jsx'
+import MainLayout from "./components/layouts/mainLayout.jsx";
+import DevMenu from "./components/devMenu/devMenu.jsx";
+import RequiredRole from "./components/auth/requiredRole.jsx";
+import RequiredAuth from "./components/auth/requiredAuth.jsx";
+import Unauthorized from "./components/auth/unauthorized.jsx";
 import Home from "./components/home/home.jsx";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
+import {useDispatch} from "react-redux";
+import {useEffect, useState} from "react";
+import {refreshAccessToken} from "./components/useFetch.jsx";
+import MissingAuth from "./components/auth/missingAuth.jsx";
+
 
 function App() {
+    const dispatch = useDispatch();
+    const [loading, setLoading] = useState(true); // <— wait state
+
+    useEffect(() => {
+        const checkToken = async () => {
+            try {
+                await refreshAccessToken(dispatch);
+            } catch {
+                console.log("No valid refresh token found.");
+            } finally {
+                setLoading(false); // ✅ release UI after check
+            }
+        };
+        void checkToken();
+    }, [dispatch]);
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/" element={<Home />} />
+                <Route element={<MissingAuth />}>
+                    <Route path="/login" element={<Login />} />
+                </Route>
+                <Route path="/unauthorized" element={<Unauthorized />} />
+
+                <Route element={<RequiredAuth />}>
+                    <Route element={<MainLayout />}>
+                        <Route path="/" element={<Home />} />
+                    </Route>
+                </Route>
+
+                <Route element={<RequiredRole allowed={["ADMIN"]} />}>
+                    <Route element={<MainLayout />}>
+                        <Route path="/dev" element={<DevMenu />} />
+                    </Route>
+                </Route>
+
+                <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </BrowserRouter>
     )
