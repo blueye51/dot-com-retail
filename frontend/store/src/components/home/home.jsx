@@ -1,12 +1,8 @@
-import styles from './home.module.css'
-import Header from "../header/header.jsx";
-
 function Home () {
-    return (
+    return(
         <div>
-            <Header />
-            <h1>Welcome to the Store</h1>
-            <p>*product selection here*</p>
+            <h2>Welcome to the Home Page</h2>
+            <p>This is the main landing page of the application.</p>
         </div>
     )
 }

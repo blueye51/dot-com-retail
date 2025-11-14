@@ -1,13 +1,15 @@
 import styles from './login.module.css';
 import {useEffect, useState} from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setToken } from "../store.jsx";
+import {setRoles, setToken} from "../store.jsx";
 import useFetch from "../useFetch.jsx";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function Login() {
 
     const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from?.pathname || "/";
     const token = useSelector((state) => state.auth.token);
     const dispatch = useDispatch();
 
@@ -25,7 +27,8 @@ function Login() {
     useEffect(() => {
         if (!data) return;
         dispatch(setToken(data.accessToken));
-        navigate('/', { replace: true });
+        dispatch(setRoles(data.roles || []));
+        navigate(from, { replace: true });
     }, [data, dispatch, navigate]);
 
     useEffect(() => {
@@ -38,11 +41,6 @@ function Login() {
         event.preventDefault();
         await reFetch();
     }
-
-    function saveToken(token) {
-        dispatch(setToken(token));
-    }
-
 
     return (
         <div className={styles.loginContainer}>

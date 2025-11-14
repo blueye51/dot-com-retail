@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {setToken} from "./store.jsx";
+import {setRoles, setToken} from "./store.jsx";
 
 // ---- config you might hoist to env ----
 const BASE_URL = "https://localhost:8443";
@@ -8,7 +8,7 @@ const BASE_URL = "https://localhost:8443";
 // Deduplicate concurrent refresh calls across the app
 let refreshInFlight = null;
 
-async function refreshAccessToken(dispatch) {
+export async function refreshAccessToken(dispatch) {
     if (!refreshInFlight) {
         refreshInFlight = (async () => {
             const res = await fetch(`${BASE_URL}/api/auth/refresh`, {
@@ -19,7 +19,9 @@ async function refreshAccessToken(dispatch) {
             if (!res.ok) throw new Error("Failed to refresh token");
             const data = await res.json();
             const newToken = data.accessToken;
+            const newRoles = data.roles || [];
             dispatch(setToken(newToken));
+            dispatch(setRoles(newRoles));
             return newToken;
         })().finally(() => {
             refreshInFlight = null;
@@ -94,7 +96,10 @@ export default function useFetch(
                             body !== undefined ? { body: JSON.stringify(body) } : {})),
                 };
 
-                const res = await fetch(`${BASE_URL}${uri}`, reqInit);
+                const res = await fetch(`${BASE_URL}${uri}`, {
+                    ...reqInit,
+                    credentials: "include",
+                });
 
                 if (res.status === 401 && withAuth) {
                     // try refresh once
@@ -107,6 +112,7 @@ export default function useFetch(
                     const retryRes = await fetch(`${BASE_URL}${uri}`, {
                         ...reqInit,
                         headers: retryHeaders,
+                        credentials: "include",
                     });
                     return retryRes;
                 }
