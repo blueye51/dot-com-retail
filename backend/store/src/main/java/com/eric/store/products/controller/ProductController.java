@@ -18,7 +18,7 @@ import java.util.UUID;
 public class ProductController {
     private final ProductService productService;
 
-    @GetMapping
+    @GetMapping("/page")
     public ResponseEntity<Page<ProductDto>> getPageProducts(
             @RequestParam(required=false) String query,
             @RequestParam(required=false) String categoryId,

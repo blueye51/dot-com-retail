@@ -6,6 +6,7 @@ import RequiredRole from "./components/auth/requiredRole.jsx";
 import RequiredAuth from "./components/auth/requiredAuth.jsx";
 import Unauthorized from "./components/auth/unauthorized.jsx";
 import Home from "./components/home/home.jsx";
+import ProductList from "./components/product/productList.jsx";
 
 import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
 import {useDispatch} from "react-redux";
@@ -52,6 +53,7 @@ function App() {
                 <Route element={<RequiredRole allowed={["ADMIN"]} />}>
                     <Route element={<MainLayout />}>
                         <Route path="/dev" element={<DevMenu />} />
+                        <Route path="/product" element={<ProductList />} />
                     </Route>
                 </Route>
 
