@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useRef, useState} from "react";
+import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {setRoles, setToken} from "./store.jsx";
 
@@ -42,7 +42,7 @@ export default function useFetch(
         method = "GET",
         body = undefined,
         headers = {},
-        withAuth = false,
+        withAuth = false, // include auth token
         immediate = true, // auto-run on mount/dep change
     } = {}
 ) {
@@ -54,6 +54,10 @@ export default function useFetch(
 
     const abortRef = useRef(null);
     const mountedRef = useRef(true);
+
+    // Memoize body and headers to avoid unnecessary re-fetches, so i can keep them in deps
+    const bodyMemo = useMemo(() => body, [JSON.stringify(body||null)]);
+    const headersMemo = useMemo(() => headers, [JSON.stringify(headers||null)]);
 
     useEffect(() => {
         mountedRef.current = true;
@@ -81,7 +85,7 @@ export default function useFetch(
             const makeReq = async (jwt) => {
                 const reqHeaders = {
                     "Content-Type": "application/json",
-                    ...headers,
+                    ...headersMemo,
                     ...(override.headers || {}),
                     ...(withAuth && jwt ? { Authorization: `Bearer ${jwt}` } : {}),
                 };
@@ -93,7 +97,7 @@ export default function useFetch(
                     // Only attach body if allowed and provided
                     ...(canHaveBody &&
                         (override.body !== undefined ? { body: JSON.stringify(override.body) } :
-                            body !== undefined ? { body: JSON.stringify(body) } : {})),
+                            bodyMemo !== undefined ? { body: JSON.stringify(bodyMemo) } : {})),
                 };
 
                 const res = await fetch(`${BASE_URL}${uri}`, {
@@ -148,7 +152,7 @@ export default function useFetch(
                 if (mountedRef.current) setLoading(false);
             }
         },
-        [uri, method, body, headers, withAuth, token, dispatch]
+        [uri, method, bodyMemo, headersMemo, withAuth, token, dispatch]
     );
 
     // Auto-run if requested

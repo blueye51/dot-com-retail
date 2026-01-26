@@ -6,13 +6,15 @@ import RequiredRole from "./components/auth/requiredRole.jsx";
 import RequiredAuth from "./components/auth/requiredAuth.jsx";
 import Unauthorized from "./components/auth/unauthorized.jsx";
 import Home from "./components/home/home.jsx";
-import ProductList from "./components/product/productList.jsx";
+import ProductList from "./components/product/productLayout/productList.jsx";
 
 import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
 import {useDispatch} from "react-redux";
 import {useEffect, useState} from "react";
 import {refreshAccessToken} from "./components/useFetch.jsx";
 import MissingAuth from "./components/auth/missingAuth.jsx";
+import ProductCreation from "./components/product/productCreation/productCreation.jsx";
+import CategoryTree from "./components/category/categoryTree/categoryTree.jsx";
 
 
 function App() {
@@ -54,6 +56,8 @@ function App() {
                     <Route element={<MainLayout />}>
                         <Route path="/dev" element={<DevMenu />} />
                         <Route path="/product" element={<ProductList />} />
+                        <Route path="/createproduct" element={<ProductCreation/>} />
+                        <Route path="/categorytree" element={<CategoryTree/>} />
                     </Route>
                 </Route>
 

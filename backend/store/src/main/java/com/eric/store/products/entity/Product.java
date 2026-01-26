@@ -1,7 +1,6 @@
 package com.eric.store.products.entity;
 
 import com.eric.store.categories.entity.Category;
-import com.eric.store.products.dto.ProductDto;
 import com.eric.store.orders.entity.OrderItem;
 import jakarta.persistence.*;
 import lombok.*;
@@ -11,6 +10,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -18,41 +18,31 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-@RequiredArgsConstructor
 public class Product {
 
     @Id
     @GeneratedValue
     private UUID id;
 
-    @NonNull
     @Column(precision = 19, scale = 2, nullable = false)
     private BigDecimal price;
 
-    @NonNull
     @Column(nullable = false)
     private String currency;
 
-    @NonNull
     @Column(nullable = false)
     private String name;
 
-    @NonNull
     private String description;
 
-    @NonNull
     private BigDecimal width;
 
-    @NonNull
     private BigDecimal height;
 
-    @NonNull
     private BigDecimal depth;
 
-    @NonNull
     private BigDecimal weight;
 
-    @NonNull
     @Column(nullable = false)
     private Integer stock;
 
@@ -83,17 +73,31 @@ public class Product {
         this.updatedAt = OffsetDateTime.now(ZoneOffset.UTC);
     }
 
-
-    public Product(ProductDto productDto) {
-        this.price = new BigDecimal(productDto.price());
-        this.currency = productDto.currency();
-        this.name = productDto.name();
-        this.description = productDto.description();
-        this.width = new BigDecimal(productDto.width());
-        this.height = new BigDecimal(productDto.height());
-        this.depth = new BigDecimal(productDto.depth());
-        this.weight = new BigDecimal(productDto.weight());
-        this.stock = productDto.stock();
-        productDto.images().forEach(productImageDto -> this.images.add(new ProductImage(productImageDto)));
+    /**
+     * Creates a Product.
+     *
+     * <p><b>Invariant:</b> A Product must always be associated with a Category
+     * before it is persisted. This constructor requires a non-null Category.</p>
+     */
+    public Product(BigDecimal price, String currency, String name, String description, BigDecimal width, BigDecimal height, BigDecimal depth, BigDecimal weight, Integer stock) {
+        this.price = price;
+        this.currency = currency;
+        this.name = name;
+        this.description = description;
+        this.width = width;
+        this.height = height;
+        this.depth = depth;
+        this.weight = weight;
+        this.stock = stock;
     }
+
+    /**
+     * Not to be used directly. Use Category.addProduct(Product) instead to
+     * ensure bidirectional consistency.
+     * @param category
+     */
+    public void setCategory(Category category) {
+        this.category = Objects.requireNonNull(category);
+    }
+
 }

@@ -1,7 +1,9 @@
+import styles from './footer.module.css';
+
 function Footer () {
 
     return (
-        <footer>FOOT</footer>
+        <footer className={styles.footer}>FOOT</footer>
     )
 }
 export default Footer;

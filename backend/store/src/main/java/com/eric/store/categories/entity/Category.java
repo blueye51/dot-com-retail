@@ -59,4 +59,14 @@ public class Category {
         this.subcategories.remove(child);
         child.parentCategory = null;
     }
+
+    public void addProduct(Product product) {
+        products.add(product);
+        product.setCategory(this);
+    }
+
+    public void removeProduct(Product product) {
+        products.remove(product);
+        product.setCategory(null);
+    }
 }

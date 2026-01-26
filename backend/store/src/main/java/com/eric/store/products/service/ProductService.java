@@ -1,7 +1,10 @@
 package com.eric.store.products.service;
 
+import com.eric.store.categories.entity.Category;
+import com.eric.store.categories.repository.CategoryRepository;
 import com.eric.store.categories.service.CategoryService;
-import com.eric.store.products.dto.ProductDto;
+import com.eric.store.common.exceptions.NotFoundException;
+import com.eric.store.products.dto.ProductCreateRequest;
 import com.eric.store.products.dto.ProductQuery;
 import com.eric.store.products.entity.Product;
 import com.eric.store.products.repository.ProductRepository;
@@ -20,19 +23,32 @@ import java.util.UUID;
 @Transactional
 public class ProductService {
     private final ProductRepository productRepository;
-    private final CategoryService categoryService;
     private final ProductImageService productImageService;
+    private final CategoryRepository categoryRepository;
 
 
-    public Product create(ProductDto productDto) {
-        Product product = new Product(productDto);
-        if (productDto.categoryId() != null) {
-            product.setCategory(categoryService.getCategoryById(productDto.categoryId()));
-        }
+    public Product create(ProductCreateRequest req) {
+        Product product = new Product(
+                req.price(),
+                req.currency(),
+                req.name(),
+                req.description(),
+                req.width(),
+                req.height(),
+                req.depth(),
+                req.weight(),
+                req.stock()
+        );
+
+        Category category = categoryRepository.findById(req.categoryId())
+                .orElseThrow(() -> new NotFoundException("Category", req.categoryId()));
+
+        category.addProduct(product);
+
         return productRepository.save(product);
     }
 
-    public Page<ProductDto> search(ProductQuery query) {
+    public Page<Pr> search(ProductQuery query) {
         Sort sort = Sort.by(Sort.Direction.fromString(query.order()), query.sort());
         Pageable pageable = PageRequest.of(query.page(), query.size(), sort);
         Page<Product> products;

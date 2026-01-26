@@ -22,3 +22,11 @@ logging:
     org.hibernate.tool.hbm2ddl: DEBUG
     org.springframework.web: DEBUG
     org.springframework.boot.autoconfigure: INFO
+storage:
+  s3:
+    endpoint: http://localhost:9000
+    accessKey: minioadmin
+    secretKey: minioadmin123
+    bucket: images
+    region: us-east-1
+    publicBaseUrl: http://localhost:9000/images # using aws s3 url in production
