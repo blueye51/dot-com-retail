@@ -1,6 +1,7 @@
 package com.eric.store.products.entity;
 
-import com.eric.store.products.dto.ProductImageDto;
+import com.eric.store.images.entity.FileEntity;
+import com.eric.store.products.dto.ImageCreate;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,33 +10,36 @@ import java.util.UUID;
 @Entity
 @Table(
         name = "product_images",
-        indexes = {
-                @Index(name = "idx_product_images_product_sort", columnList = "product_id, sort_order"),
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_product_sort", columnNames = {"product_id", "sort_order"})
         }
 )
-@Getter
-@Setter
+@Getter @Setter
 @NoArgsConstructor
 @RequiredArgsConstructor
 public class ProductImage {
+
     @Id
     @GeneratedValue
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "product_id", nullable = false)
+    @NonNull
     private Product product;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "file_key", nullable = false)
     @NonNull
-    @Column(nullable = false)
-    private String imageUrl;
+    private FileEntity file;
 
+    @Column(name = "sort_order", nullable = false)
     @NonNull
-    @Column(nullable = false)
     private Integer sortOrder;
 
-    public ProductImage(ProductImageDto productImageDto) {
-        this.imageUrl = productImageDto.imageUrl();
-        this.sortOrder = productImageDto.sortOrder();
+    public ProductImage(ImageCreate imageCreate) {
+        this.product = product;
+        this.file = file;
+        this.sortOrder = sortOrder;
     }
 }

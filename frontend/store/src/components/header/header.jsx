@@ -1,10 +1,12 @@
 import styles from './header.module.css'
 import {useState} from "react";
 import {Link, useNavigate} from 'react-router-dom';
+import {useSelector} from "react-redux";
 
 
 
 function Header () {
+    const token = useSelector((state) => state.auth.token);
     const [search, setSearch] = useState("");
     const navigate = useNavigate();
 
@@ -26,6 +28,7 @@ function Header () {
                 />
                 <span onClick={handleSearch} className={styles.searchIcon} >🔍</span>
             </div>
+            {token && <div>AUTH</div>}
             <div className={styles.extraButtons}>
                 <Link to="/login">Login</Link>
                 <Link to="/dev">dev</Link>
