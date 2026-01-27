@@ -1,9 +1,9 @@
-package com.eric.store.images.service;
+package com.eric.store.files.service;
 
 import com.eric.store.common.exceptions.StorageException;
-import com.eric.store.images.config.S3Props;
-import com.eric.store.images.entity.FileEntity;
-import com.eric.store.images.repository.FileRepository;
+import com.eric.store.files.config.S3Props;
+import com.eric.store.files.entity.FileEntity;
+import com.eric.store.files.repository.FileRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

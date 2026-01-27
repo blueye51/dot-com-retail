@@ -1,4 +1,4 @@
-package com.eric.store.images.entity;
+package com.eric.store.files.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

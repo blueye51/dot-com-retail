@@ -37,7 +37,7 @@ public class ProductController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UUID> addProduct(@Valid ProductCreateRequest req) {
+    public ResponseEntity<UUID> addProduct(@Valid @RequestBody ProductCreateRequest req) {
         Product product = productService.create(req);
         UUID id = product.getId();
         return ResponseEntity.status(HttpStatus.CREATED).body(id);

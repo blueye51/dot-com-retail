@@ -1,11 +1,7 @@
 package com.eric.store.products.dto;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Digits;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -20,7 +16,7 @@ public record ProductCreateRequest(
         @DecimalMin("0.0") BigDecimal height,
         @DecimalMin("0.0") BigDecimal depth,
         @DecimalMin("0.0") BigDecimal weight,
-        @NotNull Integer stock,
+        @NotNull @Min(0) Integer stock,
         @NotNull UUID categoryId,
         @Valid List<ImageCreate> images
 ) {

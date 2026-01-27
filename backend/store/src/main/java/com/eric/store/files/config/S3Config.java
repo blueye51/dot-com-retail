@@ -1,4 +1,4 @@
-package com.eric.store.images.config;
+package com.eric.store.files.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

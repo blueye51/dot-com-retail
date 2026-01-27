@@ -1,10 +1,10 @@
 package com.eric.store.products.entity;
 
-import com.eric.store.images.entity.FileEntity;
-import com.eric.store.products.dto.ImageCreate;
+import com.eric.store.files.entity.FileEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -16,8 +16,7 @@ import java.util.UUID;
 )
 @Getter @Setter
 @NoArgsConstructor
-@RequiredArgsConstructor
-public class ProductImage {
+public class Image {
 
     @Id
     @GeneratedValue
@@ -25,21 +24,26 @@ public class ProductImage {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "product_id", nullable = false)
-    @NonNull
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "file_key", nullable = false)
-    @NonNull
     private FileEntity file;
 
     @Column(name = "sort_order", nullable = false)
-    @NonNull
     private Integer sortOrder;
 
-    public ProductImage(ImageCreate imageCreate) {
-        this.product = product;
+    public Image(FileEntity file, Integer sortOrder) {
         this.file = file;
         this.sortOrder = sortOrder;
+    }
+
+    /**
+     * Not to be used directly. Use Product.addImage(Image) instead to
+     * ensure bidirectional consistency.
+     * @param product
+     */
+    public void setProduct(Product product) {
+        this.product = Objects.requireNonNull(product);
     }
 }

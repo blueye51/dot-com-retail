@@ -1,6 +1,6 @@
-package com.eric.store.images.controller;
+package com.eric.store.files.controller;
 
-import com.eric.store.images.service.FileStorageService;
+import com.eric.store.files.service.FileStorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
