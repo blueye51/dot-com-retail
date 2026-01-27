@@ -24,7 +24,7 @@ public class Product {
     @GeneratedValue
     private UUID id;
 
-    @Column(precision = 19, scale = 2, nullable = false)
+    @Column(precision = 17, scale = 2, nullable = false)
     private BigDecimal price;
 
     @Column(nullable = false)
@@ -47,7 +47,7 @@ public class Product {
     private Integer stock;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductImage> images = new ArrayList<>();
+    private List<Image> images = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "category_id", nullable = false)
@@ -98,6 +98,11 @@ public class Product {
      */
     public void setCategory(Category category) {
         this.category = Objects.requireNonNull(category);
+    }
+
+    public void addImage(Image img) {
+        images.add(img);
+        img.setProduct(this);
     }
 
 }

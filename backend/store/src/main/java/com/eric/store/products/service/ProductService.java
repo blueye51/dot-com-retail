@@ -2,8 +2,8 @@ package com.eric.store.products.service;
 
 import com.eric.store.categories.entity.Category;
 import com.eric.store.categories.repository.CategoryRepository;
-import com.eric.store.categories.service.CategoryService;
 import com.eric.store.common.exceptions.NotFoundException;
+import com.eric.store.products.dto.ImageCreate;
 import com.eric.store.products.dto.ProductCreateRequest;
 import com.eric.store.products.dto.ProductQuery;
 import com.eric.store.products.entity.Product;
@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -23,14 +24,17 @@ import java.util.UUID;
 @Transactional
 public class ProductService {
     private final ProductRepository productRepository;
-    private final ProductImageService productImageService;
+    private final ImageService productImageService;
     private final CategoryRepository categoryRepository;
 
 
     public Product create(ProductCreateRequest req) {
+        Category category = categoryRepository.findById(req.categoryId())
+                .orElseThrow(() -> new NotFoundException("Category", req.categoryId()));
+
         Product product = new Product(
                 req.price(),
-                req.currency(),
+                req.currency().toUpperCase(),
                 req.name(),
                 req.description(),
                 req.width(),
@@ -40,10 +44,15 @@ public class ProductService {
                 req.stock()
         );
 
-        Category category = categoryRepository.findById(req.categoryId())
-                .orElseThrow(() -> new NotFoundException("Category", req.categoryId()));
-
         category.addProduct(product);
+
+        if (!req.images().isEmpty()) {
+            List<ImageCreate> imageDtos = req.images();
+            for (ImageCreate imageDto : imageDtos) {
+                productImageService.create(imageDto, product);
+            }
+
+        }
 
         return productRepository.save(product);
     }
