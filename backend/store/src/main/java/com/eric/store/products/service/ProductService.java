@@ -3,10 +3,9 @@ package com.eric.store.products.service;
 import com.eric.store.categories.entity.Category;
 import com.eric.store.categories.repository.CategoryRepository;
 import com.eric.store.common.exceptions.NotFoundException;
-import com.eric.store.products.dto.ImageCreate;
-import com.eric.store.products.dto.ProductCreateRequest;
-import com.eric.store.products.dto.ProductQuery;
+import com.eric.store.products.dto.*;
 import com.eric.store.products.entity.Product;
+import com.eric.store.products.repository.ProductImageRepository;
 import com.eric.store.products.repository.ProductRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +23,9 @@ import java.util.UUID;
 @Transactional
 public class ProductService {
     private final ProductRepository productRepository;
-    private final ImageService productImageService;
+    private final ProductImageService productImageService;
     private final CategoryRepository categoryRepository;
+    private final ProductImageRepository productImageRepository;
 
 
     public Product create(ProductCreateRequest req) {
@@ -57,7 +57,7 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    public Page<Pr> search(ProductQuery query) {
+    public Page<ProductResponse> search(ProductQuery query) {
         Sort sort = Sort.by(Sort.Direction.fromString(query.order()), query.sort());
         Pageable pageable = PageRequest.of(query.page(), query.size(), sort);
         Page<Product> products;
@@ -72,7 +72,16 @@ public class ProductService {
             products = productRepository.findByCategoryIdAndNameContainingIgnoreCase(UUID.fromString(query.categoryId()), query.query(), pageable);
         }
 
-        return products.map(product -> ProductDto.from(product, product.getCategory().getId(), productImageService.getImageDtosByProductIdAsc(product.getId())));
+        return products.map(p -> new ProductCard(
+                p.getId(),
+                p.getName(),
+                p.getPrice(),
+                p.getCurrency(),
+                p.getStock(),
+                p.getCategory().getId(),
+                p.getCreatedAt(),
+                productImageRepository.findFirstByProductOrderBySortOrderAsc(p)
+        ));
     }
 
 }

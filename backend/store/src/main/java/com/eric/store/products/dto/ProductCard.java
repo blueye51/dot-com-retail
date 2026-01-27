@@ -1,22 +1,17 @@
 package com.eric.store.products.dto;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-import java.util.List;
 import java.util.UUID;
 
-public record ProductResponse(
+public record ProductCard(
         UUID id,
         String name,
-        String description,
-        String price,
+        BigDecimal price,
         String currency,
-        String width,
-        String height,
-        String depth,
-        String weight,
         Integer stock,
         UUID categoryId,
         OffsetDateTime createdAt,
-        List<ImageResponse> images
+        String imageUrl
 ) {
 }

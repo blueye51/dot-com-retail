@@ -16,7 +16,7 @@ import java.util.UUID;
 )
 @Getter @Setter
 @NoArgsConstructor
-public class Image {
+public class ProductImage {
 
     @Id
     @GeneratedValue
@@ -33,7 +33,7 @@ public class Image {
     @Column(name = "sort_order", nullable = false)
     private Integer sortOrder;
 
-    public Image(FileEntity file, Integer sortOrder) {
+    public ProductImage(FileEntity file, Integer sortOrder) {
         this.file = file;
         this.sortOrder = sortOrder;
     }

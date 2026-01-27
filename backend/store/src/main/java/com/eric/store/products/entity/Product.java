@@ -47,7 +47,7 @@ public class Product {
     private Integer stock;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Image> images = new ArrayList<>();
+    private List<ProductImage> productImages = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "category_id", nullable = false)
@@ -100,8 +100,8 @@ public class Product {
         this.category = Objects.requireNonNull(category);
     }
 
-    public void addImage(Image img) {
-        images.add(img);
+    public void addImage(ProductImage img) {
+        productImages.add(img);
         img.setProduct(this);
     }
 
