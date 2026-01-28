@@ -28,6 +28,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(status).body(body);
     }
 
+    @ExceptionHandler(IllegalJsonException.class)
+    public ResponseEntity<Map<String, Object>> handleIllegalJson(IllegalJsonException ex) {
+        return build(HttpStatus.BAD_REQUEST, "Illegal JSON", ex);
+    }
+
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<Map<String, Object>> handleNotFound(NotFoundException ex) {
         return build(HttpStatus.UNAUTHORIZED, "Not found", ex);
