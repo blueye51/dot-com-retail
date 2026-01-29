@@ -1,0 +1,7 @@
+.priceMinor {
+    width: 2ch;
+    min-width: 2ch;
+}
+.priceMajor {
+    text-align: right;
+}

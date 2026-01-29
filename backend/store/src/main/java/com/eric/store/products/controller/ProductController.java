@@ -1,5 +1,6 @@
 package com.eric.store.products.controller;
 
+import com.eric.store.products.dto.ProductCard;
 import com.eric.store.products.dto.ProductCreateRequest;
 import com.eric.store.products.dto.ProductQuery;
 import com.eric.store.products.dto.ProductResponse;
@@ -22,7 +23,7 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping("/page")
-    public ResponseEntity<Page<ProductResponse>> getPageProducts(
+    public ResponseEntity<Page<ProductCard>> getPageProducts(
             @RequestParam(required=false) String query,
             @RequestParam(required=false) String categoryId,
             @RequestParam(required=false) Integer page,
@@ -31,7 +32,7 @@ public class ProductController {
             @RequestParam(required=false) String order
     ) {
         ProductQuery productQuery = new ProductQuery(query, categoryId, page, size, sort, order);
-        Page<ProductResponse> products = productService.search(productQuery);
+        Page<ProductCard> products = productService.search(productQuery);
         return ResponseEntity.ok(products);
     }
 
