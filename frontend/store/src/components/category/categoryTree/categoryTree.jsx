@@ -2,17 +2,18 @@ import useFetch from "../../useFetch.jsx";
 import {useEffect, useState} from "react";
 import styles from './categoryTree.module.css';
 import CategoryCreation from "../categoryCreation/categoryCreation.jsx";
+import Modal from "../../modal/modal.jsx";
 
 
 function categoryTree() {
 
 
     const [creating, setCreating] = useState(false)
-    const [editing, setEditing] = useState(false)
-    const [deleting, setDeleting] = useState(false)
-
     const [focusedNodeId, setFocusedNodeId] = useState(null)
-
+    function close() {
+        setFocusedNodeId(null);
+        setCreating(false);
+    }
 
     const [categories, setCategories] = useState({})
     const {data, error, loading, reFetch, abort} = useFetch('/api/categories', {})
@@ -37,13 +38,6 @@ function categoryTree() {
         setFocusedNodeId(parentId)
     }
 
-    function toggleEdit(id) {
-        setEditing(prev => !prev)
-    }
-
-    function toggleDelete(id) {
-        setDeleting(prev => !prev)
-    }
 
     function renderCategories(node) {
         const children = categories[node.id] ?? [];
@@ -53,8 +47,6 @@ function categoryTree() {
                 <div>
                     <p>{node.name}</p>
                     {!node.isLeaf && <button onClick={() => toggleCreateChild(node.id)}>Add Category</button>}
-                    <button onClick={() => toggleEdit(node.id)}>Edit</button>
-                    <button onClick={() => toggleDelete(node.id)}>Delete</button>
                 </div>
                 {children.map(renderCategories)}
             </div>
@@ -73,14 +65,9 @@ function categoryTree() {
             </div>
 
 
-            {(creating || deleting || editing) && (
-                <div className={styles.backdrop} onClick={() => toggleCreateChild(null)}>
-                    <div className={styles.window} onClick={e => e.stopPropagation()}>
-                        <CategoryCreation parentId={focusedNodeId}/>
-                    </div>
-                    {}
-                </div>
-            )}
+            <Modal open={creating} onClose={close}>
+                <CategoryCreation parentId={focusedNodeId}/>
+            </Modal>
         </div>
     );
 }

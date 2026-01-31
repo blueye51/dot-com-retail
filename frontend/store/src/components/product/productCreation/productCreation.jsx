@@ -2,6 +2,7 @@ import {Link} from "react-router-dom";
 import useFetch from "../../useFetch.jsx";
 import {useEffect, useState} from "react";
 import styles from './productCreation.module.css';
+import ImageUpload from "../imageUploadingBox/imageUpload.jsx";
 
 function ProductCreation() {
 
@@ -173,6 +174,7 @@ function ProductCreation() {
                     value={weight}
                 />
             </div>
+            <ImageUpload/>
             <button onClick={handleSubmit}>Create</button>
         </div>
     )
