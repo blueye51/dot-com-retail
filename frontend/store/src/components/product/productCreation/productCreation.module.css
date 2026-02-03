@@ -1,3 +1,11 @@
+.main{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+
 .priceMinor {
     width: 2ch;
     min-width: 2ch;

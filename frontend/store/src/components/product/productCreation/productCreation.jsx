@@ -2,7 +2,7 @@ import {Link} from "react-router-dom";
 import useFetch from "../../useFetch.jsx";
 import {useEffect, useState} from "react";
 import styles from './productCreation.module.css';
-import ImageUpload from "../imageUploadingBox/imageUpload.jsx";
+import ImageUpload from "../imageMenu/imageMenu.jsx";
 
 function ProductCreation() {
 
@@ -62,7 +62,7 @@ function ProductCreation() {
     }
 
     return (
-        <div>
+        <div className={styles.main}>
             <h2>Product Creation Page</h2>
             <div>
                 <label htmlFor="name">Name:</label>
@@ -174,7 +174,7 @@ function ProductCreation() {
                     value={weight}
                 />
             </div>
-            <ImageUpload/>
+            <ImageUpload maxFiles={10}/>
             <button onClick={handleSubmit}>Create</button>
         </div>
     )

@@ -1,0 +1,17 @@
+.uploadBox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: clamp(4rem, 90vw, 16rem);
+    height: clamp(4rem, 90vw, 16rem);;
+}
+
+.input {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    border: 2px dashed #000000;
+}

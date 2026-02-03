@@ -1,6 +1,6 @@
 
 
-function imageEditing() {
+function imageEditing({file}) {
     return <div>Image Editing Component</div>;
 }
 
