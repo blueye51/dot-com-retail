@@ -14,14 +14,11 @@ function imageUpload({isPublic = false}) {
 
     const {data, error, loading, reFetch, abort} = useFetch(uri, {
         method: "POST",
-        body: editedFile,
+        body: undefined,
         withAuth: true,
         immediate: false,
     })
 
-    useEffect(() => {
-        reFetch()
-    }, [editedFile]);
 
     function close() {
         setOpen(false);
@@ -51,7 +48,7 @@ function imageUpload({isPublic = false}) {
         const form = new FormData();
         form.append("file", file, file.name);
 
-        setEditedFile(form);
+        reFetch({ body: form })
     }
 
     return (
