@@ -2,7 +2,7 @@ import {Link} from "react-router-dom";
 import useFetch from "../../useFetch.jsx";
 import {useEffect, useState} from "react";
 import styles from './productCreation.module.css';
-import ImageUpload from "../imageMenu/imageMenu.jsx";
+import ImageUpload from "../imageMenu/productImageMenu.jsx";
 
 function ProductCreation() {
 

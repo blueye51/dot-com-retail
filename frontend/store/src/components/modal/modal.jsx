@@ -12,16 +12,17 @@ function Modal(
         className = "",
     }
 ) {
-    // Prevent background scrolling when modal is open
     useEffect(() => {
         if (!open) return;
-        const originalOverflow = document.body.style.overflow;
-        document.body.style.overflow = 'hidden';
+
+        const original = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
 
         return () => {
-            document.body.style.overflow = originalOverflow;
+            document.body.style.overflow = original;
         };
-    }, []);
+    }, [open]);
+
 
     // ESC key close
     useEffect(() => {
@@ -42,7 +43,7 @@ function Modal(
     const modal = (
         <div
             className={styles.backdrop}
-            onClick={closeOnBackdrop && onClose}
+            onClick={closeOnBackdrop ? onClose : undefined}
             role="dialog" aria-modal="true" // Accessibility for screen readers
         >
             <button

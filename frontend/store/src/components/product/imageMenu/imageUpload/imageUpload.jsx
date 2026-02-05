@@ -1,54 +1,68 @@
 import styles from './imageUpload.module.css';
-import ImageEditing from "../imageEditing/ImageEditing.jsx";
 import Modal from "../../../modal/modal.jsx";
 import useFetch from "../../../useFetch.jsx";
 import {useEffect} from "react";
 
-function imageUpload({isPublic = false}) {
+const MAX = 20 * 1024 * 1024; // 20MB
+const allowed = new Set([
+    "image/jpeg", "image/png", "image/webp", "image/gif", "image/svg+xml"
+]);
 
-    const [open, setOpen] = useState(false);
-    const [originalFile, setOriginalFile] = useState(null);
-    const [editedFile, setEditedFile] = useState(null);
+function imageUpload({onPickFile}) {
 
-    const uri = `/api/upload/${isPublic ? 'public' : 'private'}`;
-
-    const {data, error, loading, reFetch, abort} = useFetch(uri, {
-        method: "POST",
-        body: undefined,
-        withAuth: true,
-        immediate: false,
-    })
-
-
-    function close() {
-        setOpen(false);
-        setOriginalFile(null);
-    }
-
-
-    function handleFile(e) {
+    async function handleFile(e) {
         const file = e.target.files?.[0];
         if (!file) {
             alert("No file selected");
             return;
         }
 
-        if (!file.type.startsWith("image/")) {
+        if (!allowed.has(file.type)) {
             alert("Uploaded file is not an image");
             return;
         }
 
-        setOriginalFile(file);
-        setOpen(true);
+        if (file.size > MAX) {
+            alert("File size exceeds limit");
+            return;
+        }
+
+        const ok = await decodeTest(file);
+        if (!ok) {
+            e.target.value = "";
+            return;
+        }
+
+
+        onPickFile(file);
 
         e.target.value = "";
     }
 
-    async function uploadFile(file) {
-        const form = new FormData();
-        form.append("file", file, file.name);
+    async function decodeTest(file) {
+        const url = URL.createObjectURL(file);
 
-        reFetch({ body: form })
+        try {
+            const img = new Image();
+
+            await new Promise((resolve, reject) => {
+                img.onload = resolve;
+                img.onerror = reject;
+                img.src = url;
+            });
+
+            if (img.width * img.height > 40_000_000) {
+                alert("Image has too many pixels");
+                return false;
+            }
+
+            return true;
+        } catch (err) {
+            alert("Failed to decode image");
+            return false;
+        } finally {
+            URL.revokeObjectURL(url);
+        }
     }
 
     return (
@@ -57,18 +71,10 @@ function imageUpload({isPublic = false}) {
                 id="file"
                 type="file"
                 hidden
-                onChange={handleFile}/>
+                onChange={handleFile}
+                accept="image/jpeg, image/png, image/webp, image/gif, image/svg+xml"/>
             <label className={styles.input} htmlFor="file">Drop file here<br/>
                 or click to browse</label>
-            <Modal open={open} onClose={close}>
-                <ImageEditing
-                    file={originalFile}
-                    onDone={async (editedFile) => {
-                    await uploadFile(editedFile);
-                    close();
-                    }
-                }/>
-            </Modal>
         </div>
     );
 }
