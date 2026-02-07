@@ -3,3 +3,9 @@
     flex-direction: column;
     align-items: center;
 }
+
+.canvasWrapper{
+    width: clamp(5rem, 90vw, 30rem);
+    height: clamp(5rem, 90vw, 30rem);
+    cursor: move;
+}
