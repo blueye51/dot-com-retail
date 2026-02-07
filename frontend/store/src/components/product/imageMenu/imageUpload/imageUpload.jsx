@@ -40,30 +40,24 @@ function imageUpload({onPickFile}) {
     }
 
     async function decodeTest(file) {
-        const url = URL.createObjectURL(file);
-
         try {
-            const img = new Image();
+            const bitmap = await createImageBitmap(file);
 
-            await new Promise((resolve, reject) => {
-                img.onload = resolve;
-                img.onerror = reject;
-                img.src = url;
-            });
-
-            if (img.width * img.height > 40_000_000) {
+            if (bitmap.width * bitmap.height > 40_000_000) {
                 alert("Image has too many pixels");
+                bitmap.close(); // free memory
                 return false;
             }
 
+            bitmap.close(); // free memory
             return true;
+
         } catch (err) {
             alert("Failed to decode image");
             return false;
-        } finally {
-            URL.revokeObjectURL(url);
         }
     }
+
 
     return (
         <div className={styles.uploadBox}>
