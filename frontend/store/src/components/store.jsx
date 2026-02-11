@@ -7,8 +7,9 @@ const authSlice = createSlice({
         setToken: (state, action) => {
             state.token = action.payload;
         },
-        clearToken: (state) => {
+        logout: (state) => {
             state.token = null;
+            state.roles = [];
         },
         setRoles: (state, action) => {
             state.roles = action.payload;
@@ -16,7 +17,7 @@ const authSlice = createSlice({
     }
 })
 
-export const { setToken, clearToken, setRoles } = authSlice.actions;
+export const { setToken, logout, setRoles } = authSlice.actions;
 
 export const store = configureStore({
     reducer: {

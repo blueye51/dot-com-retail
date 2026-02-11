@@ -18,14 +18,12 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-@RequiredArgsConstructor
 public class Category {
 
     @Id
     @GeneratedValue
     private UUID id;
 
-    @NonNull
     @Column(nullable = false, unique = true)
     private String name;
 

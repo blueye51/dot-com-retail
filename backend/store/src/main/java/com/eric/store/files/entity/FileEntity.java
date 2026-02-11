@@ -10,22 +10,18 @@ import java.time.ZoneOffset;
 @Getter
 @Setter
 @NoArgsConstructor
-@RequiredArgsConstructor
 public class FileEntity {
 
     @Id
     @Column(length = 512)
     private String key;
 
-    @NonNull
     private String url;
 
-    @NonNull
-    @Column(nullable=false)
+    @Column(nullable = false)
     private String contentType;
 
-    @NonNull
-    @Column(nullable=false)
+    @Column(nullable = false)
     private Long sizeBytes;
 
     //Timestamps automation

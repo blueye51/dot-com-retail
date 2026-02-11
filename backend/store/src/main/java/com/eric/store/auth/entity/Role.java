@@ -13,16 +13,18 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-@RequiredArgsConstructor
 public class Role {
     @Id
     @GeneratedValue
     private UUID id;
 
-    @NonNull
     @Column(nullable = false)
     private String name;
 
     @ManyToMany(mappedBy = "roles")
     private Set<User> users = new HashSet<>();
+
+    public Role(String name) {
+        this.name = name;
+    }
 }

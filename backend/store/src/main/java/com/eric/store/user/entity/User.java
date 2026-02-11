@@ -15,18 +15,15 @@ import java.util.*;
 @Getter
 @Setter
 @NoArgsConstructor
-@RequiredArgsConstructor
 public class User {
 
     @Id
     @GeneratedValue
     private UUID id;
 
-    @NonNull
     @Column(nullable = false, unique = true)
     private String email;
 
-    @NonNull
     @Column(nullable = false)
     private String name;
 
@@ -35,7 +32,6 @@ public class User {
             inverseJoinColumns=@JoinColumn(name="role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    @NonNull
     @Column(nullable = false)
     private String passwordHash;
 
@@ -57,5 +53,11 @@ public class User {
     @PreUpdate
     void preUpdate() {
         this.updatedAt = OffsetDateTime.now(ZoneOffset.UTC);
+    }
+
+    public User (String email, String name, String passwordHash) {
+        this.email = email;
+        this.name = name;
+        this.passwordHash = passwordHash;
     }
 }

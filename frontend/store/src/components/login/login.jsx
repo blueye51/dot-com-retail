@@ -1,25 +1,21 @@
-import styles from './login.module.css';
-import {useEffect, useState} from "react";
-import { useSelector, useDispatch } from "react-redux";
-import {setRoles, setToken} from "../store.jsx";
+import styles from "./login.module.css";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { setRoles, setToken } from "../store.jsx";
 import useFetch from "../useFetch.jsx";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 
 function Login() {
-
     const navigate = useNavigate();
     const location = useLocation();
     const from = location.state?.from?.pathname || "/";
-    const token = useSelector((state) => state.auth.token);
     const dispatch = useDispatch();
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
-    const { data, error, loading, reFetch } = useFetch('/api/auth/login', {
-        method: 'POST',
-        body: { email, password },
-        headers: { 'Content-Type': 'application/json' },
+    const { data, error, loading, reFetch } = useFetch("/api/auth/login", {
+        method: "POST",
         withAuth: false,
         immediate: false,
     });
@@ -29,22 +25,29 @@ function Login() {
         dispatch(setToken(data.accessToken));
         dispatch(setRoles(data.roles || []));
         navigate(from, { replace: true });
-    }, [data, dispatch, navigate]);
+    }, [data, dispatch, navigate, from]);
 
     useEffect(() => {
         if (!error) return;
-        console.error('Login error:', error);
-        alert('Login failed: ' + (error.message || 'Unknown error'));
+        console.error("Login error:", error);
+        alert("Login failed: " + (error.message || "Unknown error"));
     }, [error]);
 
-    async function handleSubmit(event) {
+    const handleSubmit = (event) => {
         event.preventDefault();
-        await reFetch();
-    }
+
+        reFetch({
+            body: {
+                email: email.trim(),
+                password,
+            },
+        });
+    };
 
     return (
         <div className={styles.loginContainer}>
             <h2>Login</h2>
+
             <form onSubmit={handleSubmit} className={styles.loginForm}>
                 <div className={styles.formField}>
                     <label htmlFor="email">Email:</label>
@@ -60,6 +63,7 @@ function Login() {
                         required
                     />
                 </div>
+
                 <div className={styles.formField}>
                     <label htmlFor="password">Password:</label>
                     <input
@@ -73,8 +77,13 @@ function Login() {
                         required
                     />
                 </div>
-                <button type="submit">Login</button>
+
+                <button type="submit" disabled={loading}>
+                    {loading ? "Logging in..." : "Login"}
+                </button>
             </form>
+
+            <Link to="/register">Register here</Link>
         </div>
     );
 }

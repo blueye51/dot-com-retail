@@ -49,9 +49,7 @@ public class AuthController {
 
     @PostMapping("/refresh")
     public ResponseEntity<Map<String, Object>> refresh(@CookieValue(name = Cookie.REFRESH, required = false) String refreshCookie) {
-        System.out.println("refreshCookie: " + refreshCookie);
         if (refreshCookie == null) throw new InvalidRefreshTokenException("Missing refresh cookie");
-
         var user = userService.findById(tokenService.getUserId(refreshCookie));
         var pair = tokenService.rotate(refreshCookie);
         return ResponseEntity.status(HttpStatus.OK)

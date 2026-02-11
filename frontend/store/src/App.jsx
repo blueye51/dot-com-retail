@@ -1,7 +1,7 @@
 import './App.css'
 import Login from './components/login/login.jsx'
 import MainLayout from "./components/layouts/mainLayout.jsx";
-import DevMenu from "./components/devMenu/devMenu.jsx";
+import AdminMenu from "./components/adminMenu/adminMenu.jsx";
 import RequiredRole from "./components/auth/requiredRole.jsx";
 import RequiredAuth from "./components/auth/requiredAuth.jsx";
 import Unauthorized from "./components/auth/unauthorized.jsx";
@@ -15,6 +15,7 @@ import {refreshAccessToken} from "./components/useFetch.jsx";
 import MissingAuth from "./components/auth/missingAuth.jsx";
 import ProductCreation from "./components/product/productCreation/productCreation.jsx";
 import CategoryTree from "./components/category/categoryTree/categoryTree.jsx";
+import {Register} from "./components/register/register.jsx";
 
 
 function App() {
@@ -43,6 +44,8 @@ function App() {
             <Routes>
                 <Route element={<MissingAuth />}>
                     <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+
                 </Route>
                 <Route path="/unauthorized" element={<Unauthorized />} />
 
@@ -54,7 +57,7 @@ function App() {
 
                 <Route element={<RequiredRole allowed={["ADMIN"]} />}>
                     <Route element={<MainLayout />}>
-                        <Route path="/dev" element={<DevMenu />} />
+                        <Route path="/admin" element={<AdminMenu />} />
                         <Route path="/product" element={<ProductList />} />
                         <Route path="/createproduct" element={<ProductCreation/>} />
                         <Route path="/categorytree" element={<CategoryTree/>} />
