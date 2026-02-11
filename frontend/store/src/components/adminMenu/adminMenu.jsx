@@ -1,6 +1,6 @@
 import {Link} from "react-router-dom";
 
-function DevMenu () {
+function AdminMenu () {
 
     return (
         <div>
@@ -15,4 +15,4 @@ function DevMenu () {
     )
 }
 
-export default DevMenu;
+export default AdminMenu;

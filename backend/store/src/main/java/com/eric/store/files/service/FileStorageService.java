@@ -18,6 +18,7 @@ import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignReques
 import java.io.IOException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -60,7 +61,7 @@ public class FileStorageService {
         FileEntity fileEntity = new FileEntity();
         fileEntity.setKey(key);
         fileEntity.setUrl(url);
-        fileEntity.setContentType(file.getContentType());
+        fileEntity.setContentType(Objects.requireNonNull(file.getContentType()));
         fileEntity.setSizeBytes(file.getSize());
         return fileRepository.save(fileEntity);
     }

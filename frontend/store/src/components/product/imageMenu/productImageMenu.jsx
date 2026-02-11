@@ -5,7 +5,7 @@ import {useEffect, useState} from "react";
 import ImageEditing from "./imageEditing/imageEditing.jsx";
 import useFetch from "../../useFetch.jsx";
 
-function ProductImageMenu({maxFiles = 1, setImageUrls}) {
+function ProductImageMenu({maxFiles = 1, setImageUrls, setImageKeys}) {
 
     const [uploaderOpen, setUploaderOpen] = useState(false)
     const [editorOpen, setEditorOpen] = useState(false)
@@ -34,18 +34,35 @@ function ProductImageMenu({maxFiles = 1, setImageUrls}) {
         setEditorOpen(true);
     };
 
+    const baseName = (name) => (name ? name.replace(/\.[^.]+$/, "") : "product_image");
+
     const handleEditorDone = async (blob) => {
         setEditedBlob(blob);
         setEditorOpen(false);
 
         const form = new FormData();
-        form.append("file", blob, rawFile?.name ?? product_image.webp);
+        const filename = `${baseName(rawFile?.name)}.webp`;
+        form.append("file", blob, filename);
 
-        reFetch({body: form})
+        await reFetch({body: form}).catch()
 
         setRawFile(null);
         setEditedBlob(null);
     }
+
+
+    useEffect(() => {
+        if (error) {
+            console.error("Image upload error:", error);
+            alert("Failed to upload image: " + (error.message || "Unknown error"));
+            return;
+        }
+        if (!data) return;
+
+        setImageKeys((prev) => [...prev, data.key]);
+        setImageUrls((prev) => [...prev, data.url]);
+
+    }, [data, error]);
 
 
     return (

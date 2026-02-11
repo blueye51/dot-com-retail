@@ -20,18 +20,15 @@ import java.util.UUID;
 )@Getter
 @Setter
 @NoArgsConstructor
-@RequiredArgsConstructor
 public class OrderItem {
 
     @Id
     @GeneratedValue
     private UUID id;
 
-    @NonNull
     @Column(precision = 19, scale = 2, nullable = false)
     private BigDecimal price;
 
-    @NonNull
     @Column(nullable = false)
     @Check(constraints = "quantity >= 1")
     private Integer quantity;
