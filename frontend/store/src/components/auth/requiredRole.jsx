@@ -1,5 +1,6 @@
 import {useSelector} from "react-redux";
 import {Navigate, Outlet, useLocation} from "react-router-dom";
+import {paths} from "../routes.jsx";
 
 
 function RequiredRole ({ allowed }) {
@@ -9,10 +10,10 @@ function RequiredRole ({ allowed }) {
 
     console.log("reqRole, token: "+ token +", roles: " + roles);
     if (!token) {
-        return <Navigate to="/login" replace state={{ from: location }} />;
+        return <Navigate to={paths.login()} replace state={{ from: location }} />;
     }
     const ok = Array.isArray(allowed) && allowed.some((r) => roles.includes(r));
-    if (!ok) return <Navigate to="/unauthorized" replace />;
+    if (!ok) return <Navigate to={paths.unauthorized()} replace />;
     return <Outlet />;
 }
 

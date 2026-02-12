@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import useFetch from "../../useFetch.jsx";
 import {useEffect, useState} from "react";
+import {paths} from "../../routes.jsx";
 
 function ProductList () {
 
@@ -66,7 +67,7 @@ function ProductList () {
                         : "";
 
                 return (
-                    <Link key={product.id} to={`/products/${product.id}`}>
+                    <Link key={product.id} to={paths.product(product.id)}>
                         {renderProduct(
                             product.id,
                             product.name,

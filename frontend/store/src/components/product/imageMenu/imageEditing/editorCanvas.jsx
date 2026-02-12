@@ -86,24 +86,28 @@ const EditorCanvas = forwardRef(({backgroundColor = "#FFFFFF", bitmap, maxScale 
         const exportBlob = useCallback(async (type = "image/webp", quality = 0.9) => {
             if (!bitmap) return null;
 
-            // create a square canvas with size = max dimension of the image
+            // create a virtual square canvas with size = max dimension of the image
             const S = Math.max(bitmap.width, bitmap.height);
 
+            // the actual canvas size is scaled down by the current scale factor, to preserve quality and save memory
+            const outS =  Math.max(1, Math.round(S / scaleRef.current))
+            //scale from virtual canvas to output canvas
+            const k = outS / S;
+
             const exportCanvas = document.createElement("canvas");
-            exportCanvas.width = S;
-            exportCanvas.height = S;
+            exportCanvas.width = outS;
+            exportCanvas.height = outS;
 
             const ctx = exportCanvas.getContext("2d");
 
             // background
             ctx.fillStyle = backgroundColor;
-            ctx.fillRect(0, 0, S, S);
+            ctx.fillRect(0, 0, outS, outS);
 
-            const userScale = scaleRef.current;
-
+            // math done in virtual square canvas space
             const baseScale = Math.min(S / bitmap.width, S / bitmap.height);
-            const dw = bitmap.width * baseScale * userScale;
-            const dh = bitmap.height * baseScale * userScale;
+            const dw = bitmap.width * baseScale * scaleRef.current;
+            const dh = bitmap.height * baseScale * scaleRef.current;
 
             const baseX = (S - dw) / 2;
             const baseY = (S - dh) / 2;
@@ -114,7 +118,8 @@ const EditorCanvas = forwardRef(({backgroundColor = "#FFFFFF", bitmap, maxScale 
             const dx = baseX + ox;
             const dy = baseY + oy;
 
-            ctx.drawImage(bitmap, dx, dy, dw, dh);
+            // draw into the smaller output canvas by scaling everything by k
+            ctx.drawImage(bitmap, dx * k, dy * k, dw * k, dh * k);
 
             return await new Promise((resolve) => {
                 exportCanvas.toBlob((blob) => resolve(blob), type, quality);
@@ -133,7 +138,6 @@ const EditorCanvas = forwardRef(({backgroundColor = "#FFFFFF", bitmap, maxScale 
                 setScale,
                 zoomBy,
                 getScale: () => scaleRef.current,
-
                 panBy,
                 reset
             }),
