@@ -2,7 +2,7 @@ import styles from './imageEditing.module.css';
 import {useCallback, useEffect, useRef, useState} from "react";
 import EditorCanvas from "./editorCanvas.jsx";
 
-function ImageEditing({file, onDone, outputType = "image/webp", quality = 0.9}) {
+function ImageEditing({file, onDone, outputType = "image/webp", quality = 0.9, loading = false}) {
     const wrapRef = useRef(null);
     const editorRef = useRef(null);
 
@@ -10,6 +10,7 @@ function ImageEditing({file, onDone, outputType = "image/webp", quality = 0.9}) 
     const [backgroundColor, setBackgroundColor] = useState("#FFFFFF");
 
     const [scaleUi, setScaleUi] = useState(1);
+    const [submitting, setSubmitting] = useState(false);
 
     const isDraggingRef = useRef(false);
     const dragStartRef = useRef({x: 0, y: 0});
@@ -81,6 +82,18 @@ function ImageEditing({file, onDone, outputType = "image/webp", quality = 0.9}) 
         };
     }, [file]);
 
+    const handleSubmit = useCallback(async () => {
+        if (loading || submitting) return;
+        setSubmitting(true);
+        try {
+            const blob = await editorRef.current?.exportBlob?.(outputType, quality);
+            if (!blob) return;
+            onDone?.(blob);
+        } finally {
+            setSubmitting(false);
+        }
+    }, [loading, submitting, onDone, outputType, quality]);
+
 
     return (
         <div className={styles.main}>
@@ -123,13 +136,10 @@ function ImageEditing({file, onDone, outputType = "image/webp", quality = 0.9}) 
                 Reset
             </button>
             <button
-                onClick={async () => {
-                    const blob = await editorRef.current?.exportBlob?.(outputType, quality);
-                    if (!blob) return;
-                    onDone?.(blob);
-                }}
+                disabled={loading || submitting}
+                onClick={handleSubmit}
             >
-                Submit
+                {submitting || loading ? "Uploading..." : "Submit"}
             </button>
         </div>
     );

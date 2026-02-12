@@ -5,8 +5,7 @@ import {useEffect, useState} from "react";
 import ImageEditing from "./imageEditing/imageEditing.jsx";
 import useFetch from "../../useFetch.jsx";
 
-function ProductImageMenu({maxFiles = 1, setImageUrls, setImageKeys}) {
-
+function ProductImageMenu({maxFiles = 1, setImages, images}) {
     const [uploaderOpen, setUploaderOpen] = useState(false)
     const [editorOpen, setEditorOpen] = useState(false)
 
@@ -14,7 +13,6 @@ function ProductImageMenu({maxFiles = 1, setImageUrls, setImageKeys}) {
     const closeEditor = () => setEditorOpen(false);
 
     const [rawFile, setRawFile] = useState(null);
-    const [editedBlob, setEditedBlob] = useState(null);
 
     const {data, error, loading, reFetch, abort} = useFetch("/api/images/public", {
         method: "POST",
@@ -23,10 +21,19 @@ function ProductImageMenu({maxFiles = 1, setImageUrls, setImageKeys}) {
     })
 
     useEffect(() => {
+        if (error) {
+            console.error("Image upload error:", error);
+            alert("Failed to upload image: " + (error.message || "Unknown error"));
+            return;
+        }
         if (!data) return;
 
-        setImageUrls((prev) => [...prev, data.url]);
-    }, [data, setImageUrls]);
+        setImages((prev) => [
+            ...prev,
+            {key: data.key, url: data.url}
+        ]);
+
+    }, [data, error]);
 
     const handlePickedFile = (file) => {
         setRawFile(file);
@@ -37,7 +44,6 @@ function ProductImageMenu({maxFiles = 1, setImageUrls, setImageKeys}) {
     const baseName = (name) => (name ? name.replace(/\.[^.]+$/, "") : "product_image");
 
     const handleEditorDone = async (blob) => {
-        setEditedBlob(blob);
         setEditorOpen(false);
 
         const form = new FormData();
@@ -47,22 +53,57 @@ function ProductImageMenu({maxFiles = 1, setImageUrls, setImageKeys}) {
         await reFetch({body: form}).catch()
 
         setRawFile(null);
-        setEditedBlob(null);
     }
 
 
-    useEffect(() => {
-        if (error) {
-            console.error("Image upload error:", error);
-            alert("Failed to upload image: " + (error.message || "Unknown error"));
-            return;
-        }
-        if (!data) return;
+    const removeAt = (index) => {
+        setImages(prev => prev.filter((_, i) => i !== index));
+    };
 
-        setImageKeys((prev) => [...prev, data.key]);
-        setImageUrls((prev) => [...prev, data.url]);
+    const move = (from, to) => {
+        setImages(prev => {
+            if (to < 0 || to >= prev.length) return prev;
 
-    }, [data, error]);
+            const next = [...prev];
+            [next[from], next[to]] = [next[to], next[from]];
+            return next;
+        });
+    };
+
+    const handleMoveUp = (index) => move(index, index - 1);
+    const handleMoveDown = (index) => move(index, index + 1);
+
+
+    const renderImageList = () => {
+        return images.map((img, index) => (
+            <div key={img.key} className={styles.imageContainer}>
+                <img
+                    src={img.url}
+                    alt={`Product Image ${index + 1}`}
+                    className={styles.imagePreview}/>
+                <div className={styles.buttonsContainer}>
+                    <button
+                        className={styles.deleteButton}
+                        onClick={() => removeAt(index)}
+                    >
+                        🗑
+                    </button>
+                    <button
+                        className={styles.moveButton}
+                        onClick={() => handleMoveUp(index)}
+                    >
+                        ⬆
+                    </button>
+                    <button
+                        className={styles.moveButton}
+                        onClick={() => handleMoveDown(index)}
+                    >
+                        ⬇
+                    </button>
+                </div>
+            </div>
+        ));
+    }
 
 
     return (
@@ -72,8 +113,11 @@ function ProductImageMenu({maxFiles = 1, setImageUrls, setImageKeys}) {
                 <ImageUpload onPickFile={handlePickedFile}/>
             </Modal>
             <Modal open={editorOpen} onClose={closeEditor}>
-                <ImageEditing onDone={handleEditorDone} file={rawFile}/>
+                <ImageEditing onDone={handleEditorDone} file={rawFile} loading={loading}/>
             </Modal>
+            <div className={styles.imageList}>
+                {renderImageList()}
+            </div>
         </div>
     );
 }

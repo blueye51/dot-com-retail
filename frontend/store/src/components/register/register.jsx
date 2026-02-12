@@ -2,6 +2,7 @@ import styles from './register.module.css';
 import useFetch from "../useFetch.jsx";
 import { useState } from "react";
 import {Link} from "react-router-dom";
+import {paths} from "../routes.jsx";
 
 export function Register() {
     const { data, error, loading, reFetch } = useFetch("/api/auth/register", {
@@ -61,7 +62,7 @@ export function Register() {
 
                 {error && <div>{String(error)}</div>}
                 {data && (<div>Registered
-                <Link to={"/login"}>Login here</Link>
+                <Link to={paths.login()}>Login here</Link>
                 </div>)}
             </form>
         </div>

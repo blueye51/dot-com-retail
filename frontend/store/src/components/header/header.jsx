@@ -4,6 +4,7 @@ import {Link, useNavigate} from 'react-router-dom';
 import {useDispatch, useSelector} from "react-redux";
 import {logout} from "../store.jsx";
 import useFetch from "../useFetch.jsx";
+import {paths} from "../routes.jsx";
 
 
 
@@ -51,7 +52,7 @@ function Header () {
             {token && <div>AUTH</div>}
             <div className={styles.extraButtons}>
                 <button onClick={handleLogout}>Logout</button>
-                <Link to="/admin">admin</Link>
+                <Link to={paths.admin()}>admin</Link>
                 <h1>🛒</h1>
             </div>
         </header>

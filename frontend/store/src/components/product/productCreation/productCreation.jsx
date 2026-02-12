@@ -3,6 +3,7 @@ import useFetch from "../../useFetch.jsx";
 import {useEffect, useState} from "react";
 import styles from './productCreation.module.css';
 import ImageUpload from "../imageMenu/productImageMenu.jsx";
+import {paths} from "../../routes.jsx";
 
 function ProductCreation() {
 
@@ -35,7 +36,9 @@ function ProductCreation() {
     const [stock, setStock] = useState('');
     const [categoryId, setCategoryId] = useState('');
 
-    const {data : categories, error, loading, reFetch, abort} = useFetch('/api/categories', {})
+    const [images, setImages] = useState([]);
+
+    const {data: categories, error, loading, reFetch, abort} = useFetch('/api/categories', {})
 
     const onMajorChange = (e, setValue) => {
         const digitsOnly = e.target.value.replace(/\D/g, "");
@@ -55,7 +58,6 @@ function ProductCreation() {
         if (value === "") return;
         setValue(value.padEnd(2, "0"));
     };
-
 
 
     function handleSubmit(event) {
@@ -100,32 +102,38 @@ function ProductCreation() {
                 </select>
             </div>
             <label htmlFor="price">Category:</label>
-            <select
-                value={categoryId}
-                onChange={(e) => setCategoryId(e.target.value)}
-            >
-                {loading && <option disabled>Loading categories...</option>}
+            {!loading && categories && categories.length > 0 ?
+                (<select
+                    value={categoryId}
+                    onChange={(e) => setCategoryId(e.target.value)}
+                >
+                    {loading && <option disabled>Loading categories...</option>}
 
-                {!loading && categories
-                    ?.filter(cat => cat.isLeaf === true)
-                    .map(cat => (
-                        <option key={cat.id} value={cat.id}>
-                            {cat.name}
-                        </option>
-                    ))}
-            </select>
+                    {!loading && categories
+                        ?.filter(cat => cat.isLeaf === true)
+                        .map(cat => (
+                            <option key={cat.id} value={cat.id}>
+                                {cat.name}
+                            </option>
+                        ))}
+                </select>)
+                :
+                (<>
+                <p>No Categories available</p>
+                    <Link to={paths.categoryTree()}/>
+                </>)
+            }
             <div>
-            <label htmlFor="price">Stock:</label>
-            <input
-                onChange={(e) => onMajorChange(e, setStock)}
-                onBlur={() => normalizeMajor(stock, setStock)}
-                placeholder="0"
-                id="stock"
-                value={stock}
-                className={styles.priceMajor}
-            />
+                <label htmlFor="price">Stock:</label>
+                <input
+                    onChange={(e) => onMajorChange(e, setStock)}
+                    onBlur={() => normalizeMajor(stock, setStock)}
+                    placeholder="0"
+                    id="stock"
+                    value={stock}
+                    className={styles.priceMajor}
+                />
             </div>
-
 
 
             <p>Optional:</p>
@@ -174,7 +182,7 @@ function ProductCreation() {
                     value={weight}
                 />
             </div>
-            <ImageUpload maxFiles={10}/>
+            <ImageUpload maxFiles={10} setImages={setImages} images={images}/>
             <button onClick={handleSubmit}>Create</button>
         </div>
     )

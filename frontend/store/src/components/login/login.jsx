@@ -4,11 +4,12 @@ import { useDispatch } from "react-redux";
 import { setRoles, setToken } from "../store.jsx";
 import useFetch from "../useFetch.jsx";
 import { useNavigate, useLocation, Link } from "react-router-dom";
+import {paths} from "../routes.jsx";
 
 function Login() {
     const navigate = useNavigate();
     const location = useLocation();
-    const from = location.state?.from?.pathname || "/";
+    const from = location.state?.from?.pathname || paths.home();
     const dispatch = useDispatch();
 
     const [email, setEmail] = useState("");

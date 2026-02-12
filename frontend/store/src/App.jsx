@@ -1,4 +1,10 @@
 import './App.css'
+import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
+import {useDispatch} from "react-redux";
+import {useEffect, useState} from "react";
+import {refreshAccessToken} from "./components/useFetch.jsx";
+import { PATHS, paths } from './components/routes.jsx'
+
 import Login from './components/login/login.jsx'
 import MainLayout from "./components/layouts/mainLayout.jsx";
 import AdminMenu from "./components/adminMenu/adminMenu.jsx";
@@ -7,11 +13,6 @@ import RequiredAuth from "./components/auth/requiredAuth.jsx";
 import Unauthorized from "./components/auth/unauthorized.jsx";
 import Home from "./components/home/home.jsx";
 import ProductList from "./components/product/productLayout/productList.jsx";
-
-import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
-import {useDispatch} from "react-redux";
-import {useEffect, useState} from "react";
-import {refreshAccessToken} from "./components/useFetch.jsx";
 import MissingAuth from "./components/auth/missingAuth.jsx";
 import ProductCreation from "./components/product/productCreation/productCreation.jsx";
 import CategoryTree from "./components/category/categoryTree/categoryTree.jsx";
@@ -43,28 +44,28 @@ function App() {
         <BrowserRouter>
             <Routes>
                 <Route element={<MissingAuth />}>
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/register" element={<Register />} />
+                    <Route path={PATHS.login} element={<Login />} />
+                    <Route path={PATHS.register} element={<Register />} />
 
                 </Route>
-                <Route path="/unauthorized" element={<Unauthorized />} />
+                <Route path={PATHS.unauthorized} element={<Unauthorized />} />
 
                 <Route element={<RequiredAuth />}>
                     <Route element={<MainLayout />}>
-                        <Route path="/" element={<Home />} />
+                        <Route path={PATHS.home} element={<Home />} />
                     </Route>
                 </Route>
 
                 <Route element={<RequiredRole allowed={["ADMIN"]} />}>
                     <Route element={<MainLayout />}>
-                        <Route path="/admin" element={<AdminMenu />} />
-                        <Route path="/product" element={<ProductList />} />
-                        <Route path="/createproduct" element={<ProductCreation/>} />
-                        <Route path="/categorytree" element={<CategoryTree/>} />
+                        <Route path={PATHS.admin} element={<AdminMenu />} />
+                        <Route path={PATHS.productList} element={<ProductList />} />
+                        <Route path={PATHS.createProduct} element={<ProductCreation/>} />
+                        <Route path={PATHS.categoryTree} element={<CategoryTree/>} />
                     </Route>
                 </Route>
 
-                <Route path="*" element={<Navigate to="/" replace />} />
+                <Route path={PATHS.any} element={<Navigate to={paths.home()} replace />} />
             </Routes>
         </BrowserRouter>
     )
