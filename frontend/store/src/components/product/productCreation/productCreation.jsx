@@ -1,24 +1,23 @@
 import {Link} from "react-router-dom";
 import useFetch from "../../useFetch.jsx";
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import styles from './productCreation.module.css';
-import ImageUpload from "../imageMenu/productImageMenu.jsx";
+import ProductImageMenu from "../imageMenu/productImageMenu.jsx";
 import {paths} from "../../routes.jsx";
 
 function ProductCreation() {
 
 // Product object{
-//     id: string,
-//     name: string,
+//     name: string, (req.)
+//     price: number, (req.)
+//     currency: string, (e.g., "USD", "EUR") (req.)
 //     description: string,
-//     price: number,
-//     currency: string, (e.g., "USD", "EUR")
 //     width: number,
 //     height: number,
 //     depth: number,
 //     weight: number,
-//     stock: number,
-//     category: string,
+//     stock: number, (req.)
+//     categoryId: string, (req.)
 //     images:[{
 //         fileKey: string,
 //         sortOrder: number
@@ -38,7 +37,14 @@ function ProductCreation() {
 
     const [images, setImages] = useState([]);
 
-    const {data: categories, error, loading, reFetch, abort} = useFetch('/api/categories', {})
+
+    const {data: categories, loading: loadingCategories} = useFetch('/api/categories', {})
+
+    const {data, error, loading, refetch,} = useFetch('/api/products', {
+        method: 'POST',
+        withAuth: true,
+        immediate: false,
+    })
 
     const onMajorChange = (e, setValue) => {
         const digitsOnly = e.target.value.replace(/\D/g, "");
@@ -59,10 +65,35 @@ function ProductCreation() {
         setValue(value.padEnd(2, "0"));
     };
 
-
-    function handleSubmit(event) {
+    const priceBuilder = (major, minor) => {
+        const major2 = major === "" ? 0 : Number(major);
+        const minor2 = minor === "" ? 0 : Number(minor.padEnd(2, "0"));
+        return major2 + minor2 / 100;
     }
 
+
+    const handleSubmit = useCallback(async () => {
+        const product = {
+            name,
+            price: priceBuilder(priceMajor, priceMinor),
+            currency,
+            description,
+            width,
+            height,
+            depth,
+            weight,
+            stock,
+            categoryId,
+            images: images.map((img, index) => ({
+                fileKey: img.key,
+                sortOrder: index,
+            }))
+
+        }
+
+        await refetch({body: product})
+
+    }, [refetch, name, priceMajor, priceMinor, currency, description, width, height, depth, weight, stock, categoryId, images])
     return (
         <div className={styles.main}>
             <h2>Product Creation Page</h2>
@@ -76,12 +107,12 @@ function ProductCreation() {
                 />
             </div>
             <div>
-                <label htmlFor="price">Price:</label>
+                <label htmlFor="priceMajor">Price:</label>
                 <input
                     onChange={(e) => onMajorChange(e, setPriceMajor)}
                     onBlur={() => normalizeMajor(priceMajor, setPriceMajor)}
                     placeholder="0"
-                    id="price"
+                    id="priceMajor"
                     value={priceMajor}
                     className={styles.priceMajor}
 
@@ -90,7 +121,7 @@ function ProductCreation() {
                     onChange={(e) => onMinorChange(e, setPriceMinor)}
                     onBlur={() => normalizeMinor(priceMinor, setPriceMinor)}
                     placeholder="00"
-                    id="price"
+                    id="priceMinor"
                     value={priceMinor}
                     className={styles.priceMinor}
                 /> <span> </span>
@@ -102,27 +133,22 @@ function ProductCreation() {
                 </select>
             </div>
             <label htmlFor="price">Category:</label>
-            {!loading && categories && categories.length > 0 ?
-                (<select
-                    value={categoryId}
-                    onChange={(e) => setCategoryId(e.target.value)}
-                >
-                    {loading && <option disabled>Loading categories...</option>}
+            <select
+                value={categoryId}
+                onChange={(e) => setCategoryId(e.target.value)}
+            >
+                {loadingCategories && <option disabled>Loading categories...</option>}
 
-                    {!loading && categories
-                        ?.filter(cat => cat.isLeaf === true)
-                        .map(cat => (
-                            <option key={cat.id} value={cat.id}>
-                                {cat.name}
-                            </option>
-                        ))}
-                </select>)
-                :
-                (<>
-                <p>No Categories available</p>
-                    <Link to={paths.categoryTree()}/>
-                </>)
-            }
+                {!loadingCategories && categories
+                    ?.filter(cat => cat.isLeaf === true)
+                    .map(cat => (
+                        <option key={cat.id} value={cat.id}>
+                            {cat.name}
+                        </option>
+                    ))}
+            </select>
+
+            <Link to={paths.categoryTree()}>Create categories here</Link>
             <div>
                 <label htmlFor="price">Stock:</label>
                 <input
@@ -182,8 +208,11 @@ function ProductCreation() {
                     value={weight}
                 />
             </div>
-            <ImageUpload maxFiles={10} setImages={setImages} images={images}/>
-            <button onClick={handleSubmit}>Create</button>
+            <ProductImageMenu maxFiles={10} setImages={setImages} images={images}/>
+            <button onClick={handleSubmit} disabled={loading}>
+                {loading ? "Creating..." : "Create"}
+            </button>
+
         </div>
     )
 }
