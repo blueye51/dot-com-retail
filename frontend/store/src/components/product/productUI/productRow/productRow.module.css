@@ -1,0 +1,28 @@
+.row {
+    display: flex;
+    gap: 12px;
+    padding: 10px 0;
+}
+
+.thumb {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    flex: 0 0 100px;
+}
+
+.meta {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.line {
+    display: flex;
+    gap: 8px;
+    line-height: 1.2;
+}
+
+.name {
+    margin: 0;
+}

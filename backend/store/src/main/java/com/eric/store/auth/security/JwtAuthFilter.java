@@ -26,32 +26,52 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final UserService userService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws ServletException, IOException {
+    protected void doFilterInternal(
+            HttpServletRequest req,
+            HttpServletResponse res,
+            FilterChain chain
+    ) throws ServletException, IOException {
 
         String path = req.getRequestURI();
-        if (path.startsWith("/api/auth/")) { chain.doFilter(req, res); return; }
+        if (path.startsWith("/api/auth/")) {
+            chain.doFilter(req, res);
+            return;
+        }
 
-        String auth = req.getHeader("Authorization");
-        if (auth != null && auth.startsWith("Bearer ") && SecurityContextHolder.getContext().getAuthentication() == null) {
+        String header = req.getHeader("Authorization");
+        if (header == null || !header.startsWith("Bearer ")) {
+            chain.doFilter(req, res);
+            return;
+        }
 
-            String token = auth.substring(7);
-            if (jwtService.isValid(token)) {
-                String UUIDString = jwtService.subject(token);
-                User userId = userService.findById(UUID.fromString(UUIDString));
+        String token = header.substring(7);
 
-                List<String> roles = jwtService.roles(token);
-
-                var authorities = roles.stream()
-                        .filter(Objects::nonNull)
-                        .map(r -> new SimpleGrantedAuthority("ROLE_" + r))
-                        .toList();
-
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userId, null, authorities);
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+        try {
+            if (!jwtService.isValid(token)) {
+                // Treat as missing: do not set authentication
+                SecurityContextHolder.clearContext();
+                chain.doFilter(req, res);
+                return;
             }
 
+            String uuidString = jwtService.subject(token);
+            User user = userService.findById(UUID.fromString(uuidString));
+
+            var authorities = jwtService.roles(token).stream()
+                    .filter(Objects::nonNull)
+                    .map(r -> new SimpleGrantedAuthority("ROLE_" + r))
+                    .toList();
+
+            var authToken = new UsernamePasswordAuthenticationToken(user, null, authorities);
+            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
+            SecurityContextHolder.getContext().setAuthentication(authToken);
+
+            chain.doFilter(req, res);
+
+        } catch (Exception e) {
+            // Any parsing/expired/signature/etc -> treat as missing
+            SecurityContextHolder.clearContext();
+            chain.doFilter(req, res);
         }
-        chain.doFilter(req, res);
     }
 }

@@ -17,12 +17,13 @@ public interface ProductImageRepository extends JpaRepository<ProductImage, UUID
     Optional<ProductImage> findFirstByProductOrderBySortOrderAsc(Product product);
 
     @Query("""
-    SELECT pi
-    FROM ProductImage pi
-    JOIN FETCH pi.file
-    WHERE pi.sortOrder = 0
-      AND pi.product.id IN :productIds
-""")
+                SELECT pi
+                FROM ProductImage pi
+                JOIN FETCH pi.file
+                WHERE pi.sortOrder = 0
+                  AND pi.product.id IN :productIds
+            """)
     List<ProductImage> findThumbnails(@Param("productIds") List<UUID> productIds);
+
 
 }

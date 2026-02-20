@@ -43,4 +43,10 @@ public class ProductController {
         UUID id = product.getId();
         return ResponseEntity.status(HttpStatus.CREATED).body(id);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductResponse> getProducts(@PathVariable UUID id) {
+        ProductResponse product = productService.getProductById(id);
+        return ResponseEntity.ok(product);
+    }
 }

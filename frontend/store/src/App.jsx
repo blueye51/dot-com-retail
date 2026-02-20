@@ -12,11 +12,12 @@ import RequiredRole from "./components/auth/requiredRole.jsx";
 import RequiredAuth from "./components/auth/requiredAuth.jsx";
 import Unauthorized from "./components/auth/unauthorized.jsx";
 import Home from "./components/home/home.jsx";
-import ProductList from "./components/product/productLayout/productList.jsx";
+import ProductList from "./components/product/productList/productList.jsx";
 import MissingAuth from "./components/auth/missingAuth.jsx";
 import ProductCreation from "./components/product/productCreation/productCreation.jsx";
 import CategoryTree from "./components/category/categoryTree/categoryTree.jsx";
 import {Register} from "./components/register/register.jsx";
+import ProductPage from "./components/product/productPage.jsx";
 
 
 function App() {
@@ -53,6 +54,7 @@ function App() {
                 <Route element={<RequiredAuth />}>
                     <Route element={<MainLayout />}>
                         <Route path={PATHS.home} element={<Home />} />
+                        <Route path={PATHS.product} element={<ProductPage />} />
                     </Route>
                 </Route>
 

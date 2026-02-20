@@ -1,9 +1,9 @@
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import useFetch from "../../useFetch.jsx";
 import {useCallback, useEffect, useState} from "react";
 import styles from './productCreation.module.css';
 import ProductImageMenu from "../imageMenu/productImageMenu.jsx";
-import {paths} from "../../routes.jsx";
+import {PATHS, paths} from "../../routes.jsx";
 
 function ProductCreation() {
 
@@ -37,10 +37,11 @@ function ProductCreation() {
 
     const [images, setImages] = useState([]);
 
+    const navigate = useNavigate();
 
     const {data: categories, loading: loadingCategories} = useFetch('/api/categories', {})
 
-    const {data, error, loading, refetch,} = useFetch('/api/products', {
+    const {data, error, loading, reFetch} = useFetch('/api/products', {
         method: 'POST',
         withAuth: true,
         immediate: false,
@@ -65,35 +66,71 @@ function ProductCreation() {
         setValue(value.padEnd(2, "0"));
     };
 
-    const priceBuilder = (major, minor) => {
-        const major2 = major === "" ? 0 : Number(major);
-        const minor2 = minor === "" ? 0 : Number(minor.padEnd(2, "0"));
-        return major2 + minor2 / 100;
-    }
+    const toOptionalNumber = (s) => (s.trim() === "" ? null : Number(s));
 
+
+    const buildPrice = (major, minor) => {
+        const majorNum = major.trim() === "" ? 0 : Number(major);
+        const minorNum = minor.trim() === "" ? 0 : Number(minor.padEnd(2, "0"));
+        return majorNum + minorNum / 100;
+    };
+
+    const omitEmpty = (obj) =>
+        Object.fromEntries(
+            Object.entries(obj).filter(
+                ([, v]) => v !== null && v !== "" && v !== undefined
+            )
+        );
+
+    const buildProduct = () => {
+        const base = {
+            name: name.trim(),
+            price: buildPrice(priceMajor, priceMinor),
+            currency,
+            description: description.trim() || null,
+
+            width: toOptionalNumber(width),
+            height: toOptionalNumber(height),
+            depth: toOptionalNumber(depth),
+            weight: toOptionalNumber(weight),
+
+            stock: stock.trim() === "" ? null : Number(stock),
+            categoryId: categoryId || null,
+
+            images: images.map((img, index) => ({
+                fileKey: img.key,      // or img if images is array of strings
+                sortOrder: index,
+            })),
+        };
+
+        return omitEmpty(base);
+    };
+
+
+    const requiredCheck = () => {
+        if (!name.trim()) return false;
+        if (!currency.trim()) return false;
+        if (!stock.trim()) return false;
+        if (!categoryId) return false;
+        return true;
+    };
 
     const handleSubmit = useCallback(async () => {
-        const product = {
-            name,
-            price: priceBuilder(priceMajor, priceMinor),
-            currency,
-            description,
-            width,
-            height,
-            depth,
-            weight,
-            stock,
-            categoryId,
-            images: images.map((img, index) => ({
-                fileKey: img.key,
-                sortOrder: index,
-            }))
-
+        if (!requiredCheck()) {
+            console.log("missing required fields")
+            return
         }
 
-        await refetch({body: product})
+        const product = buildProduct();
+        await reFetch({body: product})
 
-    }, [refetch, name, priceMajor, priceMinor, currency, description, width, height, depth, weight, stock, categoryId, images])
+    }, [reFetch, name, priceMajor, priceMinor, currency, description, width, height, depth, weight, stock, categoryId, images])
+
+    useEffect(() => {
+        if (!data) return;
+        navigate(paths.product(data))
+    }, [data]);
+
     return (
         <div className={styles.main}>
             <h2>Product Creation Page</h2>
@@ -137,16 +174,27 @@ function ProductCreation() {
                 value={categoryId}
                 onChange={(e) => setCategoryId(e.target.value)}
             >
-                {loadingCategories && <option disabled>Loading categories...</option>}
+                {categoryId === "" && (
+                    <option value="" hidden>
+                        Select category
+                    </option>
+                )}
 
-                {!loadingCategories && categories
-                    ?.filter(cat => cat.isLeaf === true)
-                    .map(cat => (
-                        <option key={cat.id} value={cat.id}>
-                            {cat.name}
-                        </option>
-                    ))}
+                {loadingCategories && (
+                    <option disabled>Loading categories...</option>
+                )}
+
+                {!loadingCategories &&
+                    categories
+                        ?.filter(cat => cat.isLeaf === true)
+                        .map(cat => (
+                            <option key={cat.id} value={cat.id}>
+                                {cat.name}
+                            </option>
+                        ))}
             </select>
+
+
 
             <Link to={paths.categoryTree()}>Create categories here</Link>
             <div>
