@@ -25,9 +25,12 @@ server:
     certificate-private-key: classpath:localhost-key.pem
 logging:
   level:
-    org.hibernate.tool.hbm2ddl: DEBUG
-    org.springframework.web: DEBUG
-    org.springframework.boot.autoconfigure: INFO
+    org:
+      hibernate.tool.hbm2ddl: DEBUG
+      springframework:
+        security=DEBUG: DEBUG
+        boot.autoconfigure: INFO
+        web: DEBUG
 
 storage:
   s3:

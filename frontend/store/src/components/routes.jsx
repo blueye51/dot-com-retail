@@ -6,10 +6,10 @@ export const PATHS = {
     login: "/login",
     register: "/register",
     unauthorized: "/unauthorized",
-    productList: "/product",
+    productList: "/products",
     product: "/product/:id",
-    createProduct: "/createproduct",
-    categoryTree: "/categorytree",
+    createProduct: "/createProduct",
+    categoryTree: "/categoryTree",
     any: "*",
 };
 
@@ -20,7 +20,7 @@ export const paths = {
     register: () => PATHS.register,
     unauthorized: () => PATHS.unauthorized,
     productList: () => PATHS.productList,
-    product: (id) => generatePath(PATHS.product, id),
+    product: (id) => generatePath(PATHS.product, { id }),
     createProduct: () => PATHS.createProduct,
     categoryTree: () => PATHS.categoryTree,
 };

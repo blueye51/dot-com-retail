@@ -136,6 +136,9 @@ export default function useFetch(
     const abortRef = useRef(null);
     const mountedRef = useRef(true);
 
+    const requestIdRef = useRef(0);
+
+
     useEffect(() => {
         mountedRef.current = true;
         return () => {
@@ -146,7 +149,9 @@ export default function useFetch(
 
     const doFetch = useCallback(
         async (override = {}) => {
+            const requestId = ++requestIdRef.current;
 
+            abortRef.current?.abort();
             const ctrl = new AbortController();
             abortRef.current = ctrl;
 
@@ -216,13 +221,17 @@ export default function useFetch(
                     override.parseAs ?? parseAs
                 );
 
-                if (mountedRef.current) setData(payload);
+                if (requestId === requestIdRef.current) {
+                    setData(payload);
+                }
                 return payload;
             } catch (err) {
-                if (mountedRef.current) setError(err);
+                if (err?.name === "AbortError") return;
+
+                if (requestId === requestIdRef.current) setError(err);
                 throw err;
             } finally {
-                if (mountedRef.current) setLoading(false);
+                if (requestId === requestIdRef.current) setLoading(false);
             }
         },
         [uri, method, body, headers, withAuth, token, dispatch, parseAs, credentials]

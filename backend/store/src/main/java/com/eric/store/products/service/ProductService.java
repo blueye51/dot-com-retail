@@ -6,6 +6,7 @@ import com.eric.store.common.exceptions.NotFoundException;
 import com.eric.store.products.dto.*;
 import com.eric.store.products.entity.Product;
 import com.eric.store.products.entity.ProductImage;
+import com.eric.store.products.mapper.ProductMapper;
 import com.eric.store.products.repository.ProductImageRepository;
 import com.eric.store.products.repository.ProductRepository;
 import jakarta.transaction.Transactional;
@@ -30,6 +31,7 @@ public class ProductService {
     private final ProductImageService productImageService;
     private final CategoryRepository categoryRepository;
     private final ProductImageRepository productImageRepository;
+    private final ProductMapper productMapper;
 
 
     public Product create(ProductCreateRequest req) {
@@ -50,16 +52,17 @@ public class ProductService {
 
         category.addProduct(product);
 
+        Product savedProduct = productRepository.save(product);
+
+
         if (!req.images().isEmpty()) {
             productImageService.validateSortOrders(req.images());
-            List<ImageCreate> imageDtos = req.images();
-            for (ImageCreate imageDto : imageDtos) {
-                productImageService.create(imageDto, product);
+            for (ImageCreate imageDto : req.images()) {
+                productImageService.create(imageDto, savedProduct);
             }
-
         }
 
-        return productRepository.save(product);
+        return savedProduct;
     }
 
     public Page<ProductCard> search(ProductQuery query) {
@@ -104,4 +107,10 @@ public class ProductService {
     }
 
 
+    public ProductResponse getProductById(UUID id) {
+        Product product = productRepository.findByIdWithImages(id)
+                .orElseThrow(() -> new NotFoundException("Product", id));
+
+        return productMapper.toResponse(product);
+    }
 }
