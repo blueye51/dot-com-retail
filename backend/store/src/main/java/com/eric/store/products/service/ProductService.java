@@ -3,6 +3,8 @@ package com.eric.store.products.service;
 import com.eric.store.categories.entity.Category;
 import com.eric.store.categories.repository.CategoryRepository;
 import com.eric.store.common.exceptions.NotFoundException;
+import com.eric.store.common.util.StringUtils;
+import com.eric.store.common.util.UuidUtils;
 import com.eric.store.products.dto.*;
 import com.eric.store.products.entity.Product;
 import com.eric.store.products.entity.ProductImage;
@@ -38,17 +40,7 @@ public class ProductService {
         Category category = categoryRepository.findById(req.categoryId())
                 .orElseThrow(() -> new NotFoundException("Category", req.categoryId()));
 
-        Product product = new Product(
-                req.price(),
-                req.currency().toUpperCase(),
-                req.name(),
-                req.description(),
-                req.width(),
-                req.height(),
-                req.depth(),
-                req.weight(),
-                req.stock()
-        );
+        Product product = productMapper.toProduct(req);
 
         category.addProduct(product);
 
@@ -68,42 +60,31 @@ public class ProductService {
     public Page<ProductCard> search(ProductQuery query) {
         Sort sort = Sort.by(Sort.Direction.fromString(query.order()), query.sort());
         Pageable pageable = PageRequest.of(query.page(), query.size(), sort);
-        Page<Product> products;
 
-        if (query.query().isEmpty() && query.categoryId().isEmpty()) {
-            products = productRepository.findAll(pageable);
-        } else if (query.categoryId().isEmpty()) {
-            products = productRepository.findByNameContainingIgnoreCase(query.query(), pageable);
-        } else if (query.query().isEmpty()) {
-            products = productRepository.findByCategoryId(UUID.fromString(query.categoryId()), pageable);
-        } else {
-            products = productRepository.findByCategoryIdAndNameContainingIgnoreCase(
-                    UUID.fromString(query.categoryId()), query.query(), pageable);
-        }
+        String q = StringUtils.normalize(query.query());
+        UUID categoryId = UuidUtils.parseUuidOrNull(query.categoryId());
 
+        Page<Product> products = findProducts(q, categoryId, pageable);
 
+        Map<UUID, String> thumbnailUrlByProductId = loadThumbnailUrls(products);
+
+        return products.map(p -> productMapper.toCard(p, thumbnailUrlByProductId.get(p.getId())));
+    }
+
+    private Page<Product> findProducts(String q, UUID categoryId, Pageable pageable) {
+        return productRepository.search(q, categoryId, pageable);
+    }
+
+    private Map<UUID, String> loadThumbnailUrls(Page<Product> products) {
         List<UUID> productIds = products.stream().map(Product::getId).toList();
+        if (productIds.isEmpty()) return Map.of();
 
-        List<ProductImage> thumbnails = productImageRepository.findThumbnails(productIds);
-
-        Map<UUID, String> urlByProductId =
-                thumbnails.stream()
-                        .collect(Collectors.toMap(
-                                img -> img.getProduct().getId(),
-                                img -> img.getFile().getUrl(),
-                                (a, b) -> a // in case multiple thumbnails per productId
-                        ));
-
-        return products.map(p -> new ProductCard(
-                p.getId(),
-                p.getName(),
-                p.getPrice(),
-                p.getCurrency(),
-                p.getStock(),
-                p.getCategory().getId(),
-                p.getCreatedAt(),
-                urlByProductId.get(p.getId())
-        ));
+        return productImageRepository.findThumbnails(productIds).stream()
+                .collect(Collectors.toMap(
+                        img -> img.getProduct().getId(),
+                        img -> img.getFile().getUrl(),
+                        (a, b) -> a
+                ));
     }
 
 

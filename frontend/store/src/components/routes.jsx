@@ -10,6 +10,7 @@ export const PATHS = {
     product: "/product/:id",
     createProduct: "/createProduct",
     categoryTree: "/categoryTree",
+    oauth2Callback: "/oauth2/callback",
     any: "*",
 };
 
@@ -23,4 +24,5 @@ export const paths = {
     product: (id) => generatePath(PATHS.product, { id }),
     createProduct: () => PATHS.createProduct,
     categoryTree: () => PATHS.categoryTree,
+    oauth2Callback: () => PATHS.oauth2Callback,
 };

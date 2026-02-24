@@ -1,5 +1,6 @@
 package com.eric.store.auth.security;
 
+import com.eric.store.auth.service.JwtService;
 import com.eric.store.user.entity.User;
 import com.eric.store.user.service.UserService;
 import jakarta.servlet.FilterChain;
@@ -15,7 +16,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 

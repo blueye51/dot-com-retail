@@ -1,5 +1,6 @@
 package com.eric.store.products.dto;
 
+import com.eric.store.products.entity.CurrencyProvider;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 
@@ -10,7 +11,7 @@ import java.util.UUID;
 public record ProductCreateRequest(
         @NotBlank String name,
         @NotNull @DecimalMin("0.00") @Digits(integer = 17, fraction = 2) BigDecimal price,
-        @NotBlank @Size(min = 3, max = 3) String currency,
+        @NotBlank CurrencyProvider currency,
         String description,
         @DecimalMin("0.0") BigDecimal width,
         @DecimalMin("0.0") BigDecimal height,

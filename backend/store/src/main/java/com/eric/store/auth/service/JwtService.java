@@ -1,4 +1,4 @@
-package com.eric.store.auth.security;
+package com.eric.store.auth.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

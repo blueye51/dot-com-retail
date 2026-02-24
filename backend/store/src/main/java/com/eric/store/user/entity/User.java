@@ -32,11 +32,15 @@ public class User {
             inverseJoinColumns=@JoinColumn(name="role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    @Column(nullable = false)
     private String passwordHash;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orders = new ArrayList<>();
+
+    @Enumerated(EnumType.STRING)
+    private AuthProvider provider;
+
+    private String providerId;
 
     //Timestamps automation
     @Column(nullable = false, updatable = false)
@@ -55,9 +59,4 @@ public class User {
         this.updatedAt = OffsetDateTime.now(ZoneOffset.UTC);
     }
 
-    public User (String email, String name, String passwordHash) {
-        this.email = email;
-        this.name = name;
-        this.passwordHash = passwordHash;
-    }
 }

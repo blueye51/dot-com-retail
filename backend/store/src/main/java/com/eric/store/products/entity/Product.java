@@ -8,10 +8,7 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "products")
@@ -28,7 +25,8 @@ public class Product {
     private BigDecimal price;
 
     @Column(nullable = false)
-    private String currency;
+    @Enumerated(EnumType.STRING)
+    private CurrencyProvider currency;
 
     @Column(nullable = false)
     private String name;
@@ -71,24 +69,6 @@ public class Product {
     @PreUpdate
     void preUpdate() {
         this.updatedAt = OffsetDateTime.now(ZoneOffset.UTC);
-    }
-
-    /**
-     * Creates a Product.
-     *
-     * <p><b>Invariant:</b> A Product must always be associated with a Category
-     * before it is persisted. This constructor requires a non-null Category.</p>
-     */
-    public Product(BigDecimal price, String currency, String name, String description, BigDecimal width, BigDecimal height, BigDecimal depth, BigDecimal weight, Integer stock) {
-        this.price = price;
-        this.currency = currency;
-        this.name = name;
-        this.description = description;
-        this.width = width;
-        this.height = height;
-        this.depth = depth;
-        this.weight = weight;
-        this.stock = stock;
     }
 
     /**

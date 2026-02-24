@@ -18,6 +18,7 @@ import ProductCreation from "./components/product/productCreation/productCreatio
 import CategoryTree from "./components/category/categoryTree/categoryTree.jsx";
 import {Register} from "./components/register/register.jsx";
 import ProductPage from "./components/product/productPage.jsx";
+import OAuth2Callback from "./components/OAuth2Callback.jsx";
 
 
 function App() {
@@ -50,6 +51,8 @@ function App() {
 
                 </Route>
                 <Route path={PATHS.unauthorized} element={<Unauthorized />} />
+                <Route path={PATHS.oauth2Callback} element={<OAuth2Callback />} />
+
 
                 <Route element={<RequiredAuth />}>
                     <Route element={<MainLayout />}>

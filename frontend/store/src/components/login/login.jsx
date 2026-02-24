@@ -12,6 +12,14 @@ function Login() {
     const from = location.state?.from?.pathname || paths.home();
     const dispatch = useDispatch();
 
+    const backend = import.meta.env.VITE_API_BASE;
+    const redirectUri = `${window.location.origin}/oauth2/callback`;
+
+    const handleGoogleLogin = () => {
+        window.location.href =
+            `${backend}/oauth2/authorization/google?redirect_uri=${encodeURIComponent(redirectUri)}`;
+    };
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
@@ -84,7 +92,11 @@ function Login() {
                 </button>
             </form>
 
-            <Link to="/register">Register here</Link>
+            <Link to={paths.register()}>Register here</Link>
+            <button type="button" onClick={handleGoogleLogin}>
+                Continue with Google
+            </button>
+
         </div>
     );
 }
