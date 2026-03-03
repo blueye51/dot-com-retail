@@ -3,7 +3,7 @@ import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
 import {useDispatch} from "react-redux";
 import {useEffect, useState} from "react";
 import {refreshAccessToken} from "./components/useFetch.jsx";
-import { PATHS, paths } from './components/routes.jsx'
+import {PATHS, paths} from './components/routes.jsx'
 
 import Login from './components/login/login.jsx'
 import MainLayout from "./components/layouts/mainLayout.jsx";
@@ -45,32 +45,35 @@ function App() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route element={<MissingAuth />}>
-                    <Route path={PATHS.login} element={<Login />} />
-                    <Route path={PATHS.register} element={<Register />} />
+                <Route element={<MissingAuth/>}>
+                    <Route path={PATHS.login} element={<Login/>}/>
+                    <Route path={PATHS.register} element={<Register/>}/>
 
                 </Route>
-                <Route path={PATHS.unauthorized} element={<Unauthorized />} />
-                <Route path={PATHS.oauth2Callback} element={<OAuth2Callback />} />
+                <Route path={PATHS.unauthorized} element={<Unauthorized/>}/>
+                <Route path={PATHS.oauth2Callback} element={<OAuth2Callback/>}/>
 
 
-                <Route element={<RequiredAuth />}>
-                    <Route element={<MainLayout />}>
-                        <Route path={PATHS.home} element={<Home />} />
-                        <Route path={PATHS.product} element={<ProductPage />} />
+                <Route element={<MainLayout/>}>
+                    <Route path={PATHS.home} element={<Home/>}/>
+                    <Route path={PATHS.product} element={<ProductPage/>}/>
+                </Route>
+
+                <Route element={<RequiredAuth/>}>
+                    <Route element={<MainLayout/>}>
                     </Route>
                 </Route>
 
-                <Route element={<RequiredRole allowed={["ADMIN"]} />}>
-                    <Route element={<MainLayout />}>
-                        <Route path={PATHS.admin} element={<AdminMenu />} />
-                        <Route path={PATHS.productList} element={<ProductList />} />
-                        <Route path={PATHS.createProduct} element={<ProductCreation/>} />
-                        <Route path={PATHS.categoryTree} element={<CategoryTree/>} />
+                <Route element={<RequiredRole allowed={["ADMIN"]}/>}>
+                    <Route element={<MainLayout/>}>
+                        <Route path={PATHS.admin} element={<AdminMenu/>}/>
+                        <Route path={PATHS.productList} element={<ProductList/>}/>
+                        <Route path={PATHS.createProduct} element={<ProductCreation/>}/>
+                        <Route path={PATHS.categoryTree} element={<CategoryTree/>}/>
                     </Route>
                 </Route>
 
-                <Route path={PATHS.any} element={<Navigate to={paths.home()} replace />} />
+                <Route path={PATHS.any} element={<Navigate to={paths.home()} replace/>}/>
             </Routes>
         </BrowserRouter>
     )

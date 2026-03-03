@@ -1,6 +1,6 @@
 package com.eric.store.user.mapper;
 
-import com.eric.store.auth.dto.UserRegister;
+import com.eric.store.user.dto.UserRegister;
 import com.eric.store.user.entity.User;
 import org.springframework.stereotype.Component;
 

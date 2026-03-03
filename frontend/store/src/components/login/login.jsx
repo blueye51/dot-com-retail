@@ -1,9 +1,10 @@
 import styles from "./login.module.css";
-import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { setRoles, setToken } from "../store.jsx";
+import {useEffect, useRef, useState} from "react";
+import {useDispatch} from "react-redux";
+import {Turnstile} from "@marsidev/react-turnstile";
+import {setRoles, setToken} from "../store.jsx";
 import useFetch from "../useFetch.jsx";
-import { useNavigate, useLocation, Link } from "react-router-dom";
+import {useNavigate, useLocation, Link} from "react-router-dom";
 import {paths} from "../routes.jsx";
 
 function Login() {
@@ -11,6 +12,9 @@ function Login() {
     const location = useLocation();
     const from = location.state?.from?.pathname || paths.home();
     const dispatch = useDispatch();
+
+    const tsRef = useRef(null);
+    const [tsToken, setTsToken] = useState(null);
 
     const backend = import.meta.env.VITE_API_BASE;
     const redirectUri = `${window.location.origin}/oauth2/callback`;
@@ -23,7 +27,7 @@ function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const { data, error, loading, reFetch } = useFetch("/api/auth/login", {
+    const {data, error, loading, reFetch} = useFetch("/api/auth/login", {
         method: "POST",
         withAuth: false,
         immediate: false,
@@ -33,7 +37,7 @@ function Login() {
         if (!data) return;
         dispatch(setToken(data.accessToken));
         dispatch(setRoles(data.roles || []));
-        navigate(from, { replace: true });
+        navigate(from, {replace: true});
     }, [data, dispatch, navigate, from]);
 
     useEffect(() => {
@@ -45,12 +49,23 @@ function Login() {
     const handleSubmit = (event) => {
         event.preventDefault();
 
+        const payload = {
+            email: email.trim(),
+            password,
+            turnstileToken: tsToken,
+        }
+
+        if (!payload.turnstileToken) {
+            alert("you need to complete the CAPTCHA")
+            return;
+        };
+
         reFetch({
-            body: {
-                email: email.trim(),
-                password,
-            },
+            body: payload,
         });
+
+        tsRef.current?.reset?.();
+        setTsToken(null);
     };
 
     return (
@@ -86,6 +101,14 @@ function Login() {
                         required
                     />
                 </div>
+
+                <Turnstile
+                    ref={tsRef}
+                    siteKey={import.meta.env.VITE_TURNSTILE_VISIBLE_SITEKEY}
+                    onSuccess={(token) => setTsToken(token)}
+                    onExpire={() => setTsToken(null)}
+                    onError={() => setTsToken(null)}
+                />
 
                 <button type="submit" disabled={loading}>
                     {loading ? "Logging in..." : "Login"}

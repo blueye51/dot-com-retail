@@ -2,7 +2,7 @@ import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {setRoles, setToken} from "./store.jsx";
 
-const BASE_URL = "https://localhost:8443";
+const BASE_URL = import.meta.env.VITE_API_BASE ;
 
 // Deduplicate concurrent refresh calls across the app
 let refreshInFlight = null;

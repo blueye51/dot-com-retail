@@ -11,7 +11,7 @@ import java.util.UUID;
 public record ProductCreateRequest(
         @NotBlank String name,
         @NotNull @DecimalMin("0.00") @Digits(integer = 17, fraction = 2) BigDecimal price,
-        @NotBlank CurrencyProvider currency,
+        @NotNull CurrencyProvider currency,
         String description,
         @DecimalMin("0.0") BigDecimal width,
         @DecimalMin("0.0") BigDecimal height,

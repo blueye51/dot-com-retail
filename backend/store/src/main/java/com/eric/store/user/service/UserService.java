@@ -1,7 +1,7 @@
 package com.eric.store.user.service;
 
-import com.eric.store.auth.dto.UserLogin;
-import com.eric.store.auth.dto.UserRegister;
+import com.eric.store.user.dto.UserLogin;
+import com.eric.store.user.dto.UserRegister;
 import com.eric.store.auth.entity.Role;
 import com.eric.store.common.exceptions.InvalidEmailOrPassword;
 import com.eric.store.common.exceptions.NotFoundException;

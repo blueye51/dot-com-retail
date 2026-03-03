@@ -1,4 +1,4 @@
-package com.eric.store.auth.security;
+package com.eric.store.auth.security.tokens;
 
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;

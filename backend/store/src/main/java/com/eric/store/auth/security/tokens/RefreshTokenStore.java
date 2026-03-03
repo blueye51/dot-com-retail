@@ -1,4 +1,4 @@
-package com.eric.store.auth.security;
+package com.eric.store.auth.security.tokens;
 
 import com.eric.store.common.exceptions.InvalidRefreshTokenException;
 import lombok.RequiredArgsConstructor;
@@ -6,7 +6,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.util.Optional;
 import java.util.UUID;
 
 import static com.eric.store.common.util.HashUtils.sha256;

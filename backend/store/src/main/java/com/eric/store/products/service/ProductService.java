@@ -61,8 +61,8 @@ public class ProductService {
         Sort sort = Sort.by(Sort.Direction.fromString(query.order()), query.sort());
         Pageable pageable = PageRequest.of(query.page(), query.size(), sort);
 
-        String q = StringUtils.normalize(query.query());
-        UUID categoryId = UuidUtils.parseUuidOrNull(query.categoryId());
+        String q = query.query();
+        UUID categoryId = query.categoryId();
 
         Page<Product> products = findProducts(q, categoryId, pageable);
 
@@ -72,7 +72,10 @@ public class ProductService {
     }
 
     private Page<Product> findProducts(String q, UUID categoryId, Pageable pageable) {
-        return productRepository.search(q, categoryId, pageable);
+        if (q == null) {
+            return productRepository.searchNoQuery(categoryId, pageable);
+        }
+        return productRepository.searchWithQuery(q, categoryId, pageable);
     }
 
     private Map<UUID, String> loadThumbnailUrls(Page<Product> products) {

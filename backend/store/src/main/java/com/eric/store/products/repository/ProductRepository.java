@@ -15,14 +15,22 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
     Page<Product> findAll(Pageable pageable);
 
     @Query("""
-                SELECT p
-                FROM Product p
-                WHERE (:categoryId IS NULL OR p.category.id = :categoryId)
-                  AND (:q IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :q, '%')))
+              SELECT p
+              FROM Product p
+              WHERE (:categoryId IS NULL OR p.category.id = :categoryId)
             """)
-    Page<Product> search(@Param("q") String q,
-                         @Param("categoryId") UUID categoryId,
-                         Pageable pageable);
+    Page<Product> searchNoQuery(@Param("categoryId") UUID categoryId, Pageable pageable);
+
+    @Query("""
+              SELECT p
+              FROM Product p
+              WHERE (:categoryId IS NULL OR p.category.id = :categoryId)
+                AND p.name ILIKE :pattern
+            """)
+    Page<Product> searchWithQuery(@Param("pattern") String pattern,
+                                  @Param("categoryId") UUID categoryId,
+                                  Pageable pageable);
+
 
     @Query("""
                 SELECT DISTINCT p FROM Product p

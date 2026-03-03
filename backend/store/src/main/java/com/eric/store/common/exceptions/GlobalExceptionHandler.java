@@ -57,5 +57,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, Object>> handleStorage(StorageException ex) {
         return build(HttpStatus.INTERNAL_SERVER_ERROR, "Upload failed", ex);
     }
+
+    @ExceptionHandler(TurnstileException.class)
+    public ResponseEntity<Map<String, Object>> handleTurnstile(TurnstileException ex) {
+        return  build(HttpStatus.BAD_REQUEST, ex.getMessage(), ex);
+    }
 }
 

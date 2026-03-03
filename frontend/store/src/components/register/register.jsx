@@ -1,30 +1,45 @@
 import styles from './register.module.css';
 import useFetch from "../useFetch.jsx";
 import { useState } from "react";
+import { Turnstile } from "@marsidev/react-turnstile";
 import {Link} from "react-router-dom";
 import {paths} from "../routes.jsx";
 
 export function Register() {
+    const tsRef = useRef(null);
+    const [tsToken, setTsToken] = useState(null);
+
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [name, setName] = useState("");
+
     const { data, error, loading, reFetch } = useFetch("/api/auth/register", {
         method: "POST",
         withAuth: false,
         immediate: false,
     });
 
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [name, setName] = useState("");
-
     const handleRegister = (e) => {
         e.preventDefault();
 
+        const payload = {
+            email: email.trim(),
+            password,
+            name: name.trim(),
+            turnstileToken: tsToken,
+        }
+
+        if (!payload.turnstileToken) {
+            alert("you need to complete the CAPTCHA")
+            return;
+        };
+
         reFetch({
-            body: {
-                email: email.trim(),
-                password,
-                name: name.trim(),
-            },
+            body: payload,
         });
+
+        tsRef.current?.reset?.();
+        setTsToken(null);
     };
 
     return (
@@ -54,6 +69,14 @@ export function Register() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     autoComplete="name"
+                />
+
+                <Turnstile
+                    ref={tsRef}
+                    siteKey={import.meta.env.VITE_TURNSTILE_LOGIN_SITEKEY}
+                    onSuccess={(token) => setTsToken(token)}
+                    onExpire={() => setTsToken(null)}
+                    onError={() => setTsToken(null)}
                 />
 
                 <button type="submit" disabled={loading}>

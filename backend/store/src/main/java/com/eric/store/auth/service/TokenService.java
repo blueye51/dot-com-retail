@@ -1,7 +1,7 @@
 package com.eric.store.auth.service;
 
 
-import com.eric.store.auth.security.RefreshTokenStore;
+import com.eric.store.auth.security.tokens.RefreshTokenStore;
 import com.eric.store.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -1,8 +1,7 @@
-package com.eric.store.common.config;
+package com.eric.store.auth.security.oAuth2;
 
 import com.eric.store.auth.entity.Role;
 import com.eric.store.auth.repository.RoleRepository;
-import com.eric.store.auth.security.OAuth2LoginCodeStore;
 import com.eric.store.auth.service.TokenService;
 import com.eric.store.common.util.Cookie;
 import com.eric.store.user.entity.AuthProvider;

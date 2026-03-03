@@ -1,4 +1,4 @@
-package com.eric.store.common.config;
+package com.eric.store.auth.security.oAuth2;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

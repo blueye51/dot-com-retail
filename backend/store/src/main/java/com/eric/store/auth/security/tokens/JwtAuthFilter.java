@@ -1,4 +1,4 @@
-package com.eric.store.auth.security;
+package com.eric.store.auth.security.tokens;
 
 import com.eric.store.auth.service.JwtService;
 import com.eric.store.user.entity.User;

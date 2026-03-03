@@ -1,7 +1,8 @@
 package com.eric.store.auth.controller;
 
-import com.eric.store.auth.dto.UserLogin;
-import com.eric.store.auth.dto.UserRegister;
+import com.eric.store.auth.security.turnstile.TurnstileService;
+import com.eric.store.user.dto.UserLogin;
+import com.eric.store.user.dto.UserRegister;
 import com.eric.store.auth.entity.Role;
 import com.eric.store.common.exceptions.InvalidRefreshTokenException;
 import com.eric.store.user.entity.User;
@@ -14,7 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.eric.store.auth.security.OAuth2LoginCodeStore;
+import com.eric.store.auth.security.oAuth2.OAuth2LoginCodeStore;
 import org.springframework.http.MediaType;
 
 import java.time.Duration;
@@ -27,15 +28,18 @@ public class AuthController {
     private final TokenService tokenService;
     private final UserService userService;
     private final OAuth2LoginCodeStore loginCodeStore;
+    private final TurnstileService turnstileService;
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@Valid @RequestBody UserRegister userRegister) {
+        turnstileService.verifyOrThrow(userRegister.turnstileToken());
         userService.register(userRegister);
         return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
     }
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@Valid @RequestBody UserLogin userLogin) {
+        turnstileService.verifyOrThrow(userLogin.turnstileToken());
         User user = userService.login(userLogin);
         var pair = tokenService.issueTokens(user.getId());
         return ResponseEntity.status(HttpStatus.OK)
