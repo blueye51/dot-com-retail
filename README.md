@@ -1,19 +1,23 @@
-my e-comers website
+# E-Commerce Website
 
-ReadMe in development
+**README in development**
 
-Need to have a redis server running, on port 6379
+## Quick Start
 
-need to have a postgresql server running, on port 5432
-
-for testing with postgresql
+The entire application stack can be started with Docker Compose.
 
 ```bash
-sudo -u postgres psql
-
-CREATE DATABASE store;
-
-CREATE ROLE storedev WITH LOGIN PASSWORD 'storedev';
-
-ALTER DATABASE store OWNER TO storedev;
+docker compose --profile full up -d
 ```
+
+This command starts all required services and runs the project in the background.
+
+## Cleanup
+
+To completely remove the project after testing (containers, networks, volumes, and images created by the stack):
+
+```bash
+docker compose --profile full down -v --rmi all
+```
+
+This returns the system to a clean state after testing.

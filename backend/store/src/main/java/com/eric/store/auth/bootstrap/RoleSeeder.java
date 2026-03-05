@@ -1,7 +1,7 @@
 package com.eric.store.auth.bootstrap;
 
-import com.eric.store.auth.entity.Role;
-import com.eric.store.auth.repository.RoleRepository;
+import com.eric.store.user.entity.Role;
+import com.eric.store.user.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;

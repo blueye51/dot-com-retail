@@ -4,7 +4,8 @@ import com.eric.store.categories.dto.CategoryDto;
 import com.eric.store.categories.dto.CategoryRequest;
 import com.eric.store.categories.entity.Category;
 import com.eric.store.categories.repository.CategoryRepository;
-import jakarta.persistence.EntityNotFoundException;
+import com.eric.store.common.exceptions.IllegalJsonException;
+import com.eric.store.common.exceptions.NotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,11 +20,11 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
 
     public Category getCategoryByName(String name) {
-        return categoryRepository.findByName(name).orElseThrow(() -> new RuntimeException("Category not found"));
+        return categoryRepository.findByName(name).orElseThrow(() -> new NotFoundException("Parent category name not found", name));
     }
 
     public Category getCategoryById(UUID id) {
-        return categoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Category not found"));
+        return categoryRepository.findById(id).orElseThrow(() -> new NotFoundException("Category not found", id));
     }
 
     public List<Category> findAll() {
@@ -41,23 +42,15 @@ public class CategoryService {
 
         if (req.parentId() != null) {
             Category parent = categoryRepository.findById(req.parentId())
-                    .orElseThrow(() -> new EntityNotFoundException("Parent category not found: " + req.parentId()));
+                    .orElseThrow(() -> new NotFoundException("Parent category not found", req.parentId()));
 
             if (parent.isLeaf()) {
-                throw new IllegalArgumentException("Cannot create a subcategory under a leaf category");
+                throw new IllegalJsonException("Cannot create a subcategory under a leaf category");
             }
 
             parent.addChild(category);
         }
 
-        return categoryRepository.save(category);
-    }
-
-    private Category createWithParent(Category category, UUID parentId) {
-        if (parentId == null) { throw new RuntimeException("Parent category not entered"); }
-        Category parent = getCategoryById(parentId);
-        if (parent.isLeaf()) { throw new RuntimeException("Cannot add subcategory to a leaf category"); }
-        category.setParentCategory(parent);
         return categoryRepository.save(category);
     }
 }

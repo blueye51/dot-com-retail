@@ -24,6 +24,7 @@ import java.util.UUID;
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserService userService;
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(JwtAuthFilter.class);
 
     @Override
     protected void doFilterInternal(
@@ -69,9 +70,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             chain.doFilter(req, res);
 
         } catch (Exception e) {
-            // Any parsing/expired/signature/etc -> treat as missing
+            log.debug("JWT auth failed for {}: {}", req.getRequestURI(), e.getMessage());
             SecurityContextHolder.clearContext();
             chain.doFilter(req, res);
         }
+
     }
 }

@@ -3,7 +3,6 @@ package com.eric.store.auth.controller;
 import com.eric.store.auth.security.turnstile.TurnstileService;
 import com.eric.store.user.dto.UserLogin;
 import com.eric.store.user.dto.UserRegister;
-import com.eric.store.auth.entity.Role;
 import com.eric.store.common.exceptions.InvalidRefreshTokenException;
 import com.eric.store.user.entity.User;
 import com.eric.store.auth.service.TokenService;
@@ -74,7 +73,6 @@ public class AuthController {
     @PostMapping(value = "/oauth2/exchange", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Map<String, Object>> exchange(@RequestBody CodeExchangeRequest req) {
         var userId = loginCodeStore.consume(req.code());
-        var user = userService.findById(userId);
         var pair = tokenService.issueTokens(userId);
 
         return ResponseEntity.status(HttpStatus.OK)

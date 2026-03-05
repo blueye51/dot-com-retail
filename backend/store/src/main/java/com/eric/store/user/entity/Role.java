@@ -1,6 +1,5 @@
-package com.eric.store.auth.entity;
+package com.eric.store.user.entity;
 
-import com.eric.store.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 

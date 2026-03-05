@@ -1,6 +1,6 @@
-package com.eric.store.auth.repository;
+package com.eric.store.user.repository;
 
-import com.eric.store.auth.entity.Role;
+import com.eric.store.user.entity.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

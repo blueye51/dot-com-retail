@@ -1,7 +1,9 @@
 package com.eric.store.files.service;
 
+import com.eric.store.common.exceptions.IllegalJsonException;
 import com.eric.store.common.exceptions.StorageException;
 import com.eric.store.files.config.S3Props;
+import com.eric.store.files.config.StorageProps;
 import com.eric.store.files.entity.FileEntity;
 import com.eric.store.files.repository.FileRepository;
 import jakarta.transaction.Transactional;
@@ -14,6 +16,8 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
+
+import software.amazon.awssdk.core.exception.SdkException;
 
 import java.io.IOException;
 import java.net.URL;
@@ -29,12 +33,26 @@ public class FileStorageService {
     private final S3Client s3;
     private final S3Presigner presigner;
     private final S3Props props;
+    private final StorageProps props2;
     private final FileRepository fileRepository;
 
-    public record StoredImage(String key, String publicUrl) {
+    public record StoredImage(
+            String key,
+            String publicUrl
+    ) { }
+
+    private void validate(MultipartFile file) {
+        if (!props2.allowedTypes().contains(file.getContentType())) {
+            throw new IllegalJsonException("File type not allowed: " + file.getContentType());
+        }
+        if (file.getSize() > props2.maxSizeBytes()) {
+            throw new IllegalJsonException("File too large");
+        }
+
     }
 
     public StoredImage uploadPublic(MultipartFile file) {
+        validate(file);
         try {
             String key = "public/" + UUID.randomUUID() + ext(file.getOriginalFilename());
             String url = props.publicBaseUrl() + "/" + key;
@@ -43,10 +61,13 @@ public class FileStorageService {
             return new StoredImage(key, url);
         } catch (IOException e) {
             throw new StorageException("Failed to read uploaded file", e);
+        } catch (SdkException e) {
+            throw new StorageException("S3 upload failed: " + e.getMessage(), e);
         }
     }
 
     public StoredImage uploadPrivate(MultipartFile file) {
+        validate(file);
         try {
             String key = "private/" + UUID.randomUUID() + ext(file.getOriginalFilename());
             create(key, null, file);
@@ -54,6 +75,8 @@ public class FileStorageService {
             return new StoredImage(key, null);
         } catch (IOException e) {
             throw new StorageException("Failed to read uploaded file", e);
+        } catch (SdkException e) {
+            throw new StorageException("S3 upload failed: " + e.getMessage(), e);
         }
     }
 

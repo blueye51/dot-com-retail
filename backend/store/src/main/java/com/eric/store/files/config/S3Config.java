@@ -14,7 +14,7 @@ import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import java.net.URI;
 
 @Configuration
-@EnableConfigurationProperties(S3Props.class)
+@EnableConfigurationProperties({S3Props.class, StorageProps.class})
 public class S3Config {
 
     @Bean

@@ -3,14 +3,13 @@ package com.eric.store.user.service;
 import com.eric.store.common.exceptions.AuthProviderConflictException;
 import com.eric.store.user.dto.UserLogin;
 import com.eric.store.user.dto.UserRegister;
-import com.eric.store.auth.entity.Role;
+import com.eric.store.user.entity.Role;
 import com.eric.store.common.exceptions.InvalidEmailOrPassword;
 import com.eric.store.common.exceptions.NotFoundException;
 import com.eric.store.user.entity.User;
-import com.eric.store.auth.repository.RoleRepository;
+import com.eric.store.user.repository.RoleRepository;
 import com.eric.store.user.mapper.UserMapper;
 import com.eric.store.user.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,16 +42,8 @@ public class UserService {
         User user = userMapper.toUser(newUser);
         // encode password before persisting for security
         user.setPasswordHash(passwordEncoder.encode(newUser.password()));
-        Role userRole  = roleRepository.findByName("USER")
-                .orElseThrow(
-                        () -> new NotFoundException("Role not found, Server falsely started", "USER"));
-        Role adminRole = roleRepository.findByName("ADMIN")
-                .orElseThrow(
-                        () -> new NotFoundException("Role not found, Server falsely started", "ADMIN"));
 
-        user.getRoles().add(userRole);
-        if (!adminSeedEmail.isBlank() && newUser.email().equals(adminSeedEmail))
-            user.getRoles().add(adminRole);
+        assignDefaultRoles(user);
 
         userRepository.save(user);
     }
@@ -85,26 +76,18 @@ public class UserService {
         user.setProvider(AuthProvider.GOOGLE);
         user.setProviderId(sub);
 
-        Role userRole = roleRepository.findByName("USER")
-                .orElseThrow(() -> new NotFoundException("Role not found, Server falsely started", "USER"));
-        user.getRoles().add(userRole);
-
-        if (!adminSeedEmail.isBlank() && email.equals(adminSeedEmail)) {
-            Role adminRole = roleRepository.findByName("ADMIN")
-                    .orElseThrow(() -> new NotFoundException("Role not found, Server falsely started", "ADMIN"));
-            user.getRoles().add(adminRole);
-        }
+        assignDefaultRoles(user);
 
         return userRepository.save(user);
     }
 
     public User findById(UUID id) {
-        return userRepository.findById(id).orElseThrow( () -> new EntityNotFoundException("User not found") );
+        return userRepository.findById(id).orElseThrow( () -> new NotFoundException("User not found", id) );
     }
 
     public void promoteToAdmin(UUID id) {
         User user = findById(id);
-        user.getRoles().add(roleRepository.findByName("ADMIN").orElseThrow(() -> new EntityNotFoundException("Role not found")));
+        user.getRoles().add(roleRepository.findByName("ADMIN").orElseThrow(() -> new NotFoundException("Role not found", id)));
         userRepository.save(user);
     }
 
@@ -112,5 +95,17 @@ public class UserService {
         User user = findById(id);
         return user.getRoles().stream().map(Role::getName).toList();
     }
+
+    private Role getRole(String name) {
+        return roleRepository.findByName(name)
+                .orElseThrow(() -> new NotFoundException("Role not found, Server falsely started", name));
+    }
+
+    private void assignDefaultRoles(User user) {
+        user.getRoles().add(getRole("USER"));
+        if (!adminSeedEmail.isBlank() && user.getEmail().equals(adminSeedEmail))
+            user.getRoles().add(getRole("ADMIN"));
+    }
+
 
 }

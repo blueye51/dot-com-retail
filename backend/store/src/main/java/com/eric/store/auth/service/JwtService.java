@@ -1,5 +1,6 @@
 package com.eric.store.auth.service;
 
+import com.eric.store.common.exceptions.IllegalJsonException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,6 +36,9 @@ public class JwtService {
     }
 
     public Claims parseAndValidate(String token) {
+        if (token == null) {
+            throw new IllegalJsonException("Access token is null");
+        }
         return Jwts.parser()
                 .verifyWith(key)
                 .build()
@@ -43,6 +47,7 @@ public class JwtService {
     }
 
     public boolean isValid(String token) {
+
         try {
             Claims c = parseAndValidate(token);
             return c.getExpiration() == null || c.getExpiration().after(new Date());

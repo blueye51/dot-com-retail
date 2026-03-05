@@ -1,7 +1,6 @@
 package com.eric.store.user.entity;
 
 
-import com.eric.store.auth.entity.Role;
 import com.eric.store.orders.entity.Order;
 import jakarta.persistence.*;
 import lombok.*;
@@ -38,7 +37,8 @@ public class User {
     private List<Order> orders = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
-    private AuthProvider provider;
+    @Column(nullable = false)
+    private AuthProvider provider = AuthProvider.LOCAL;
 
     private String providerId;
 

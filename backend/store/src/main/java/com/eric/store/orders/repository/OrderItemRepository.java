@@ -1,9 +1,9 @@
 package com.eric.store.orders.repository;
 
-import com.eric.store.orders.entity.Order;
+import com.eric.store.orders.entity.OrderItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;
 
-public interface OrderItemRepository extends JpaRepository<Order, UUID> {
+public interface OrderItemRepository extends JpaRepository<OrderItem, UUID> {
 }

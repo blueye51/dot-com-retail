@@ -5,10 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,8 +15,8 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     private ResponseEntity<Map<String, Object>> build(HttpStatus status, String error, Exception ex) {
-        var now = LocalDateTime.now();
-        System.err.println(now + " " + ex.getMessage());
+        var now = OffsetDateTime.now(ZoneOffset.UTC);
+        System.err.println(now + " EXCEPTION " + ex.getMessage());
 
         Map<String, Object> body = new HashMap<>();
         body.put("timestamp", now);
@@ -35,7 +34,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<Map<String, Object>> handleNotFound(NotFoundException ex) {
-        return build(HttpStatus.UNAUTHORIZED, "Not found", ex);
+        return build(HttpStatus.NOT_FOUND, "Not found", ex);
     }
 
     @ExceptionHandler(InvalidRefreshTokenException.class)
@@ -55,8 +54,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(StorageException.class)
     public ResponseEntity<Map<String, Object>> handleStorage(StorageException ex) {
+        ex.printStackTrace(System.err);
         return build(HttpStatus.INTERNAL_SERVER_ERROR, "Upload failed", ex);
     }
+
 
     @ExceptionHandler(TurnstileException.class)
     public ResponseEntity<Map<String, Object>> handleTurnstile(TurnstileException ex) {

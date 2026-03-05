@@ -9,6 +9,8 @@ spring:
     redis:
       host: localhost
       port: 6379
+      repositories:
+        enabled: false # false if no redis repos exist, for cleaner logs
   jpa:
     hibernate:
       ddl-auto: update
@@ -66,3 +68,7 @@ storage:
     bucket: images
     region: us-east-1
     publicBaseUrl: http://localhost:9000/images
+  upload:
+    allowed-types:
+      - image/webp
+    max-size-bytes: 20971520  # 20MB
