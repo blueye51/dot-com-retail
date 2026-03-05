@@ -1,12 +1,9 @@
 package com.eric.store.auth.security.oAuth2;
 
-import com.eric.store.auth.entity.Role;
-import com.eric.store.auth.repository.RoleRepository;
 import com.eric.store.auth.service.TokenService;
 import com.eric.store.common.util.Cookie;
-import com.eric.store.user.entity.AuthProvider;
 import com.eric.store.user.entity.User;
-import com.eric.store.user.repository.UserRepository;
+import com.eric.store.user.service.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,10 +26,10 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
+    private final UserService userService;
     private final TokenService tokenService;
     private final OAuth2LoginCodeStore loginCodeStore;
+    private final Cookie cookie;
 
     @Value("#{'${app.oauth2.allowed-redirect-uris}'.split(',')}")
     private List<String> allowedRedirectUris;
@@ -52,7 +49,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         String email = principal.getAttribute("email");
         String name  = principal.getAttribute("name");
         Boolean emailVerified = principal.getAttribute("email_verified");
-        String sub = principal.getAttribute("sub"); // Google stable subject id (OIDC)
+        String sub = principal.getAttribute("sub"); //subject id
 
         if (email == null || name == null) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Missing Google profile fields");
@@ -63,30 +60,10 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
             return;
         }
 
-        // Upsert user by email (simple + works with your unique constraint)
-        User user = userRepository.findByEmail(email).orElseGet(() -> {
-            User u = new User();
-            u.setEmail(email);
-            u.setName(name);
-            u.setProvider(AuthProvider.GOOGLE);
-            u.setProviderId(sub);
+        User user = userService.findOrCreateOAuth2User(email, name, sub);
 
-            Role userRole = roleRepository.findByName("USER")
-                    .orElseThrow(() -> new IllegalStateException("Role USER missing"));
-            u.getRoles().add(userRole);
-
-            return u;
-        });
-
-        // If existing user, keep roles; just ensure provider fields are set consistently
-        user.setName(name); // keep updated
-        if (user.getProvider() == null) user.setProvider(AuthProvider.GOOGLE);
-        if (user.getProviderId() == null) user.setProviderId(sub);
-        user = userRepository.save(user);
-
-        // Issue tokens (refresh in cookie)
         var pair = tokenService.issueTokens(user.getId());
-        response.addHeader(HttpHeaders.SET_COOKIE, Cookie.makeRefresh(pair.refresh(), Duration.ofDays(30)).toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.makeRefresh(pair.refresh()).toString());
 
         // Create short-lived one-time code for frontend to exchange for access token
         String code = UUID.randomUUID().toString();

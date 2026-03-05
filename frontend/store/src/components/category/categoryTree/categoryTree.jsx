@@ -1,4 +1,4 @@
-import useFetch from "../../useFetch.jsx";
+import useFetch from "../../useFetch.js";
 import {useEffect, useState} from "react";
 import styles from './categoryTree.module.css';
 import CategoryCreation from "../categoryCreation/categoryCreation.jsx";

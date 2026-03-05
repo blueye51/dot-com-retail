@@ -1,62 +1,58 @@
 import styles from './header.module.css'
 import {useState} from "react";
 import {Link, useNavigate} from 'react-router-dom';
-import {useDispatch, useSelector} from "react-redux";
-import {logout} from "../store.jsx";
-import useFetch from "../useFetch.jsx";
-import {paths} from "../routes.jsx";
-
-
+import {useSelector} from "react-redux";
+import {paths} from "../routes.js";
+import {useLogout} from "../useLogout.js";
 
 function Header () {
     const token = useSelector((state) => state.auth.token);
+    const roles = useSelector((state) => state.auth.roles);
+    const isAdmin = roles.includes("ADMIN");
+
     const [search, setSearch] = useState("");
     const navigate = useNavigate();
-    const dispatch = useDispatch();
+    const {handleLogout, loading} = useLogout();
 
-    const {data, error, loading, reFetch, abort} = useFetch("/api/auth/refresh/logout", {
-        method: "DELETE",
-        withAuth: true,
-        immediate: false,
-    })
-
-    function handleSearch() {
-        console.log("Searching for:", search);
-    }
-
-    const handleLogout = async () => {
-        try {
-            await reFetch();
-        } catch (e) {
-            alert(e)
-            return;
-        }
-        dispatch(logout());
-        navigate("/login", { replace: true });
+    const handleSearch = (e) => {
+        e.preventDefault();
+        if (search.trim()) navigate(`${paths.productList()}?search=${encodeURIComponent(search.trim())}`);
     };
 
     return (
-        <header>
-            <h1 onClick={() => navigate("/")}>LOGO</h1>
-            <div className={styles.searchBar}>
-                <input className={styles.inputField}
-                       id="search"
-                       autoComplete="off"
-                       type="text"
-                       placeholder="Search for products..."
-                       value={search}
-                       onChange={(e) => setSearch(e.target.value)}
+        <header className={styles.header}>
+            <Link to={paths.home()} className={styles.logo}>LOGO</Link>
+
+            <form className={styles.searchBar} onSubmit={handleSearch}>
+                <input
+                    className={styles.inputField}
+                    id="search"
+                    type="text"
+                    placeholder="Search for products..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
                 />
-                <span onClick={handleSearch} className={styles.searchIcon} >🔍</span>
-            </div>
-            {token && <div>AUTH</div>}
-            <div className={styles.extraButtons}>
-                <button onClick={handleLogout}>Logout</button>
-                <Link to={paths.admin()}>admin</Link>
-                <h1>🛒</h1>
-            </div>
+                <button type="submit" className={styles.searchIcon}>🔍</button>
+            </form>
+
+            <nav className={styles.extraButtons}>
+                {token ? (
+                    <>
+                        {isAdmin && <Link to={paths.admin()}>Admin Panel</Link>}
+                        <button onClick={handleLogout} disabled={loading}>
+                            {loading ? "Logging out..." : "Logout"}
+                        </button>
+                    </>
+                ) : (
+                    <>
+                        <Link to={paths.login()}>Login</Link>
+                        <Link to={paths.register()}>Register</Link>
+                    </>
+                )}
+                <Link to="#">🛒</Link>
+            </nav>
         </header>
-    )
+    );
 }
 
-export default Header
+export default Header;

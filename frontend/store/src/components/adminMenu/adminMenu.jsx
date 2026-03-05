@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { paths } from "../routes.jsx"
+import { paths } from "../routes.js"
 
 function AdminMenu () {
 

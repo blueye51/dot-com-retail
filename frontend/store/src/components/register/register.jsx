@@ -1,9 +1,9 @@
 import styles from './register.module.css';
-import useFetch from "../useFetch.jsx";
-import { useState } from "react";
+import useFetch from "../useFetch.js";
+import {useRef, useState} from "react";
 import { Turnstile } from "@marsidev/react-turnstile";
 import {Link} from "react-router-dom";
-import {paths} from "../routes.jsx";
+import {paths} from "../routes.js";
 
 export function Register() {
     const tsRef = useRef(null);
@@ -73,7 +73,7 @@ export function Register() {
 
                 <Turnstile
                     ref={tsRef}
-                    siteKey={import.meta.env.VITE_TURNSTILE_LOGIN_SITEKEY}
+                    siteKey={import.meta.env.VITE_TURNSTILE_VISIBLE_SITEKEY}
                     onSuccess={(token) => setTsToken(token)}
                     onExpire={() => setTsToken(null)}
                     onError={() => setTsToken(null)}

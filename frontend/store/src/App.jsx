@@ -2,8 +2,8 @@ import './App.css'
 import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
 import {useDispatch} from "react-redux";
 import {useEffect, useState} from "react";
-import {refreshAccessToken} from "./components/useFetch.jsx";
-import {PATHS, paths} from './components/routes.jsx'
+import {refreshAccessToken} from "./components/useFetch.js";
+import {PATHS, paths} from './components/routes.js'
 
 import Login from './components/login/login.jsx'
 import MainLayout from "./components/layouts/mainLayout.jsx";

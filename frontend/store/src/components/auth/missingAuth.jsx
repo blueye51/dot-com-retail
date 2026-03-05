@@ -1,6 +1,6 @@
 import {Navigate, Outlet} from "react-router-dom";
 import {useSelector} from "react-redux";
-import {paths} from "../routes.jsx"
+import {paths} from "../routes.js"
 
 function MissingAuth () {
     const token = useSelector((s) => s.auth.token);

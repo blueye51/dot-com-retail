@@ -2,10 +2,10 @@ import styles from "./login.module.css";
 import {useEffect, useRef, useState} from "react";
 import {useDispatch} from "react-redux";
 import {Turnstile} from "@marsidev/react-turnstile";
-import {setRoles, setToken} from "../store.jsx";
-import useFetch from "../useFetch.jsx";
+import {setRoles, setToken} from "../store.js";
+import useFetch, {getRolesFromToken} from "../useFetch.js";
 import {useNavigate, useLocation, Link} from "react-router-dom";
-import {paths} from "../routes.jsx";
+import {paths} from "../routes.js";
 
 function Login() {
     const navigate = useNavigate();
@@ -36,7 +36,7 @@ function Login() {
     useEffect(() => {
         if (!data) return;
         dispatch(setToken(data.accessToken));
-        dispatch(setRoles(data.roles || []));
+        dispatch(setRoles(getRolesFromToken(data.accessToken)));
         navigate(from, {replace: true});
     }, [data, dispatch, navigate, from]);
 

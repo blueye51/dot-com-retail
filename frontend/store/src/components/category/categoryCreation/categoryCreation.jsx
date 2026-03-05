@@ -1,5 +1,5 @@
 import styles from './categoryCreation.module.css';
-import useFetch from "../../useFetch.jsx";
+import useFetch from "../../useFetch.js";
 import {useState} from "react";
 
 function CategoryCreation({parentId = null}) {

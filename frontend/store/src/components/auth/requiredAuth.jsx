@@ -1,6 +1,6 @@
 import { Outlet, Navigate, useLocation } from "react-router-dom";
 import {useSelector} from "react-redux";
-import {paths} from "../routes.jsx";
+import {paths} from "../routes.js";
 
 function RequiredAuth() {
     const token = useSelector((state) => state.auth.token);

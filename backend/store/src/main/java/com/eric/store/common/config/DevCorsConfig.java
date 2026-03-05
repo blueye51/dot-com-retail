@@ -10,7 +10,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.List;
 
 @Configuration
-@Profile("dev")
+@Profile({"dev", "docker"})
 public class DevCorsConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {

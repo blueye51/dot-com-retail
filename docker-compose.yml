@@ -1,0 +1,75 @@
+services:
+  postgres:
+    image: postgres:18
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "${DB_USER}", "-d", "${POSTGRES_DB}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+
+  minio:
+    image: minio/minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+
+  backend:
+    profiles: [full]
+    build: ./backend/store
+    ports:
+      - "8443:8443"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      JWT_SECRET: ${JWT_SECRET}
+      TURNSTILE_SECRET: ${TURNSTILE_SECRET}
+      ADMIN_SEED_EMAIL: ${ADMIN_SEED_EMAIL}
+      OAUTH2_REDIRECT_URIS: "https://localhost:5173/oauth2/callback,http://localhost:5173/oauth2/callback"
+      OAUTH2_DEFAULT_REDIRECT: "https://localhost:5173/oauth2/callback"
+      COOKIE_SAME_SITE: "None"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      minio:
+        condition: service_started
+
+  frontend:
+    profiles: [full]
+    build: ./frontend/store
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./backend/store/src/main/resources/localhost.pem:/backend/store/src/main/resources/localhost.pem:ro
+      - ./backend/store/src/main/resources/localhost-key.pem:/backend/store/src/main/resources/localhost-key.pem:ro
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+  minio_data:

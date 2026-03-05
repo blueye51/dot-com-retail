@@ -37,17 +37,6 @@ h1 {
 
 }
 
-header {
-    background-color: #0a2045;
-    width: 100%;
-    height: 6em;
-    padding: 1em;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
 button {
     border-radius: 8px;
     border: 1px solid transparent;

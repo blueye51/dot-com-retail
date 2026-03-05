@@ -1,7 +1,7 @@
-import { Link } from "react-router-dom";
-import useFetch from "../../useFetch.jsx";
+import { Link, useSearchParams } from "react-router-dom";
+import useFetch from "../../useFetch.js";
 import {useEffect, useMemo, useState} from "react";
-import {paths} from "../../routes.jsx";
+import {paths} from "../../routes.js";
 import styles from "./productList.module.css";
 import ProductRow from "../productUI/productRow/ProductRow.jsx";
 
@@ -25,11 +25,16 @@ function ProductList () {
 // }
     const [pageSize] = useState(100);
     const [pageNumber] = useState(0);
+    const [searchParams] = useSearchParams();
+    const search = searchParams.get("search") ?? "";
 
-    const url = useMemo(
-        () => `/api/products/page?page=${pageNumber}&size=${pageSize}`,
-        [pageNumber, pageSize]
-    );
+    const url = useMemo(() => {
+        const params = new URLSearchParams();
+        params.set("page", pageNumber);
+        params.set("size", pageSize);
+        if (search) params.set("search", search);
+        return `/api/products/page?${params}`;
+    }, [pageNumber, pageSize, search]);
 
     const { data, error, loading } = useFetch(url, {});
     const products = data?.content ?? [];

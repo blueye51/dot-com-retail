@@ -60,7 +60,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(TurnstileException.class)
     public ResponseEntity<Map<String, Object>> handleTurnstile(TurnstileException ex) {
-        return  build(HttpStatus.BAD_REQUEST, ex.getMessage(), ex);
+        return  build(HttpStatus.BAD_REQUEST, "Turnstile error", ex);
+    }
+
+    @ExceptionHandler(AuthProviderConflictException.class)
+    public ResponseEntity<Map<String, Object>> handleAuthProviderConflict(AuthProviderConflictException ex) {
+        return build(HttpStatus.CONFLICT, "Auth provider conflict", ex);
     }
 }
 

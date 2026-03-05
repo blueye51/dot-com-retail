@@ -1,6 +1,6 @@
 import {useSelector} from "react-redux";
 import {Navigate, Outlet, useLocation} from "react-router-dom";
-import {paths} from "../routes.jsx";
+import {paths} from "../routes.js";
 
 
 function RequiredRole ({ allowed }) {

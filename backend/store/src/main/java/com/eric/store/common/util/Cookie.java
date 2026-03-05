@@ -1,31 +1,41 @@
 package com.eric.store.common.util;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
+import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 
+@Component
 public class Cookie {
     public static final String REFRESH = "refreshToken";
 
-    public static ResponseCookie makeRefresh(String value, Duration ttl) {
-        return ResponseCookie.from(REFRESH, value)
-                .httpOnly(true)
-                .secure(true)
-                .sameSite("None") // for development with localhost; change to "Strict"  in production
-//                .sameSite("Strict")
-                .path("/api/auth/refresh")
-                .maxAge(ttl)
+    private final Duration refreshTtl;
+    private final String sameSite;
+
+    public Cookie(@Value("${app.jwt.refresh-expiration-days}") long refreshDays,
+                  @Value("${app.cookie.same-site}") String sameSite) {
+        this.refreshTtl = Duration.ofDays(refreshDays);
+        this.sameSite = sameSite;
+    }
+
+    public ResponseCookie makeRefresh(String value) {
+        return buildBase(value)
+                .maxAge(refreshTtl)
                 .build();
     }
 
-    public static ResponseCookie clearRefresh() {
-        return ResponseCookie.from(REFRESH, "")
-                .httpOnly(true)
-                .secure(true)
-                .sameSite("None") // for development with localhost; change to "Strict"  in production
-//                .sameSite("Strict")
-                .path("/api/auth/refresh")
+    public ResponseCookie clearRefresh() {
+        return buildBase("")
                 .maxAge(0)
                 .build();
+    }
+
+    private ResponseCookie.ResponseCookieBuilder buildBase(String value) {
+        return ResponseCookie.from(REFRESH, value)
+                .httpOnly(true)
+                .secure(true)
+                .sameSite(sameSite)
+                .path("/api/auth/refresh");
     }
 }

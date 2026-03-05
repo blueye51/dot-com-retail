@@ -3,7 +3,7 @@ import Modal from "../../modal/modal.jsx";
 import ImageUpload from "./imageUpload/imageUpload.jsx";
 import {useEffect, useState} from "react";
 import ImageEditing from "./imageEditing/imageEditing.jsx";
-import useFetch from "../../useFetch.jsx";
+import useFetch from "../../useFetch.js";
 
 function ProductImageMenu({maxFiles = 1, setImages, images}) {
     const [uploaderOpen, setUploaderOpen] = useState(false)

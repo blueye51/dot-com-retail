@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import com.eric.store.auth.security.oAuth2.OAuth2LoginCodeStore;
 import org.springframework.http.MediaType;
 
-import java.time.Duration;
 import java.util.Map;
 
 @RestController
@@ -29,6 +28,7 @@ public class AuthController {
     private final UserService userService;
     private final OAuth2LoginCodeStore loginCodeStore;
     private final TurnstileService turnstileService;
+    private final Cookie cookie;
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@Valid @RequestBody UserRegister userRegister) {
@@ -43,12 +43,9 @@ public class AuthController {
         User user = userService.login(userLogin);
         var pair = tokenService.issueTokens(user.getId());
         return ResponseEntity.status(HttpStatus.OK)
-                .header(HttpHeaders.SET_COOKIE, Cookie.makeRefresh(pair.refresh(), Duration.ofDays(30)).toString())
+                .header(HttpHeaders.SET_COOKIE, cookie.makeRefresh(pair.refresh()).toString())
                 .body(Map.of(
-                        "accessToken", pair.access(),
-                        "roles", user.getRoles().stream()
-                                .map(Role::getName)
-                                .toList()
+                        "accessToken", pair.access()
                 ));
     }
 
@@ -58,22 +55,17 @@ public class AuthController {
         var user = userService.findById(tokenService.getUserId(refreshCookie));
         var pair = tokenService.rotate(refreshCookie);
         return ResponseEntity.status(HttpStatus.OK)
-                .header(HttpHeaders.SET_COOKIE, Cookie.makeRefresh(pair.refresh(), Duration.ofDays(30)).toString())
+                .header(HttpHeaders.SET_COOKIE, cookie.makeRefresh(pair.refresh()).toString())
                 .body(Map.of(
-                        "accessToken", pair.access(),
-                        "roles", user.getRoles().stream()
-                                .map(Role::getName)
-                                .toList()
+                        "accessToken", pair.access()
                 ));
-
-
     }
 
     @DeleteMapping("/refresh/logout")
     public ResponseEntity<Void> logout(@CookieValue(name = Cookie.REFRESH, required = false) String refreshCookie) {
         if (refreshCookie != null) tokenService.deleteRefresh(refreshCookie);
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
-                .header(HttpHeaders.SET_COOKIE, Cookie.clearRefresh().toString())
+                .header(HttpHeaders.SET_COOKIE, cookie.clearRefresh().toString())
                 .build();
     }
 
@@ -86,10 +78,9 @@ public class AuthController {
         var pair = tokenService.issueTokens(userId);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .header(HttpHeaders.SET_COOKIE, Cookie.makeRefresh(pair.refresh(), Duration.ofDays(30)).toString())
+                .header(HttpHeaders.SET_COOKIE, cookie.makeRefresh(pair.refresh()).toString())
                 .body(Map.of(
-                        "accessToken", pair.access(),
-                        "roles", user.getRoles().stream().map(Role::getName).toList()
+                        "accessToken", pair.access()
                 ));
     }
 }

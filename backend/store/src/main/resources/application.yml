@@ -13,20 +13,56 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope:
+              - openid
+              - profile
+              - email
+        provider:
+          google:
+            issuer-uri: https://accounts.google.com
+
 server:
   port: 8443
   ssl:
     enabled: false
+
+app:
+  oauth2:
+    allowed-redirect-uris: ${OAUTH2_REDIRECT_URIS}
+    default-redirect-uri: ${OAUTH2_DEFAULT_REDIRECT}
+  turnstile:
+    secret: ${TURNSTILE_SECRET}
+  jwt:
+    secret-b64: ${JWT_SECRET}
+    access-expiration-minutes: 15
+    refresh-expiration-days: 30
+  cookie:
+    same-site: ${COOKIE_SAME_SITE:Strict}
+  admin:
+    seed-email: ${ADMIN_SEED_EMAIL}
+
 logging:
   level:
     org.hibernate.tool.hbm2ddl: DEBUG
     org.springframework.web: DEBUG
     org.springframework.boot.autoconfigure: INFO
+
 storage:
   s3:
     endpoint: http://localhost:9000
-    accessKey: minioadmin
-    secretKey: minioadmin123
+    accessKey: ${MINIO_ACCESS_KEY:minioadmin}
+    secretKey: ${MINIO_SECRET_KEY:minioadmin123}
     bucket: images
     region: us-east-1
-    publicBaseUrl: http://localhost:9000/images # using aws s3 url in production
+    publicBaseUrl: http://localhost:9000/images

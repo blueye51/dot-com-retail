@@ -1,6 +1,6 @@
 import styles from './imageUpload.module.css';
 import Modal from "../../../modal/modal.jsx";
-import useFetch from "../../../useFetch.jsx";
+import useFetch from "../../../useFetch.js";
 import {useEffect} from "react";
 
 const MAX = 20 * 1024 * 1024; // 20MB
