@@ -4,6 +4,7 @@ import {Link, useNavigate} from 'react-router-dom';
 import {useSelector} from "react-redux";
 import {paths} from "../routes.js";
 import {useLogout} from "../useLogout.js";
+import defaultPfp from "../../assets/default_pfp.svg"
 
 function Header () {
     const token = useSelector((state) => state.auth.token);
@@ -50,6 +51,9 @@ function Header () {
                     </>
                 )}
                 <Link to="#">🛒</Link>
+                <Link to={paths.profile()}>
+                    <img className={styles.profileImage} src={defaultPfp} alt="Profile image"/>
+                </Link>
             </nav>
         </header>
     );

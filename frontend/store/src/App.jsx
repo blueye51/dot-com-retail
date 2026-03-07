@@ -19,6 +19,7 @@ import CategoryTree from "./components/category/categoryTree/categoryTree.jsx";
 import {Register} from "./components/register/register.jsx";
 import ProductPage from "./components/product/productPage.jsx";
 import OAuth2Callback from "./components/OAuth2Callback.jsx";
+import Profile from "./components/profile/profile.jsx";
 
 
 function App() {
@@ -61,6 +62,7 @@ function App() {
 
                 <Route element={<RequiredAuth/>}>
                     <Route element={<MainLayout/>}>
+                        <Route path={PATHS.profile} element={<Profile/>}/>
                     </Route>
                 </Route>
 

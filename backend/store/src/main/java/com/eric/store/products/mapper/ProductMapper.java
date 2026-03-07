@@ -50,16 +50,13 @@ public class ProductMapper {
      * Maps a {@link Product} entity to {@link ProductResponse}.
      *
      * IMPORTANT:
-     * The given Product must be fetched with JOIN FETCH (or equivalent EntityGraph)
-     * for its related collections (e.g., productImages and any associated files).
+     * The given Product must be fetched with JOIN FETCH to productImages and any associated FileEntities.
      *
      * This method assumes those associations are already initialized.
-     * If they are lazily loaded and the persistence context is closed,
-     * this will result in a LazyInitializationException.
      *
      * Expected fetch:
-     * - productImages
-     * - files
+     * - ProductImages
+     * - FileEntity
      */
     public ProductResponse toResponse(Product product) {
         return new ProductResponse(

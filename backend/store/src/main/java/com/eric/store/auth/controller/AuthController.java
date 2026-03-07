@@ -1,6 +1,6 @@
 package com.eric.store.auth.controller;
 
-import com.eric.store.auth.security.turnstile.TurnstileService;
+import com.eric.store.auth.service.TurnstileService;
 import com.eric.store.user.dto.UserLogin;
 import com.eric.store.user.dto.UserRegister;
 import com.eric.store.common.exceptions.InvalidRefreshTokenException;
@@ -14,7 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.eric.store.auth.security.oAuth2.OAuth2LoginCodeStore;
+import com.eric.store.auth.service.OAuth2LoginCodeStore;
 import org.springframework.http.MediaType;
 
 import java.util.Map;

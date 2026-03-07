@@ -1,4 +1,4 @@
-package com.eric.store.auth.security.tokens;
+package com.eric.store.auth.service;
 
 import com.eric.store.common.exceptions.InvalidRefreshTokenException;
 import lombok.RequiredArgsConstructor;

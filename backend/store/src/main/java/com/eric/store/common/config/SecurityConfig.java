@@ -3,6 +3,7 @@ package com.eric.store.common.config;
 import com.eric.store.auth.security.oAuth2.OAuth2FailureHandler;
 import com.eric.store.auth.security.oAuth2.OAuth2SuccessHandler;
 import com.eric.store.auth.security.tokens.JwtAuthFilter;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,6 +46,12 @@ public class SecurityConfig {
                         .redirectionEndpoint(r -> r.baseUri("/login/oauth2/code/*"))
                         .successHandler(oAuth2SuccessHandler)
                         .failureHandler(oAuth2FailureHandler)
+                )
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((req, res, authEx) ->
+                                res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized"))
+                        .accessDeniedHandler((req, res, accessEx) ->
+                                res.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden"))
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class) ;
 

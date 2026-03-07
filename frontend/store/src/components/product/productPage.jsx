@@ -3,7 +3,7 @@ import useFetch from "../useFetch.js";
 import styles from "./productPage.module.css"
 import Modal from "../modal/modal.jsx";
 import {useState} from "react";
-import defaultImage from "../../assets/default.png";
+import defaultImage from "../../assets/default_image.png";
 
 
 export default function ProductPage() {

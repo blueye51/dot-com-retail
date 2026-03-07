@@ -1,4 +1,4 @@
-package com.eric.store.auth.security.turnstile;
+package com.eric.store.auth.service;
 
 import com.eric.store.common.exceptions.TurnstileException;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,7 +46,6 @@ public class TurnstileService {
         return URLEncoder.encode(s, StandardCharsets.UTF_8);
     }
 
-    // Jackson will map snake_case from Cloudflare into these if you use matching names or @JsonProperty.
     public static class TurnstileResponse {
         public Boolean success;
         public String challenge_ts;

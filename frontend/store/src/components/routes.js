@@ -12,6 +12,7 @@ export const PATHS = {
     categoryTree: "/categoryTree",
     oauth2Callback: "/oauth2/callback",
     any: "*",
+    profile: "/profile"
 };
 
 export const paths = {
@@ -25,4 +26,5 @@ export const paths = {
     createProduct: () => PATHS.createProduct,
     categoryTree: () => PATHS.categoryTree,
     oauth2Callback: () => PATHS.oauth2Callback,
+    profile: () => PATHS.profile,
 };

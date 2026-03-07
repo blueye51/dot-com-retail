@@ -1,6 +1,6 @@
 import styles from './productRow.module.css';
 import {useMemo} from "react";
-import defaultImage from "../../../../assets/default.png";
+import defaultImage from "../../../../assets/default_image.png";
 
 
 export default function ProductRow ({ product }) {

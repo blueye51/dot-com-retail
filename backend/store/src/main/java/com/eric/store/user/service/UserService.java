@@ -2,6 +2,7 @@ package com.eric.store.user.service;
 
 import com.eric.store.common.exceptions.AuthProviderConflictException;
 import com.eric.store.user.dto.UserLogin;
+import com.eric.store.user.dto.UserProfile;
 import com.eric.store.user.dto.UserRegister;
 import com.eric.store.user.entity.Role;
 import com.eric.store.common.exceptions.InvalidEmailOrPassword;
@@ -17,6 +18,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.eric.store.user.entity.AuthProvider;
+
+import com.eric.store.user.entity.UserSettings;
 
 import java.util.List;
 import java.util.Optional;
@@ -40,17 +43,16 @@ public class UserService {
             throw new RuntimeException("Email already registered");
         }
         User user = userMapper.toUser(newUser);
-        // encode password before persisting for security
         user.setPasswordHash(passwordEncoder.encode(newUser.password()));
-
-        assignDefaultRoles(user);
-
-        userRepository.save(user);
+        createUser(user);
     }
 
     public User login(UserLogin login) {
         User user = userRepository.findByEmail(login.email())
                 .orElseThrow(() -> new InvalidEmailOrPassword("Invalid email or password"));
+        if (AuthProvider.GOOGLE.equals(user.getProvider())) {
+            throw new AuthProviderConflictException("This account uses Google sign-in");
+        }
         if (!passwordEncoder.matches(login.password(), user.getPasswordHash())) {
             throw new InvalidEmailOrPassword("Invalid email or password");
         }
@@ -76,18 +78,18 @@ public class UserService {
         user.setProvider(AuthProvider.GOOGLE);
         user.setProviderId(sub);
 
-        assignDefaultRoles(user);
-
-        return userRepository.save(user);
+        return createUser(user);
     }
 
     public User findById(UUID id) {
-        return userRepository.findById(id).orElseThrow( () -> new NotFoundException("User not found", id) );
+        return userRepository.findById(id)
+                .orElseThrow( () -> new NotFoundException("User not found", id) );
     }
 
     public void promoteToAdmin(UUID id) {
         User user = findById(id);
-        user.getRoles().add(roleRepository.findByName("ADMIN").orElseThrow(() -> new NotFoundException("Role not found", id)));
+        user.getRoles().add(roleRepository.findByName("ADMIN")
+                .orElseThrow(() -> new NotFoundException("Role not found", id)));
         userRepository.save(user);
     }
 
@@ -101,11 +103,18 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundException("Role not found, Server falsely started", name));
     }
 
-    private void assignDefaultRoles(User user) {
-        user.getRoles().add(getRole("USER"));
-        if (!adminSeedEmail.isBlank() && user.getEmail().equals(adminSeedEmail))
-            user.getRoles().add(getRole("ADMIN"));
-    }
+    private User createUser(User user) {
+        UserSettings settings = new UserSettings();
+        settings.setUser(user);
 
+        user.getRoles().add(getRole("USER"));
+        if (!adminSeedEmail.isBlank() && user.getEmail().equals(adminSeedEmail)) {
+            user.getRoles().add(getRole("ADMIN"));
+            settings.setTwoFactorEnabled(true);
+        }
+
+        user.setSettings(settings);
+        return userRepository.save(user);
+    }
 
 }

@@ -42,6 +42,9 @@ public class User {
 
     private String providerId;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, optional = false)
+    private UserSettings settings;
+
     //Timestamps automation
     @Column(nullable = false, updatable = false)
     private OffsetDateTime createdAt;

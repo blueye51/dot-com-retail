@@ -1,5 +1,6 @@
 package com.eric.store.auth.security.oAuth2;
 
+import com.eric.store.auth.service.OAuth2LoginCodeStore;
 import com.eric.store.auth.service.TokenService;
 import com.eric.store.common.util.Cookie;
 import com.eric.store.user.entity.User;

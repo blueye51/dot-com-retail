@@ -64,3 +64,9 @@
     align-items: center;
     gap: 1em;
 }
+.profileImage {
+    border-radius: 50%;
+    height: 3em;
+    width: 3em;
+    object-fit: cover;
+}

@@ -43,6 +43,9 @@ app:
   oauth2:
     allowed-redirect-uris: ${OAUTH2_REDIRECT_URIS}
     default-redirect-uri: ${OAUTH2_DEFAULT_REDIRECT}
+  resend:
+    api-key: ${RESEND_API_KEY}
+    from-email: ${RESEND_FROM_EMAIL}
   turnstile:
     secret: ${TURNSTILE_SECRET}
   jwt:

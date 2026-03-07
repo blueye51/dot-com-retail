@@ -16,6 +16,7 @@ class RoleSeeder implements CommandLineRunner {
         ensure("ADMIN");
     }
     private void ensure(String name) {
-        roleRepo.findByName(name).orElseGet(() -> roleRepo.save(new Role(name)));
+        roleRepo.findByName(name)
+                .orElseGet(() -> roleRepo.save(new Role(name)));
     }
 }
