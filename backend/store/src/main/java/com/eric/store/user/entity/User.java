@@ -45,6 +45,8 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, optional = false)
     private UserSettings settings;
 
+    private boolean emailVerified = false;
+
     //Timestamps automation
     @Column(nullable = false, updatable = false)
     private OffsetDateTime createdAt;

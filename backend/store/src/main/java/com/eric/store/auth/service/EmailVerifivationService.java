@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class TwoFactorAuthService {
-    private static final String PREFIX = "2fa:";
+public class EmailVerifivationService {
+    private static final String PREFIX = "email-verify:";
     private final OtpService otpService;
 
     public void sendCode(String email) {
@@ -14,7 +14,6 @@ public class TwoFactorAuthService {
     }
 
     public void verifyCode(String email, String code) {
-        otpService.verifyCode(email, PREFIX, code);
+        otpService.verifyCode(email, code, PREFIX);
     }
 }
-

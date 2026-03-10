@@ -9,7 +9,7 @@ import com.eric.store.products.dto.ImageResponse;
 import com.eric.store.products.entity.Product;
 import com.eric.store.products.entity.ProductImage;
 import com.eric.store.products.repository.ProductImageRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

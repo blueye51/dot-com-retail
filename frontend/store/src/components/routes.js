@@ -12,7 +12,8 @@ export const PATHS = {
     categoryTree: "/categoryTree",
     oauth2Callback: "/oauth2/callback",
     any: "*",
-    profile: "/profile"
+    profile: "/profile",
+    verifyEmail: "/verifyEmail",
 };
 
 export const paths = {
@@ -22,9 +23,10 @@ export const paths = {
     register: () => PATHS.register,
     unauthorized: () => PATHS.unauthorized,
     productList: () => PATHS.productList,
-    product: (id) => generatePath(PATHS.product, { id }),
+    product: (id) => generatePath(PATHS.product, {id}),
     createProduct: () => PATHS.createProduct,
     categoryTree: () => PATHS.categoryTree,
     oauth2Callback: () => PATHS.oauth2Callback,
     profile: () => PATHS.profile,
-};
+    verifyEmail: () => PATHS.verifyEmail,
+}

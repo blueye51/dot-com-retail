@@ -2,8 +2,8 @@ import styles from "./login.module.css";
 import {useEffect, useRef, useState} from "react";
 import {useDispatch} from "react-redux";
 import {Turnstile} from "@marsidev/react-turnstile";
-import {setRoles, setToken} from "../store.js";
-import useFetch, {getRolesFromToken} from "../useFetch.js";
+import {setAuth} from "../store.js";
+import useFetch, {getClaimsFromToken} from "../useFetch.js";
 import {useNavigate, useLocation, Link} from "react-router-dom";
 import {paths} from "../routes.js";
 
@@ -27,18 +27,11 @@ function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const {data, error, loading, reFetch} = useFetch("/api/auth/login", {
+    const {error, loading, reFetch} = useFetch("/api/auth/login", {
         method: "POST",
         withAuth: false,
         immediate: false,
     });
-
-    useEffect(() => {
-        if (!data) return;
-        dispatch(setToken(data.accessToken));
-        dispatch(setRoles(getRolesFromToken(data.accessToken)));
-        navigate(from, {replace: true});
-    }, [data, dispatch, navigate, from]);
 
     useEffect(() => {
         if (!error) return;
@@ -46,7 +39,7 @@ function Login() {
         alert("Login failed: " + (error.message || "Unknown error"));
     }, [error]);
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
         const payload = {
@@ -60,9 +53,16 @@ function Login() {
             return;
         };
 
-        reFetch({
-            body: payload,
-        });
+        try {
+            const result = await reFetch({ body: payload });
+            const claims = getClaimsFromToken(result.accessToken);
+            const { roles = [], emailVerified = false } = claims;
+            dispatch(setAuth({ token: result.accessToken, roles, emailVerified }));
+            navigate(from, { replace: true });
+        } catch (err) {
+            alert("Login failed: " + (err.message || "Unknown error"));
+        }
+
 
         tsRef.current?.reset?.();
         setTsToken(null);

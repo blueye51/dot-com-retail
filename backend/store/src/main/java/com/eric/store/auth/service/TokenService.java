@@ -1,6 +1,8 @@
 package com.eric.store.auth.service;
 
 
+import com.eric.store.user.entity.Role;
+import com.eric.store.user.entity.User;
 import com.eric.store.user.service.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -47,7 +49,10 @@ public class TokenService {
     }
 
     private Pair buildPair(UUID userId) {
-        Map<String, Object> claims = Map.of("roles", userService.getAllRolesFromId(userId));
+        User user =  userService.findByIdWithRoles(userId);
+        Map<String, Object> claims = Map.of(
+                "roles", user.getRoles().stream().map(Role::getName).toList(),
+                "emailVerified", user.isEmailVerified());
         String access = jwtService.generateAccessToken(userId.toString(), claims);
         String refresh = UUID.randomUUID().toString();
         refreshTokenStore.save(refresh, userId, refreshExpiration);

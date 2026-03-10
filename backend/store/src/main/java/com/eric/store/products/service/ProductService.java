@@ -11,7 +11,7 @@ import com.eric.store.products.entity.ProductImage;
 import com.eric.store.products.mapper.ProductMapper;
 import com.eric.store.products.repository.ProductImageRepository;
 import com.eric.store.products.repository.ProductRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

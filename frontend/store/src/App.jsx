@@ -20,6 +20,8 @@ import {Register} from "./components/register/register.jsx";
 import ProductPage from "./components/product/productPage.jsx";
 import OAuth2Callback from "./components/OAuth2Callback.jsx";
 import Profile from "./components/profile/profile.jsx";
+import UnverifiedEmail from "./components/auth/unverifiedEmail.jsx";
+import EmailVerification from "./components/emailVerification/emailVerification.jsx";
 
 
 function App() {
@@ -46,6 +48,10 @@ function App() {
     return (
         <BrowserRouter>
             <Routes>
+                <Route element={<UnverifiedEmail/>}>
+                    <Route path={PATHS.verifyEmail} element={<EmailVerification/>}/>
+                </Route>
+
                 <Route element={<MissingAuth/>}>
                     <Route path={PATHS.login} element={<Login/>}/>
                     <Route path={PATHS.register} element={<Register/>}/>

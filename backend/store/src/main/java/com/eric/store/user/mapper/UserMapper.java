@@ -29,6 +29,7 @@ public class UserMapper {
         return new UserProfile(
                 u.getName(),
                 u.getEmail(),
+                u.isEmailVerified(),
                 toUserSettingsDto(u.getSettings())
         );
     }

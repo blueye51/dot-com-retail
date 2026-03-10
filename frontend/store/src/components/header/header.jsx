@@ -7,8 +7,7 @@ import {useLogout} from "../useLogout.js";
 import defaultPfp from "../../assets/default_pfp.svg"
 
 function Header () {
-    const token = useSelector((state) => state.auth.token);
-    const roles = useSelector((state) => state.auth.roles);
+    const {roles, token, emailVerified} = useSelector((state) => state.auth);
     const isAdmin = roles.includes("ADMIN");
 
     const [search, setSearch] = useState("");
@@ -40,6 +39,7 @@ function Header () {
                 {token ? (
                     <>
                         {isAdmin && <Link to={paths.admin()}>Admin Panel</Link>}
+                        {!emailVerified && <Link to={paths.verifyEmail()}>Verify Email</Link>}
                         <button onClick={handleLogout} disabled={loading}>
                             {loading ? "Logging out..." : "Logout"}
                         </button>

@@ -49,31 +49,26 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         try {
             if (!jwtService.isValid(token)) {
-                // Treat as missing: do not set authentication
                 SecurityContextHolder.clearContext();
-                chain.doFilter(req, res);
-                return;
+            } else {
+                String uuidString = jwtService.subject(token);
+                User user = userService.findById(UUID.fromString(uuidString));
+
+                var authorities = jwtService.roles(token).stream()
+                        .filter(Objects::nonNull)
+                        .map(r -> new SimpleGrantedAuthority("ROLE_" + r))
+                        .toList();
+
+                var authToken = new UsernamePasswordAuthenticationToken(user, null, authorities);
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
+                SecurityContextHolder.getContext().setAuthentication(authToken);
             }
-
-            String uuidString = jwtService.subject(token);
-            User user = userService.findById(UUID.fromString(uuidString));
-
-            var authorities = jwtService.roles(token).stream()
-                    .filter(Objects::nonNull)
-                    .map(r -> new SimpleGrantedAuthority("ROLE_" + r))
-                    .toList();
-
-            var authToken = new UsernamePasswordAuthenticationToken(user, null, authorities);
-            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
-            SecurityContextHolder.getContext().setAuthentication(authToken);
-
-            chain.doFilter(req, res);
-
         } catch (Exception e) {
-            log.debug("JWT auth failed for {}: {}", req.getRequestURI(), e.getMessage());
+            log.warn("JWT auth failed for {}: {}", req.getRequestURI(), e.getMessage());
             SecurityContextHolder.clearContext();
-            chain.doFilter(req, res);
         }
+
+        chain.doFilter(req, res);
 
     }
 }

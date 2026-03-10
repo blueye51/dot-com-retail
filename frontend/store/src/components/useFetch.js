@@ -1,15 +1,14 @@
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {setRoles, setToken} from "./store.js";
+import {setAuth} from "./store.js";
 
 const BASE_URL = import.meta.env.VITE_API_BASE ;
 
-export function getRolesFromToken(token) {
+export function getClaimsFromToken(token) {
     try {
-        const payload = JSON.parse(atob(token.split(".")[1]));
-        return payload.roles || [];
+        return JSON.parse(atob(token.split(".")[1]));
     } catch {
-        return [];
+        return {};
     }
 }
 
@@ -27,8 +26,8 @@ export async function refreshAccessToken(dispatch) {
             if (!res.ok) throw new Error("Failed to refresh token");
             const data = await res.json();
             const newToken = data.accessToken;
-            dispatch(setToken(newToken));
-            dispatch(setRoles(getRolesFromToken(newToken)));
+            const claims = getClaimsFromToken(newToken);
+            dispatch(setAuth({ token: newToken, roles: claims.roles || [], emailVerified: claims.emailVerified ?? false }));
             return newToken;
         })().finally(() => {
             refreshInFlight = null;

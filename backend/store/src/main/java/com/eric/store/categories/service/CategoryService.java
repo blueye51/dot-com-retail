@@ -6,7 +6,7 @@ import com.eric.store.categories.entity.Category;
 import com.eric.store.categories.repository.CategoryRepository;
 import com.eric.store.common.exceptions.IllegalJsonException;
 import com.eric.store.common.exceptions.NotFoundException;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

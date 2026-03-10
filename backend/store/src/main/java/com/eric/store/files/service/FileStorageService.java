@@ -6,7 +6,7 @@ import com.eric.store.files.config.S3Props;
 import com.eric.store.files.config.StorageProps;
 import com.eric.store.files.entity.FileEntity;
 import com.eric.store.files.repository.FileRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

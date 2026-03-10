@@ -1,18 +1,12 @@
 import styles from './categoryCreation.module.css';
 import useFetch from "../../useFetch.js";
-import {useState} from "react";
+import {useState, useEffect} from "react";
 
-function CategoryCreation({parentId = null}) {
+function CategoryCreation({parentId = null, onSuccess}) {
 
-    // category object{
-//     id: string,
-//     name: string,
-//     isLeaf: boolean,
-//     parentId: string UUID,
-    const [category, setCategory] = useState({})
     const [name, setName] = useState("")
     const [isLeaf, setIsLeaf] = useState(false)
-    const {data, error, loading, reFetch: fetchPost} = useFetch('/api/categories', {
+    const {data, error, loading, reFetch} = useFetch('/api/categories', {
         method: "POST",
         body: {
             name,
@@ -23,14 +17,13 @@ function CategoryCreation({parentId = null}) {
         immediate: false,
     })
 
+    useEffect(() => {
+        if (data && onSuccess) onSuccess();
+    }, [data]);
+
     function handleSubmit(e) {
         e.preventDefault()
-        console.log({
-            name,
-            isLeaf,
-            parentId
-        })
-        fetchPost()
+        reFetch()
     }
 
     return (
@@ -53,9 +46,9 @@ function CategoryCreation({parentId = null}) {
                 checked={isLeaf}
                 onChange={e => setIsLeaf(e.target.checked)}
             />
-            <p>{parentId}</p>
 
-            <button onClick={handleSubmit}>Create</button>
+            {error && <p>{error}</p>}
+            <button onClick={handleSubmit} disabled={loading || !name}>Create</button>
         </div>
 
     );

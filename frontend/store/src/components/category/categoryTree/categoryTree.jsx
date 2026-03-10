@@ -15,6 +15,11 @@ function categoryTree() {
         setCreating(false);
     }
 
+    function handleCreationSuccess() {
+        close();
+        reFetch();
+    }
+
     const [categories, setCategories] = useState({})
     const {data, error, loading, reFetch, abort} = useFetch('/api/categories', {})
 
@@ -66,7 +71,7 @@ function categoryTree() {
 
 
             <Modal open={creating} onClose={close}>
-                <CategoryCreation parentId={focusedNodeId}/>
+                <CategoryCreation parentId={focusedNodeId} onSuccess={handleCreationSuccess}/>
             </Modal>
         </div>
     );

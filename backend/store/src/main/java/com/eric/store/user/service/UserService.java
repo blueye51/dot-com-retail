@@ -11,7 +11,7 @@ import com.eric.store.user.entity.User;
 import com.eric.store.user.repository.RoleRepository;
 import com.eric.store.user.mapper.UserMapper;
 import com.eric.store.user.repository.UserRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,7 +27,6 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class UserService {
 
     private final UserRepository userRepository;
@@ -37,16 +36,18 @@ public class UserService {
     @Value("${app.admin.seed-email:}")
     private String adminSeedEmail;
 
-
+    @Transactional
     public void register(UserRegister newUser) {
-        if (userRepository.existsByEmail(newUser.email())) {
-            throw new RuntimeException("Email already registered");
+        if (userRepository.existsByEmailAndEmailVerifiedTrue(newUser.email())) {
+            throw new AuthProviderConflictException("Email already registered");
         }
+        userRepository.deleteByEmailAndEmailVerifiedFalse(newUser.email());
         User user = userMapper.toUser(newUser);
         user.setPasswordHash(passwordEncoder.encode(newUser.password()));
         createUser(user);
     }
 
+    @Transactional
     public User login(UserLogin login) {
         User user = userRepository.findByEmail(login.email())
                 .orElseThrow(() -> new InvalidEmailOrPassword("Invalid email or password"));
@@ -59,6 +60,7 @@ public class UserService {
         return user;
     }
 
+    @Transactional
     public User findOrCreateOAuth2User(String email, String name, String sub) {
         Optional<User> existing = userRepository.findByEmail(email);
 
@@ -69,7 +71,7 @@ public class UserService {
             }
             user.setName(name);
             if (user.getProviderId() == null) user.setProviderId(sub);
-            return userRepository.save(user);
+            return user;
         }
 
         User user = new User();
@@ -77,33 +79,38 @@ public class UserService {
         user.setName(name);
         user.setProvider(AuthProvider.GOOGLE);
         user.setProviderId(sub);
+        user.setEmailVerified(true);
 
         return createUser(user);
     }
 
+    @Transactional(readOnly = true)
     public User findById(UUID id) {
         return userRepository.findById(id)
                 .orElseThrow( () -> new NotFoundException("User not found", id) );
     }
 
+    @Transactional
     public void promoteToAdmin(UUID id) {
         User user = findById(id);
         user.getRoles().add(roleRepository.findByName("ADMIN")
                 .orElseThrow(() -> new NotFoundException("Role not found", id)));
-        userRepository.save(user);
     }
 
-    public List<String> getAllRolesFromId(UUID id) {
-        User user = findById(id);
-        return user.getRoles().stream().map(Role::getName).toList();
+    @Transactional(readOnly = true)
+    public User findByIdWithRoles(UUID userId) {
+        return userRepository.findByIdWithRoles(userId)
+                .orElseThrow(() -> new NotFoundException("User not found with roles", userId));
     }
+
 
     private Role getRole(String name) {
         return roleRepository.findByName(name)
                 .orElseThrow(() -> new NotFoundException("Role not found, Server falsely started", name));
     }
 
-    private User createUser(User user) {
+    @Transactional
+    public User createUser(User user) {
         UserSettings settings = new UserSettings();
         settings.setUser(user);
 
@@ -117,4 +124,9 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    @Transactional
+    public void setEmailVerified(UUID id) {
+        User user = findById(id);
+        user.setEmailVerified(true);
+    }
 }

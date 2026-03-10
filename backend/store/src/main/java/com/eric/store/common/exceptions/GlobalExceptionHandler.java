@@ -68,5 +68,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, Object>> handleAuthProviderConflict(AuthProviderConflictException ex) {
         return build(HttpStatus.CONFLICT, "Auth provider conflict", ex);
     }
+
+    @ExceptionHandler(InvalidOtpException.class)
+    public ResponseEntity<Map<String, Object>> handleInvalidOtp(InvalidOtpException ex) {
+        return build(HttpStatus.BAD_REQUEST, "Invalid OTP", ex);
+    }
 }
 

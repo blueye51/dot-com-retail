@@ -2,22 +2,22 @@ import { configureStore, createSlice } from "@reduxjs/toolkit";
 
 const authSlice = createSlice({
     name: "auth",
-    initialState: { token: null, roles: [] },
+    initialState: { token: null, roles: [], emailVerified: false },
     reducers: {
-        setToken: (state, action) => {
-            state.token = action.payload;
+        setAuth: (state, action) => {
+            state.token = action.payload.token;
+            state.roles = action.payload.roles;
+            state.emailVerified = action.payload.emailVerified;
         },
         logout: (state) => {
             state.token = null;
             state.roles = [];
-        },
-        setRoles: (state, action) => {
-            state.roles = action.payload;
+            state.emailVerified = false;
         },
     }
 })
 
-export const { setToken, logout, setRoles } = authSlice.actions;
+export const { setAuth, logout } = authSlice.actions;
 
 export const store = configureStore({
     reducer: {
