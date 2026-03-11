@@ -9,6 +9,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/email-verification")
@@ -20,7 +21,8 @@ public class EmailVerificationController {
     public record VerifyRequest(String code) {}
 
     @PostMapping("/send")
-    public ResponseEntity<Map<String, String>> sendVerificationCode(@AuthenticationPrincipal User user) {
+    public ResponseEntity<Map<String, String>> sendVerificationCode(@AuthenticationPrincipal UUID userId) {
+        User user = userService.findById(userId);
         String email = user.getEmail();
         verificationService.sendCode(email);
         return ResponseEntity.ok().body(Map.of("email",  email));
@@ -28,10 +30,11 @@ public class EmailVerificationController {
 
     @PostMapping("/verify")
     public ResponseEntity<Void> verifyEmail(
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal UUID userId,
             @RequestBody VerifyRequest req) {
+        User user = userService.findById(userId);
         verificationService.verifyCode(user.getEmail(), req.code());
-        userService.setEmailVerified(user.getId());
+        userService.setEmailVerified(userId);
         return ResponseEntity.noContent().build();
     }
 

@@ -47,7 +47,6 @@ public class JwtService {
     }
 
     public boolean isValid(String token) {
-
         try {
             Claims c = parseAndValidate(token);
             return c.getExpiration() == null || c.getExpiration().after(new Date());
@@ -72,4 +71,7 @@ public class JwtService {
 
         return List.of();
     }
+
+    public boolean isEmailVerified(String token) {
+        return Boolean.TRUE.equals(parseAndValidate(token).get("emailVerified"));                                                                                    }
 }
