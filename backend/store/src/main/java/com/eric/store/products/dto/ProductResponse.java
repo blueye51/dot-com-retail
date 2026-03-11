@@ -15,6 +15,7 @@ public record ProductResponse(
         BigDecimal height,
         BigDecimal depth,
         BigDecimal weight,
+        String brand,
         Integer stock,
         UUID categoryId,
         OffsetDateTime createdAt,

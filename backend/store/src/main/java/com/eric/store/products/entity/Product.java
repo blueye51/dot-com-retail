@@ -41,6 +41,10 @@ public class Product {
 
     private BigDecimal weight;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "brand_id")
+    private Brand brand;
+
     @Column(nullable = false)
     private Integer stock;
 

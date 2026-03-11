@@ -17,6 +17,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
     @Query("""
               SELECT p
               FROM Product p
+              LEFT JOIN FETCH p.brand
               WHERE (:categoryId IS NULL OR p.category.id = :categoryId)
             """)
     Page<Product> searchNoQuery(@Param("categoryId") UUID categoryId, Pageable pageable);
@@ -24,6 +25,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
     @Query("""
               SELECT p
               FROM Product p
+              LEFT JOIN FETCH p.brand
               WHERE (:categoryId IS NULL OR p.category.id = :categoryId)
                 AND p.name ILIKE :pattern
             """)
@@ -34,6 +36,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
 
     @Query("""
                 SELECT DISTINCT p FROM Product p
+                LEFT JOIN FETCH p.brand
                 LEFT JOIN FETCH p.productImages pi
                 LEFT JOIN FETCH pi.file
                 WHERE p.id = :id

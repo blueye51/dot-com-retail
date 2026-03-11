@@ -18,6 +18,7 @@ function ProductList () {
 //     weight: number,
 //     stock: number, (req.)
 //     categoryId: string, (req.)
+//     String brand,
 //     images:[{
 //         fileKey: string,
 //         sortOrder: number

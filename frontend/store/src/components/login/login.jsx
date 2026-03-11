@@ -2,8 +2,8 @@ import styles from "./login.module.css";
 import {useEffect, useRef, useState} from "react";
 import {useDispatch} from "react-redux";
 import {Turnstile} from "@marsidev/react-turnstile";
-import {setAuth} from "../store.js";
-import useFetch, {getClaimsFromToken} from "../useFetch.js";
+import {setAuth, buildAuthFromToken} from "../store.js";
+import useFetch from "../useFetch.js";
 import {useNavigate, useLocation, Link} from "react-router-dom";
 import {paths} from "../routes.js";
 
@@ -55,9 +55,11 @@ function Login() {
 
         try {
             const result = await reFetch({ body: payload });
-            const claims = getClaimsFromToken(result.accessToken);
-            const { roles = [], emailVerified = false } = claims;
-            dispatch(setAuth({ token: result.accessToken, roles, emailVerified }));
+            if (result["2faRequired"]) {
+                navigate(paths.verify2fa(), { replace: true, state: { tempCode: result.tempCode, from } });
+                return;
+            }
+            dispatch(setAuth(buildAuthFromToken(result.accessToken)));
             navigate(from, { replace: true });
         } catch (err) {
             alert("Login failed: " + (err.message || "Unknown error"));

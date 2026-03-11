@@ -10,7 +10,7 @@ export default function ProductRow ({ product }) {
     );
 
     return (
-        <div className={styles.row}>
+        <div key={product.id} className={styles.row}>
             <img
                 className={styles.thumb}
                 src={product.imageUrl ?? defaultImage}
@@ -29,6 +29,11 @@ export default function ProductRow ({ product }) {
                 <div className={styles.line}>
                     <span>Stock:</span>
                     <span>{product.stock}</span>
+                </div>
+
+                <div className={styles.line}>
+                    <span>Brand:</span>
+                    <span>{product.brand}</span>
                 </div>
 
                 <div className={styles.line}>

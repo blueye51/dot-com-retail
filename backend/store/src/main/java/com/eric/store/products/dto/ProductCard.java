@@ -11,6 +11,7 @@ public record ProductCard(
         String name,
         BigDecimal price,
         CurrencyProvider currency,
+        String brand,
         Integer stock,
         UUID categoryId,
         OffsetDateTime createdAt,

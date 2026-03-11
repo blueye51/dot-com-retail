@@ -1,6 +1,6 @@
 package com.eric.store.auth.controller;
 
-import com.eric.store.auth.service.EmailVerifivationService;
+import com.eric.store.auth.service.EmailVerificationService;
 import com.eric.store.user.entity.User;
 import com.eric.store.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import java.util.UUID;
 @RequestMapping("/api/email-verification")
 @RequiredArgsConstructor
 public class EmailVerificationController {
-    private final EmailVerifivationService verificationService;
+    private final EmailVerificationService verificationService;
     private final UserService userService;
 
     public record VerifyRequest(String code) {}

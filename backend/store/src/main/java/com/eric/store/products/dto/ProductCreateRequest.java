@@ -17,6 +17,7 @@ public record ProductCreateRequest(
         @DecimalMin("0.0") BigDecimal height,
         @DecimalMin("0.0") BigDecimal depth,
         @DecimalMin("0.0") BigDecimal weight,
+        UUID brandId,
         @NotNull @Min(0) Integer stock,
         @NotNull UUID categoryId,
         @Valid List<ImageCreate> images

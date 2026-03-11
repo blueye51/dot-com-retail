@@ -27,7 +27,7 @@ export default function Profile() {
             <p>profile</p>
             <p>name: {user.name}</p>
             <p>email: {user.email}</p>
-            <p>settings: {user.settings.twoFactorEnabled ? "true" : "false"}</p>
+            <p>settings: twoFactorEnabled {user.settings?.twoFactorEnabled ? "true" : "false"}</p>
         </div>
     )
 }

@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setAuth } from "./store.js";
+import { setAuth, buildAuthFromToken } from "./store.js";
 import { paths } from "./routes.js";
-import useFetch, { getClaimsFromToken } from "./useFetch.js";
+import useFetch from "./useFetch.js";
 
 const API_BASE = import.meta.env.VITE_API_BASE;
 
@@ -37,8 +37,7 @@ function OAuth2Callback() {
 
     useEffect(() => {
         if (!data) return;
-        const claims = getClaimsFromToken(data.accessToken);
-        dispatch(setAuth({ token: data.accessToken, roles: claims.roles || [], emailVerified: claims.emailVerified ?? false }));
+        dispatch(setAuth(buildAuthFromToken(data.accessToken)));
         navigate(paths.home(), { replace: true });
     }, [data]);
 

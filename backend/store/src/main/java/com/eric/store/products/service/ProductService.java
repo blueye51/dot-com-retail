@@ -6,9 +6,11 @@ import com.eric.store.common.exceptions.NotFoundException;
 import com.eric.store.common.util.StringUtils;
 import com.eric.store.common.util.UuidUtils;
 import com.eric.store.products.dto.*;
+import com.eric.store.products.entity.Brand;
 import com.eric.store.products.entity.Product;
 import com.eric.store.products.entity.ProductImage;
 import com.eric.store.products.mapper.ProductMapper;
+import com.eric.store.products.repository.BrandRepository;
 import com.eric.store.products.repository.ProductImageRepository;
 import com.eric.store.products.repository.ProductRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +36,7 @@ public class ProductService {
     private final CategoryRepository categoryRepository;
     private final ProductImageRepository productImageRepository;
     private final ProductMapper productMapper;
+    private final BrandService brandService;
 
 
     public Product create(ProductCreateRequest req) {
@@ -41,6 +44,11 @@ public class ProductService {
                 .orElseThrow(() -> new NotFoundException("Category", req.categoryId()));
 
         Product product = productMapper.toProduct(req);
+
+        if (req.brandId() != null) {
+            Brand brand = brandService.findById(req.brandId());
+            product.setBrand(brand);
+        }
 
         category.addProduct(product);
 

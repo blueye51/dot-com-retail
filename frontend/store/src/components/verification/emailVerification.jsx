@@ -1,7 +1,6 @@
-import useFetch, {getClaimsFromToken, refreshAccessToken} from "../useFetch.js";
+import useFetch, {refreshAccessToken} from "../useFetch.js";
 import {useState} from "react";
 import {useDispatch} from "react-redux";
-import {setAuth} from "../store.js";
 import {useNavigate} from "react-router-dom";
 import {paths} from "../routes.js";
 

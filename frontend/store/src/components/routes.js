@@ -14,6 +14,8 @@ export const PATHS = {
     any: "*",
     profile: "/profile",
     verifyEmail: "/verifyEmail",
+    verify2fa: "/verify-2fa",
+    brandCreate: "/brandCreate"
 };
 
 export const paths = {
@@ -29,4 +31,6 @@ export const paths = {
     oauth2Callback: () => PATHS.oauth2Callback,
     profile: () => PATHS.profile,
     verifyEmail: () => PATHS.verifyEmail,
+    verify2fa: () => PATHS.verify2fa,
+    brandCreate: () => PATHS.brandCreate,
 }

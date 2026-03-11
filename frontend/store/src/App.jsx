@@ -21,7 +21,9 @@ import ProductPage from "./components/product/productPage.jsx";
 import OAuth2Callback from "./components/OAuth2Callback.jsx";
 import Profile from "./components/profile/profile.jsx";
 import UnverifiedEmail from "./components/auth/unverifiedEmail.jsx";
-import EmailVerification from "./components/emailVerification/emailVerification.jsx";
+import EmailVerification from "./components/verification/emailVerification.jsx";
+import TwoFactorVerification from "./components/verification/twoFactorVerification.jsx";
+import BrandCreate from "./components/brand/brandCreate/BrandCreate.jsx";
 
 
 function App() {
@@ -48,33 +50,37 @@ function App() {
     return (
         <BrowserRouter>
             <Routes>
+                {/* Guest-only */}
+                <Route element={<MissingAuth/>}>
+                    <Route path={PATHS.login} element={<Login/>}/>
+                    <Route path={PATHS.register} element={<Register/>}/>
+                    <Route path={PATHS.verify2fa} element={<TwoFactorVerification/>}/>
+                </Route>
+
+                {/* No wrapper needed */}
+                <Route path={PATHS.oauth2Callback} element={<OAuth2Callback/>}/>
+                <Route path={PATHS.unauthorized} element={<Unauthorized/>}/>
+
+                {/* Email verification (logged in but unverified) */}
                 <Route element={<UnverifiedEmail/>}>
                     <Route path={PATHS.verifyEmail} element={<EmailVerification/>}/>
                 </Route>
 
-                <Route element={<MissingAuth/>}>
-                    <Route path={PATHS.login} element={<Login/>}/>
-                    <Route path={PATHS.register} element={<Register/>}/>
-
-                </Route>
-                <Route path={PATHS.unauthorized} element={<Unauthorized/>}/>
-                <Route path={PATHS.oauth2Callback} element={<OAuth2Callback/>}/>
-
-
+                {/* Everything with MainLayout */}
                 <Route element={<MainLayout/>}>
+                    {/* Public */}
                     <Route path={PATHS.home} element={<Home/>}/>
                     <Route path={PATHS.product} element={<ProductPage/>}/>
-                </Route>
 
-                <Route element={<RequiredAuth/>}>
-                    <Route element={<MainLayout/>}>
+                    {/* Authenticated */}
+                    <Route element={<RequiredAuth/>}>
                         <Route path={PATHS.profile} element={<Profile/>}/>
                     </Route>
-                </Route>
 
-                <Route element={<RequiredRole allowed={["ADMIN"]}/>}>
-                    <Route element={<MainLayout/>}>
+                    {/* Admin */}
+                    <Route element={<RequiredRole allowed={["ADMIN"]}/>}>
                         <Route path={PATHS.admin} element={<AdminMenu/>}/>
+                        <Route path={PATHS.brandCreate} element={<BrandCreate/>}/>
                         <Route path={PATHS.productList} element={<ProductList/>}/>
                         <Route path={PATHS.createProduct} element={<ProductCreation/>}/>
                         <Route path={PATHS.categoryTree} element={<CategoryTree/>}/>

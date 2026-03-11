@@ -34,12 +34,14 @@ function ProductCreation() {
     const [weight, setWeight] = useState('');
     const [stock, setStock] = useState('');
     const [categoryId, setCategoryId] = useState('');
+    const [brandId, setBrandId] = useState('');
 
     const [images, setImages] = useState([]);
 
     const navigate = useNavigate();
 
     const {data: categories, loading: loadingCategories} = useFetch('/api/categories', {})
+    const {data: brands, loading: loadingBrands} = useFetch('/api/brands', {})
 
     const {data, error, loading, reFetch} = useFetch('/api/products', {
         method: 'POST',
@@ -94,6 +96,7 @@ function ProductCreation() {
             depth: toOptionalNumber(depth),
             weight: toOptionalNumber(weight),
 
+            brandId: brandId || null,
             stock: stock.trim() === "" ? null : Number(stock),
             categoryId: categoryId || null,
 
@@ -124,7 +127,7 @@ function ProductCreation() {
         const product = buildProduct();
         await reFetch({body: product})
 
-    }, [reFetch, name, priceMajor, priceMinor, currency, description, width, height, depth, weight, stock, categoryId, images])
+    }, [reFetch, name, priceMajor, priceMinor, currency, description, width, height, depth, weight, stock, categoryId, brandId, images])
 
     useEffect(() => {
         if (!data) return;
@@ -211,6 +214,26 @@ function ProductCreation() {
 
 
             <p>Optional:</p>
+            <div>
+                <label htmlFor="brand">Brand:</label>
+                <select
+                    value={brandId}
+                    onChange={(e) => setBrandId(e.target.value)}
+                >
+                    <option value="">No brand</option>
+
+                    {loadingBrands && (
+                        <option disabled>Loading brands...</option>
+                    )}
+
+                    {!loadingBrands &&
+                        brands?.map(brand => (
+                            <option key={brand.id} value={brand.id}>
+                                {brand.name}
+                            </option>
+                        ))}
+                </select>
+            </div>
             <div>
                 <label htmlFor="description">Description:</label>
                 <input

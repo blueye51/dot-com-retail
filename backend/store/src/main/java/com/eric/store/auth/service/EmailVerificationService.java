@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class EmailVerifivationService {
+public class EmailVerificationService {
     private static final String PREFIX = "email-verify:";
     private final OtpService otpService;
 

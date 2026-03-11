@@ -73,5 +73,10 @@ public class JwtService {
     }
 
     public boolean isEmailVerified(String token) {
-        return Boolean.TRUE.equals(parseAndValidate(token).get("emailVerified"));                                                                                    }
+        return Boolean.TRUE.equals(parseAndValidate(token).get("emailVerified"));
+    }
+
+    public boolean isTwoFactorEnabled(String token) {
+        return Boolean.TRUE.equals(parseAndValidate(token).get("2fa"));
+    }
 }

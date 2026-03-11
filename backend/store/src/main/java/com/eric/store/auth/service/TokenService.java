@@ -52,7 +52,8 @@ public class TokenService {
         User user =  userService.findByIdWithRoles(userId);
         Map<String, Object> claims = Map.of(
                 "roles", user.getRoles().stream().map(Role::getName).toList(),
-                "emailVerified", user.isEmailVerified());
+                "emailVerified", user.isEmailVerified(),
+                "2fa", user.getSettings().isTwoFactorEnabled());
         String access = jwtService.generateAccessToken(userId.toString(), claims);
         String refresh = UUID.randomUUID().toString();
         refreshTokenStore.save(refresh, userId, refreshExpiration);

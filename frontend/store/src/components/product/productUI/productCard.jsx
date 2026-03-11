@@ -6,14 +6,16 @@ export function ProductCard({
                                 price = -1,
                                 currency = "N/A",
                                 stock = 0,
+                                brand = "N/A",
                                 thumbnail = ""
                             }) {
-    return(
-        <div className={styles.card}>
-            <img className={styles.thumbnail} src={thumbnail} alt={name} />
+    return (
+        <div key={id} className={styles.card}>
+            <img className={styles.thumbnail} src={thumbnail} alt={name}/>
             <h2 className={styles.productName}>{name}</h2>
             <p className={styles.productPrice}>{price >= 0 ? `${price} ${currency}` : "Price not available"}</p>
             <p className={styles.productStock}>{stock > 0 ? `In Stock: ${stock}` : "Out of Stock"}</p>
+            <p className={styles.brand}>Brand: {brand}</p>
             <button className={styles.addToCartButton} disabled={stock <= 0}>Add to Cart</button>
         </div>
     )
@@ -29,4 +31,5 @@ export function ProductCard({
 //     String depth,
 //     String weight,
 //     Integer stock,
+//     String brand,
 // String thumnail

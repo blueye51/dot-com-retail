@@ -118,6 +118,7 @@ public class UserService {
         if (!adminSeedEmail.isBlank() && user.getEmail().equals(adminSeedEmail)) {
             user.getRoles().add(getRole("ADMIN"));
             settings.setTwoFactorEnabled(true);
+            user.setEmailVerified(true);
         }
 
         user.setSettings(settings);

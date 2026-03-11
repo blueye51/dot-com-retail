@@ -14,7 +14,7 @@ public class TwoFactorAuthService {
     }
 
     public void verifyCode(String email, String code) {
-        otpService.verifyCode(email, PREFIX, code);
+        otpService.verifyCode(email, code, PREFIX);
     }
 }
 
