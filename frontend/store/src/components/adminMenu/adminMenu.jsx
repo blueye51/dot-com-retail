@@ -11,7 +11,7 @@ function AdminMenu () {
             <br />
             <Link to={paths.createProduct()}>Create Product</Link>
             <br />
-            <Link to={paths.categoryTree()}>Category</Link>
+            <Link to={paths.categoryAdmin()}>Manage Categories</Link>
             <br />
             <Link to={paths.brandCreate()}>Create brand</Link>
         </div>

@@ -14,7 +14,7 @@ function ProductImageMenu({maxFiles = 1, setImages, images}) {
 
     const [rawFile, setRawFile] = useState(null);
 
-    const {data, error, loading, reFetch, abort} = useFetch("/api/images/public", {
+    const {data, error, loading, reFetch} = useFetch("/api/images/public", {
         method: "POST",
         withAuth: true,
         immediate: false,

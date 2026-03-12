@@ -1,18 +1,16 @@
 package com.eric.store.products.service;
 
+import com.eric.store.brands.service.BrandService;
 import com.eric.store.categories.entity.Category;
 import com.eric.store.categories.repository.CategoryRepository;
 import com.eric.store.common.exceptions.NotFoundException;
-import com.eric.store.common.util.StringUtils;
-import com.eric.store.common.util.UuidUtils;
 import com.eric.store.products.dto.*;
-import com.eric.store.products.entity.Brand;
+import com.eric.store.brands.entity.Brand;
 import com.eric.store.products.entity.Product;
-import com.eric.store.products.entity.ProductImage;
 import com.eric.store.products.mapper.ProductMapper;
-import com.eric.store.products.repository.BrandRepository;
-import com.eric.store.products.repository.ProductImageRepository;
 import com.eric.store.products.repository.ProductRepository;
+import com.eric.store.products.repository.ProductSpecification;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,11 +19,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +29,6 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ProductImageService productImageService;
     private final CategoryRepository categoryRepository;
-    private final ProductImageRepository productImageRepository;
     private final ProductMapper productMapper;
     private final BrandService brandService;
 
@@ -66,43 +60,33 @@ public class ProductService {
     }
 
     public Page<ProductCard> search(ProductQuery query) {
-        Sort sort = Sort.by(Sort.Direction.fromString(query.order()), query.sort());
-        Pageable pageable = PageRequest.of(query.page(), query.size(), sort);
-
-        String q = query.query();
-        UUID categoryId = query.categoryId();
-
-        Page<Product> products = findProducts(q, categoryId, pageable);
-
-        Map<UUID, String> thumbnailUrlByProductId = loadThumbnailUrls(products);
-
+        Pageable pageable = toPageable(query);
+        Page<Product> products = findProducts(query, pageable);
+        Map<UUID, String> thumbnailUrlByProductId = productImageService.loadThumbnailUrls(products);
         return products.map(p -> productMapper.toCard(p, thumbnailUrlByProductId.get(p.getId())));
     }
 
-    private Page<Product> findProducts(String q, UUID categoryId, Pageable pageable) {
-        if (q == null) {
-            return productRepository.searchNoQuery(categoryId, pageable);
-        }
-        return productRepository.searchWithQuery(q, categoryId, pageable);
+    private Pageable toPageable(ProductQuery q) {
+        Sort.Direction direction = q.descending() ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Sort sort = Sort.by(direction, q.sort().getValue());
+        return PageRequest.of(q.page(), q.size(), sort);
     }
 
-    private Map<UUID, String> loadThumbnailUrls(Page<Product> products) {
-        List<UUID> productIds = products.stream().map(Product::getId).toList();
-        if (productIds.isEmpty()) return Map.of();
-
-        return productImageRepository.findThumbnails(productIds).stream()
-                .collect(Collectors.toMap(
-                        img -> img.getProduct().getId(),
-                        img -> img.getFile().getUrl(),
-                        (a, b) -> a
-                ));
+    private Page<Product> findProducts(ProductQuery q, Pageable pageable) {
+        Specification<Product> spec = ProductSpecification.fetchBrand()
+                .and(ProductSpecification.fetchCategory())
+                .and(ProductSpecification.hasCategory(q.categoryId()))
+                .and(ProductSpecification.nameContains(q.query()));
+        return productRepository.findAll(spec, pageable);
     }
 
 
-    public ProductResponse getProductById(UUID id) {
-        Product product = productRepository.findByIdWithImages(id)
+    public ProductResponse getProductResponseById(UUID id) {
+        return productMapper.toResponse(findProductById(id));
+    }
+
+    private Product findProductById(UUID id) {
+        return productRepository.findByIdWithImages(id)
                 .orElseThrow(() -> new NotFoundException("Product", id));
-
-        return productMapper.toResponse(product);
     }
 }

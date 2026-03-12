@@ -1,4 +1,6 @@
 import styles from './productCard.module.css';
+import {Link} from "react-router-dom";
+import {paths} from "../../routes.js";
 
 export function ProductCard({
                                 id,
@@ -6,18 +8,17 @@ export function ProductCard({
                                 price = -1,
                                 currency = "N/A",
                                 stock = 0,
-                                brand = "N/A",
-                                thumbnail = ""
+                                brand = "",
+                                category = "N/A",
+                                imageUrl = ""
                             }) {
     return (
-        <div key={id} className={styles.card}>
-            <img className={styles.thumbnail} src={thumbnail} alt={name}/>
-            <h2 className={styles.productName}>{name}</h2>
-            <p className={styles.productPrice}>{price >= 0 ? `${price} ${currency}` : "Price not available"}</p>
-            <p className={styles.productStock}>{stock > 0 ? `In Stock: ${stock}` : "Out of Stock"}</p>
-            <p className={styles.brand}>Brand: {brand}</p>
+        <Link to={paths.product(id)} className={styles.card}>
+            <img className={styles.thumbnail} src={imageUrl} alt={name}/>
+            <p>&gt;{category}</p>
+            <h2>{name}</h2>
             <button className={styles.addToCartButton} disabled={stock <= 0}>Add to Cart</button>
-        </div>
+        </Link>
     )
 }
 

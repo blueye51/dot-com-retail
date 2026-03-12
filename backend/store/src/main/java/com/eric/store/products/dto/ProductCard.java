@@ -13,8 +13,7 @@ public record ProductCard(
         CurrencyProvider currency,
         String brand,
         Integer stock,
-        UUID categoryId,
-        OffsetDateTime createdAt,
+        String category,
         String imageUrl
 ) {
 }

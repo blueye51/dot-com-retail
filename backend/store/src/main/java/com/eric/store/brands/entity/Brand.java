@@ -1,4 +1,4 @@
-package com.eric.store.products.entity;
+package com.eric.store.brands.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

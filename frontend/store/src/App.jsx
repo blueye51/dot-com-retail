@@ -16,6 +16,7 @@ import ProductList from "./components/product/productList/productList.jsx";
 import MissingAuth from "./components/auth/missingAuth.jsx";
 import ProductCreation from "./components/product/productCreation/productCreation.jsx";
 import CategoryTree from "./components/category/categoryTree/categoryTree.jsx";
+import CategoryAdmin from "./components/category/categoryAdmin/categoryAdmin.jsx";
 import {Register} from "./components/register/register.jsx";
 import ProductPage from "./components/product/productPage.jsx";
 import OAuth2Callback from "./components/OAuth2Callback.jsx";
@@ -84,6 +85,7 @@ function App() {
                         <Route path={PATHS.productList} element={<ProductList/>}/>
                         <Route path={PATHS.createProduct} element={<ProductCreation/>}/>
                         <Route path={PATHS.categoryTree} element={<CategoryTree/>}/>
+                        <Route path={PATHS.categoryAdmin} element={<CategoryAdmin/>}/>
                     </Route>
                 </Route>
 

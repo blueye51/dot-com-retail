@@ -1,11 +1,11 @@
-package com.eric.store.products.controller;
+package com.eric.store.brands.controller;
 
-import com.eric.store.products.dto.BrandResponse;
-import com.eric.store.products.entity.Brand;
+import com.eric.store.brands.dto.BrandResponse;
+import com.eric.store.brands.entity.Brand;
 import com.eric.store.products.mapper.ProductMapper;
-import com.eric.store.products.service.BrandService;
+import com.eric.store.brands.service.BrandService;
 import jakarta.validation.Valid;
-import com.eric.store.products.dto.BrandRequest;
+import com.eric.store.brands.dto.BrandRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +21,6 @@ import java.util.UUID;
 public class BrandController {
 
     private final BrandService brandService;
-    private final ProductMapper productMapper;
 
     @GetMapping
     public ResponseEntity<List<BrandResponse>> getAllBrands() {

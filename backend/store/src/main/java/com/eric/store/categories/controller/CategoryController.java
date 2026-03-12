@@ -10,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/categories")
@@ -28,5 +29,18 @@ public class CategoryController {
     public ResponseEntity<CategoryDto> addCategory(@RequestBody @Valid CategoryRequest categoryRequest) {
         return ResponseEntity.ok(CategoryDto.from(categoryService.create(categoryRequest),
                 categoryRequest.parentId()));
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<CategoryDto> renameCategory(@PathVariable UUID id, @RequestParam String name) {
+        return ResponseEntity.ok(categoryService.rename(id, name));
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteCategory(@PathVariable UUID id) {
+        categoryService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -53,4 +53,16 @@ public class CategoryService {
 
         return categoryRepository.save(category);
     }
+
+    public CategoryDto rename(UUID id, String name) {
+        Category category = getCategoryById(id);
+        category.setName(name);
+        Category saved = categoryRepository.save(category);
+        return CategoryDto.from(saved, saved.getParentCategory() != null ? saved.getParentCategory().getId() : null);
+    }
+
+    public void delete(UUID id) {
+        Category category = getCategoryById(id);
+        categoryRepository.delete(category);
+    }
 }

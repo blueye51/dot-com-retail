@@ -1,0 +1,109 @@
+.main {
+    width: 100%;
+    margin: 2rem auto;
+    padding: 1rem;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.tree {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.node {
+    padding-left: 1rem;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.5rem;
+    border-radius: 6px;
+}
+
+.row:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.toggle {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-size: 0.8rem;
+    width: 1.2rem;
+    color: inherit;
+}
+
+.name {
+    font-size: 0.95rem;
+}
+
+.leaf {
+    font-size: 0.7rem;
+    opacity: 0.5;
+    margin-left: 0.25rem;
+}
+
+.actions {
+    display: flex;
+    gap: 0.25rem;
+    opacity: 0;
+    transition: opacity 0.15s;
+}
+
+.row:hover .actions {
+    opacity: 1;
+}
+
+.actions button {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+}
+
+.deleteBtn {
+    color: #ff6b6b;
+    border-color: #ff6b6b;
+}
+
+.deleteBtn:hover {
+    background: rgba(255, 107, 107, 0.15);
+}
+
+.inlineForm {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.5rem 0.5rem 1.5rem;
+}
+
+.inlineForm input[type="text"] {
+    padding: 0.3rem 0.5rem;
+    border-radius: 4px;
+    border: 1px solid #555;
+    background: #1a1a1a;
+    color: inherit;
+    font-size: 0.9rem;
+}
+
+.inlineForm label {
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.children {
+    padding-left: 1rem;
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+    margin-left: 0.6rem;
+}

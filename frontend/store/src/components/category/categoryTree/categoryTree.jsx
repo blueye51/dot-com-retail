@@ -1,80 +1,42 @@
+import CategoryNode from "../categoryNode.jsx";
+import {useMemo} from "react";
 import useFetch from "../../useFetch.js";
-import {useEffect, useState} from "react";
-import styles from './categoryTree.module.css';
-import CategoryCreation from "../categoryCreation/categoryCreation.jsx";
-import Modal from "../../modal/modal.jsx";
 
+function buildTree(categories) {
+    const map = {};
+    categories.forEach(c => map[c.id] = { ...c, children: [] });
 
-function categoryTree() {
-
-
-    const [creating, setCreating] = useState(false)
-    const [focusedNodeId, setFocusedNodeId] = useState(null)
-    function close() {
-        setFocusedNodeId(null);
-        setCreating(false);
-    }
-
-    function handleCreationSuccess() {
-        close();
-        reFetch();
-    }
-
-    const [categories, setCategories] = useState({})
-    const {data, error, loading, reFetch, abort} = useFetch('/api/categories', {})
-
-    useEffect(() => {
-        if (!data) return;
-
-        const next = {};
-
-        for (const cat of data) {
-            const parent = cat.parentId ?? "root";
-            if (next[parent] == null) next[parent] = [];
-            next[parent].push(cat);
+    const roots = [];
+    categories.forEach(c => {
+        if (c.parentId === null) {
+            roots.push(map[c.id]);
+        } else {
+            map[c.parentId]?.children.push(map[c.id]);
         }
+    });
 
-        setCategories(next);
-    }, [data]);
+    return roots;
+}
 
+export default function CategoryTree({ onSelect }) {
+    const {data, reFetch, loading} = useFetch("/api/categories")
 
-    function toggleCreateChild(parentId) {
-        setCreating(prev => !prev)
-        setFocusedNodeId(parentId)
-    }
+    const tree = useMemo(() => buildTree(data || []), [data]);
 
-
-    function renderCategories(node) {
-        const children = categories[node.id] ?? [];
-
+    if (loading) {
         return (
-            <div key={node.id} className={node.isLeaf ? styles.leaf : styles.nonLeaf}>
-                <div>
-                    <p>{node.name}</p>
-                    {!node.isLeaf && <button onClick={() => toggleCreateChild(node.id)}>Add Category</button>}
-                </div>
-                {children.map(renderCategories)}
-            </div>
+            <div>Loading categories</div>
         )
     }
 
-    const rootCategories = categories.root ?? [];
-
     return (
         <div>
-            <button onClick={() => toggleCreateChild(null)}>
-                Create New Root Category
-            </button>
-            <div className={styles.categoryTree}>
-                {rootCategories.map(renderCategories)}
-            </div>
-
-
-            <Modal open={creating} onClose={close}>
-                <CategoryCreation parentId={focusedNodeId} onSuccess={handleCreationSuccess}/>
-            </Modal>
+            {tree.length === 0
+                ? <p>No categories found</p>
+                : tree.map(node => (
+                    <CategoryNode key={node.id} node={node} onSelect={onSelect} />
+                ))
+            }
         </div>
     );
 }
-
-export default categoryTree;

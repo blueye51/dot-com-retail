@@ -24,16 +24,16 @@ public class ProductController {
 
     @GetMapping("/page")
     public ResponseEntity<Page<ProductCard>> getPageProducts(
-            @RequestParam(required=false) String query,
-            @RequestParam(required=false) String categoryId,
-            @RequestParam(required=false) Integer page,
-            @RequestParam(required=false) Integer size,
-            @RequestParam(required=false) String sort,
-            @RequestParam(required=false) String order
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) String sort,
+            @RequestParam(defaultValue = "true") boolean descending,
+
+            @RequestParam(required = false) String query,
+            @RequestParam(required = false) String categoryId
     ) {
-        ProductQuery productQuery = new ProductQuery(query, categoryId, page, size, sort, order);
-        Page<ProductCard> products = productService.search(productQuery);
-        return ResponseEntity.ok(products);
+        var productQuery = new ProductQuery(query, categoryId, page, size, sort, descending);
+        return ResponseEntity.ok(productService.search(productQuery));
     }
 
     @PostMapping
@@ -46,7 +46,7 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> getProduct(@PathVariable UUID id) {
-        ProductResponse product = productService.getProductById(id);
+        ProductResponse product = productService.getProductResponseById(id);
         return ResponseEntity.ok(product);
     }
 }

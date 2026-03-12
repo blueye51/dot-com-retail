@@ -65,10 +65,23 @@ export default function ProductPage() {
 
                 <div className={styles.info}>
                     <h1>{product.name}</h1>
-                    <p>stock: {product.stock}</p>
-                    <div>price: {product.price.toFixed(2)} {product.currency}</div>
-                    <p>Description: {product.description}</p>
+                    <p>{product.brand}</p>
 
+                    <div>
+                        <span>{product.price.toFixed(2)} {product.currency}</span>
+                        <p>{product.stock > 0 ? `In Stock: ${product.stock}` : "Out of Stock"}</p>
+                        <button disabled={product.stock <= 0}>Add to Cart</button>
+                    </div>
+
+                    <p>{product.description}</p>
+
+                    <div>
+                        <h3>Dimensions</h3>
+                        <p>Width: {product.width} cm</p>
+                        <p>Height: {product.height} cm</p>
+                        <p>Depth: {product.depth} cm</p>
+                        <p>Weight: {product.weight} g</p>
+                    </div>
                 </div>
             </div>
         </div>

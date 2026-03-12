@@ -1,4 +1,4 @@
-package com.eric.store.products.dto;
+package com.eric.store.brands.dto;
 
 import jakarta.validation.constraints.NotBlank;
 

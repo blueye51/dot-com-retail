@@ -1,7 +1,8 @@
 package com.eric.store.products.mapper;
 
+import com.eric.store.brands.dto.BrandResponse;
 import com.eric.store.products.dto.*;
-import com.eric.store.products.entity.Brand;
+import com.eric.store.brands.entity.Brand;
 import com.eric.store.products.entity.Product;
 import com.eric.store.products.entity.ProductImage;
 import org.springframework.stereotype.Component;
@@ -39,8 +40,7 @@ public class ProductMapper {
                 product.getCurrency(),
                 product.getBrand() != null ? product.getBrand().getName() : null,
                 product.getStock(),
-                product.getCategory().getId(),
-                product.getCreatedAt(),
+                product.getCategory().getName(),
                 thumbnail
         );
     }
@@ -73,19 +73,6 @@ public class ProductMapper {
                 product.getCategory().getId(),
                 product.getCreatedAt(),
                 mapImages(product.getProductImages())
-        );
-    }
-
-    public List<BrandResponse> mapBrands(List<Brand> brands) {
-        return brands.stream()
-                .map(this::toBrandDto)
-                .toList();
-    }
-
-    public BrandResponse toBrandDto(Brand brand) {
-        return new BrandResponse(
-                brand.getId(),
-                brand.getName()
         );
     }
 

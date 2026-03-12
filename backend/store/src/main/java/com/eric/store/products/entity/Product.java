@@ -1,5 +1,6 @@
 package com.eric.store.products.entity;
 
+import com.eric.store.brands.entity.Brand;
 import com.eric.store.categories.entity.Category;
 import com.eric.store.orders.entity.OrderItem;
 import jakarta.persistence.*;
