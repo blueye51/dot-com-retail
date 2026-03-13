@@ -35,7 +35,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**", "/actuator/health",
                                 "/api/categories/**", "/api/products/**", "/api/brands/**",
                                 "/api/images/**", "/oauth2/**",
-                                "/login/oauth2/**")
+                                "/login/oauth2/**",
+                                "/api/email-verification/verify")
                         .permitAll()
                         .requestMatchers("/api/admin/**")
                         .hasRole("ADMIN")

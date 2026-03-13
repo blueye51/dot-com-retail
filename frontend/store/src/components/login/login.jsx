@@ -117,6 +117,7 @@ function Login() {
                 </button>
             </form>
 
+            <Link to={paths.forgotPassword()}>Forgot password?</Link>
             <Link to={paths.register()}>Register here</Link>
             <button type="button" onClick={handleGoogleLogin}>
                 Continue with Google

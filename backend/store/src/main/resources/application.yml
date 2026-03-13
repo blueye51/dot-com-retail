@@ -40,6 +40,7 @@ server:
     enabled: false
 
 app:
+  frontend-base-url: ${FRONTEND_BASE_URL:https://localhost:5173}
   oauth2:
     allowed-redirect-uris: ${OAUTH2_REDIRECT_URIS}
     default-redirect-uri: ${OAUTH2_DEFAULT_REDIRECT}

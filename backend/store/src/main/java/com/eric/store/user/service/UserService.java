@@ -86,6 +86,12 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("User not found", email));
+    }
+
+    @Transactional(readOnly = true)
     public User findById(UUID id) {
         return userRepository.findById(id)
                 .orElseThrow( () -> new NotFoundException("User not found", id) );
@@ -124,6 +130,12 @@ public class UserService {
 
         user.setSettings(settings);
         return userRepository.save(user);
+    }
+
+    @Transactional
+    public void changePassword(String email, String newPassword) {
+        User user = findByEmail(email);
+        user.setPasswordHash(passwordEncoder.encode(newPassword));
     }
 
     @Transactional

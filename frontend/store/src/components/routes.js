@@ -15,8 +15,11 @@ export const PATHS = {
     any: "*",
     profile: "/profile",
     verifyEmail: "/verifyEmail",
+    verifyEmailToken: "/verify-email/:token",
     verify2fa: "/verify-2fa",
-    brandCreate: "/brandCreate"
+    brandCreate: "/brandCreate",
+    forgotPassword: "/forgot-password",
+    resetPassword: "/reset-password/:token"
 };
 
 export const paths = {
@@ -33,6 +36,9 @@ export const paths = {
     oauth2Callback: () => PATHS.oauth2Callback,
     profile: () => PATHS.profile,
     verifyEmail: () => PATHS.verifyEmail,
+    verifyEmailToken: (token) => generatePath(PATHS.verifyEmailToken, {token}),
     verify2fa: () => PATHS.verify2fa,
     brandCreate: () => PATHS.brandCreate,
+    forgotPassword: () => PATHS.forgotPassword,
+    resetPassword: (token) => generatePath(PATHS.resetPassword, {token}),
 }

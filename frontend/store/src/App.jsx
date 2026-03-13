@@ -23,6 +23,9 @@ import OAuth2Callback from "./components/OAuth2Callback.jsx";
 import Profile from "./components/profile/profile.jsx";
 import UnverifiedEmail from "./components/auth/unverifiedEmail.jsx";
 import EmailVerification from "./components/verification/emailVerification.jsx";
+import EmailVerifyToken from "./components/verification/emailVerifyToken.jsx";
+import ForgotPassword from "./components/auth/forgotPassword.jsx";
+import ResetPassword from "./components/auth/resetPassword.jsx";
 import TwoFactorVerification from "./components/verification/twoFactorVerification.jsx";
 import BrandCreate from "./components/brand/brandCreate/BrandCreate.jsx";
 
@@ -61,6 +64,9 @@ function App() {
                 {/* No wrapper needed */}
                 <Route path={PATHS.oauth2Callback} element={<OAuth2Callback/>}/>
                 <Route path={PATHS.unauthorized} element={<Unauthorized/>}/>
+                <Route path={PATHS.verifyEmailToken} element={<EmailVerifyToken/>}/>
+                <Route path={PATHS.forgotPassword} element={<ForgotPassword/>}/>
+                <Route path={PATHS.resetPassword} element={<ResetPassword/>}/>
 
                 {/* Email verification (logged in but unverified) */}
                 <Route element={<UnverifiedEmail/>}>

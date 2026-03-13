@@ -1,6 +1,5 @@
 package com.eric.store.auth.controller;
 
-import com.eric.store.auth.dto.Verify2faRequest;
 import com.eric.store.auth.service.*;
 import com.eric.store.user.dto.UserLogin;
 import com.eric.store.user.dto.UserRegister;
@@ -31,6 +30,8 @@ public class AuthController {
     private final TwoFactorAuthService twoFactorAuthService;
     private final TwoFactorPendingStore twoFactorPendingStore;
     private final Cookie cookie;
+
+    public record Verify2faRequest(String tempCode, String otpCode) {}
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@Valid @RequestBody UserRegister userRegister) {
