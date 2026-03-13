@@ -21,7 +21,10 @@ function OAuth2Callback() {
     useEffect(() => {
         const error = searchParams.get("error");
         if (error) {
-            navigate(paths.login(), { replace: true });
+            const message = error === "provider_conflict"
+                ? "This email is already registered with a password. Please log in with your email and password."
+                : "OAuth2 login failed.";
+            navigate(paths.login(), { replace: true, state: { error: message } });
             return;
         }
 

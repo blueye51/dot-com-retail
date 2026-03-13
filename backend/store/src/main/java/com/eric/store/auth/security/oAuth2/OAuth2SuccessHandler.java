@@ -2,6 +2,7 @@ package com.eric.store.auth.security.oAuth2;
 
 import com.eric.store.auth.service.OAuth2LoginCodeStore;
 import com.eric.store.auth.service.TokenService;
+import com.eric.store.common.exceptions.AuthProviderConflictException;
 import com.eric.store.common.util.Cookie;
 import com.eric.store.user.entity.User;
 import com.eric.store.user.service.UserService;
@@ -61,7 +62,18 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
             return;
         }
 
-        User user = userService.findOrCreateOAuth2User(email, name, sub);
+        User user;
+        try {
+            user = userService.findOrCreateOAuth2User(email, name, sub);
+        } catch (AuthProviderConflictException e) {
+            String redirectUri = resolveRedirectUri(request);
+            String target = UriComponentsBuilder.fromUriString(redirectUri)
+                    .queryParam("error", "provider_conflict")
+                    .build()
+                    .toUriString();
+            response.sendRedirect(target);
+            return;
+        }
 
         var pair = tokenService.issueTokens(user.getId());
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.makeRefresh(pair.refresh()).toString());

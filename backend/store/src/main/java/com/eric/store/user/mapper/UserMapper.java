@@ -21,7 +21,8 @@ public class UserMapper {
         return new UserProfile(
                 u.getName(),
                 u.getEmail(),
-                u.isEmailVerified()
+                u.isEmailVerified(),
+                u.getProvider().name()
         );
     }
 

@@ -2,18 +2,19 @@ import styles from './register.module.css';
 import useFetch from "../useFetch.js";
 import {useRef, useState} from "react";
 import { Turnstile } from "@marsidev/react-turnstile";
-import {Link} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {paths} from "../routes.js";
 
 export function Register() {
     const tsRef = useRef(null);
     const [tsToken, setTsToken] = useState(null);
 
+    const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [name, setName] = useState("");
 
-    const { data, error, loading, reFetch } = useFetch("/api/auth/register", {
+    const { error, loading, reFetch } = useFetch("/api/auth/register", {
         method: "POST",
         withAuth: false,
         immediate: false,
@@ -34,9 +35,9 @@ export function Register() {
             return;
         };
 
-        reFetch({
-            body: payload,
-        });
+        reFetch({ body: payload })
+            .then(() => navigate(paths.login(), { replace: true, state: { success: "Registered successfully. Log in to continue." } }))
+            .catch(() => {});
 
         tsRef.current?.reset?.();
         setTsToken(null);
@@ -84,9 +85,6 @@ export function Register() {
                 </button>
 
                 {error && <div>{String(error)}</div>}
-                {data && (<div>Registered
-                <Link to={paths.login()}>Login here</Link>
-                </div>)}
             </form>
         </div>
     );

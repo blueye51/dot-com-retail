@@ -26,6 +26,7 @@ function Login() {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
 
     const {error, loading, reFetch} = useFetch("/api/auth/login", {
         method: "POST",
@@ -73,6 +74,8 @@ function Login() {
     return (
         <div className={styles.loginContainer}>
             <h2>Login</h2>
+            {location.state?.error && <p className={styles.errorMsg}>{location.state.error}</p>}
+            {location.state?.success && <p className={styles.successMsg}>{location.state.success}</p>}
 
             <form onSubmit={handleSubmit} className={styles.loginForm}>
                 <div className={styles.formField}>
@@ -92,34 +95,53 @@ function Login() {
 
                 <div className={styles.formField}>
                     <label htmlFor="password">Password:</label>
-                    <input
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Password"
-                        type="password"
-                        id="password"
-                        name="password"
-                        autoComplete="current-password"
-                        value={password}
-                        required
-                    />
+                    <div className={styles.passwordWrapper}>
+                        <input
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="Password"
+                            type={showPassword ? "text" : "password"}
+                            id="password"
+                            name="password"
+                            autoComplete="current-password"
+                            value={password}
+                            required
+                        />
+                        <button
+                            type="button"
+                            className={styles.showPasswordBtn}
+                            onMouseDown={() => setShowPassword(true)}
+                            onMouseUp={() => setShowPassword(false)}
+                            onMouseLeave={() => setShowPassword(false)}
+                            onTouchStart={() => setShowPassword(true)}
+                            onTouchEnd={() => setShowPassword(false)}
+                            tabIndex={-1}
+                        >
+                            👁
+                        </button>
+                    </div>
                 </div>
 
-                <Turnstile
-                    ref={tsRef}
-                    siteKey={import.meta.env.VITE_TURNSTILE_VISIBLE_SITEKEY}
-                    onSuccess={(token) => setTsToken(token)}
-                    onExpire={() => setTsToken(null)}
-                    onError={() => setTsToken(null)}
-                />
+                <div className={styles.turnstileWrapper}>
+                    <Turnstile
+                        ref={tsRef}
+                        siteKey={import.meta.env.VITE_TURNSTILE_VISIBLE_SITEKEY}
+                        onSuccess={(token) => setTsToken(token)}
+                        onExpire={() => setTsToken(null)}
+                        onError={() => setTsToken(null)}
+                    />
+                </div>
 
                 <button type="submit" disabled={loading}>
                     {loading ? "Logging in..." : "Login"}
                 </button>
             </form>
 
-            <Link to={paths.forgotPassword()}>Forgot password?</Link>
-            <Link to={paths.register()}>Register here</Link>
-            <button type="button" onClick={handleGoogleLogin}>
+            <div className={styles.links}>
+                <Link to={paths.forgotPassword()}>Forgot password?</Link>
+                <Link to={paths.register()}>Register here</Link>
+            </div>
+            <div className={styles.divider}><span>or</span></div>
+            <button type="button" className={styles.googleBtn} onClick={handleGoogleLogin}>
                 Continue with Google
             </button>
 
