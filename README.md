@@ -183,4 +183,4 @@ Each filter is an independent `Specification` that gets combined with `.and()`. 
 
 ## Entity Relationship Diagram (ERD)
 
-The store.drawio.svg file in this repository
+![ERD](./Store.drawio.svg)
