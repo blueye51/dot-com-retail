@@ -16,7 +16,7 @@ function Header () {
 
     const handleSearch = (e) => {
         e.preventDefault();
-        if (search.trim()) navigate(`${paths.productList()}?search=${encodeURIComponent(search.trim())}`);
+        if (search.trim()) navigate(`${paths.home()}?search=${encodeURIComponent(search.trim())}`);
     };
 
     return (

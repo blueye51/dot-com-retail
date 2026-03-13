@@ -2,8 +2,8 @@ package com.eric.store.user.service;
 
 import com.eric.store.common.exceptions.AuthProviderConflictException;
 import com.eric.store.user.dto.UserLogin;
-import com.eric.store.user.dto.UserProfile;
 import com.eric.store.user.dto.UserRegister;
+import com.eric.store.user.dto.UserSettingsDto;
 import com.eric.store.user.entity.Role;
 import com.eric.store.common.exceptions.InvalidEmailOrPassword;
 import com.eric.store.common.exceptions.NotFoundException;
@@ -11,6 +11,7 @@ import com.eric.store.user.entity.User;
 import com.eric.store.user.repository.RoleRepository;
 import com.eric.store.user.mapper.UserMapper;
 import com.eric.store.user.repository.UserRepository;
+import com.eric.store.user.repository.UserSettingsRepository;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +22,6 @@ import com.eric.store.user.entity.AuthProvider;
 
 import com.eric.store.user.entity.UserSettings;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -30,6 +30,7 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserSettingsRepository userSettingsRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
@@ -47,7 +48,7 @@ public class UserService {
         createUser(user);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public User login(UserLogin login) {
         User user = userRepository.findByEmail(login.email())
                 .orElseThrow(() -> new InvalidEmailOrPassword("Invalid email or password"));
@@ -129,5 +130,18 @@ public class UserService {
     public void setEmailVerified(UUID id) {
         User user = findById(id);
         user.setEmailVerified(true);
+    }
+
+    @Transactional(readOnly = true)
+    public UserSettings getSettings(UUID userId) {
+        return userSettingsRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("UserSettings", userId));
+    }
+
+    @Transactional
+    public UserSettings updateSettings(UUID userId, UserSettingsDto dto) {
+        UserSettings settings = getSettings(userId);
+        settings.setTwoFactorEnabled(dto.twoFactorEnabled());
+        return settings;
     }
 }

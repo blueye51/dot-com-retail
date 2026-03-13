@@ -120,7 +120,7 @@ function ProductCreation() {
 
     const handleSubmit = useCallback(async () => {
         if (!requiredCheck()) {
-            console.log("missing required fields")
+            alert("missing required fields")
             return
         }
 
@@ -279,6 +279,7 @@ function ProductCreation() {
                     value={weight}
                 />
             </div>
+            <p className={styles.smalltext}>max 10 images, top one is the thumbnail</p>
             <ProductImageMenu maxFiles={10} setImages={setImages} images={images}/>
             <button onClick={handleSubmit} disabled={loading}>
                 {loading ? "Creating..." : "Create"}

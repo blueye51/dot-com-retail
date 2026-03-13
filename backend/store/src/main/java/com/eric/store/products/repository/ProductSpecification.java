@@ -4,6 +4,7 @@ import com.eric.store.products.entity.Product;
 import jakarta.persistence.criteria.JoinType;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 public class ProductSpecification {
@@ -15,6 +16,13 @@ public class ProductSpecification {
                         : cb.equal(root.get("category").get("id"), categoryId);
     }
 
+    public static Specification<Product> hasBrand(UUID brandId) {
+        return (root, query, cb) ->
+                brandId == null
+                        ? cb.conjunction()
+                        : cb.equal(root.get("brand").get("id"), brandId);
+    }
+
     public static Specification<Product> nameContains(String q) {
         return (root, query, cb) ->
                 q == null
@@ -22,6 +30,19 @@ public class ProductSpecification {
                         : cb.like(cb.lower(root.get("name")), "%" + q.toLowerCase() + "%");
     }
 
+    public static Specification<Product> priceGreaterThanOrEqual(BigDecimal minPrice) {
+        return (root, query, cb) ->
+                minPrice == null
+                        ? cb.conjunction()
+                        : cb.greaterThanOrEqualTo(root.get("price"), minPrice);
+    }
+
+    public static Specification<Product> priceLessThanOrEqual(BigDecimal maxPrice) {
+        return (root, query, cb) ->
+                maxPrice == null
+                        ? cb.conjunction()
+                        : cb.lessThanOrEqualTo(root.get("price"), maxPrice);
+    }
 
     public static Specification<Product> fetchBrand() {
         return (root, query, cb) -> {

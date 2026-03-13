@@ -1,5 +1,6 @@
 package com.eric.store.brands.mapper;
 
+import com.eric.store.brands.dto.BrandRequest;
 import com.eric.store.brands.dto.BrandResponse;
 import com.eric.store.brands.entity.Brand;
 import org.springframework.stereotype.Component;

@@ -15,28 +15,32 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class CategoryService {
     private final CategoryRepository categoryRepository;
 
+    @Transactional(readOnly = true)
     public Category getCategoryByName(String name) {
         return categoryRepository.findByName(name).orElseThrow(() -> new NotFoundException("Parent category name not found", name));
     }
 
+    @Transactional(readOnly = true)
     public Category getCategoryById(UUID id) {
         return categoryRepository.findById(id).orElseThrow(() -> new NotFoundException("Category not found", id));
     }
 
+    @Transactional(readOnly = true)
     public List<Category> findAll() {
         return categoryRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public List<CategoryDto> getAllCategories() {
         return categoryRepository.findAll().stream()
                 .map(c -> CategoryDto.from(c, c.getParentCategory() != null ? c.getParentCategory().getId() : null))
                 .toList();
     }
 
+    @Transactional
     public Category create(CategoryRequest req) {
         Category category = new Category(req.name(), req.isLeaf());
 
@@ -54,6 +58,7 @@ public class CategoryService {
         return categoryRepository.save(category);
     }
 
+    @Transactional
     public CategoryDto rename(UUID id, String name) {
         Category category = getCategoryById(id);
         category.setName(name);
@@ -61,6 +66,7 @@ public class CategoryService {
         return CategoryDto.from(saved, saved.getParentCategory() != null ? saved.getParentCategory().getId() : null);
     }
 
+    @Transactional
     public void delete(UUID id) {
         Category category = getCategoryById(id);
         categoryRepository.delete(category);

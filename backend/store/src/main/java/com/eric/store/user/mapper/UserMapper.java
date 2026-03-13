@@ -1,7 +1,5 @@
 package com.eric.store.user.mapper;
 
-import com.eric.store.products.dto.ProductResponse;
-import com.eric.store.products.entity.Product;
 import com.eric.store.user.dto.UserProfile;
 import com.eric.store.user.dto.UserRegister;
 import com.eric.store.user.dto.UserSettingsDto;
@@ -19,24 +17,17 @@ public class UserMapper {
         return user;
     }
 
-    /**
-     * Maps a {@link User} entity to {@link UserProfile}.
-     *
-     * IMPORTANT:
-     * The given User must be fetched with JOIN FETCH to UserSettings.
-     */
     public UserProfile toUserProfile(User u) {
         return new UserProfile(
                 u.getName(),
                 u.getEmail(),
-                u.isEmailVerified(),
-                toUserSettingsDto(u.getSettings())
+                u.isEmailVerified()
         );
     }
 
-    public UserSettingsDto toUserSettingsDto(UserSettings u) {
+    public UserSettingsDto toUserSettingsDto(UserSettings s) {
         return new UserSettingsDto(
-                u.isTwoFactorEnabled()
+                s.isTwoFactorEnabled()
         );
     }
 }

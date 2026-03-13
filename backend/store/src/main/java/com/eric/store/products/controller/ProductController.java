@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @RestController
@@ -29,10 +30,13 @@ public class ProductController {
             @RequestParam(required = false) String sort,
             @RequestParam(defaultValue = "true") boolean descending,
 
-            @RequestParam(required = false) String query,
-            @RequestParam(required = false) String categoryId
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String categoryId,
+            @RequestParam(required = false) String brandId,
+            @RequestParam(required = false) BigDecimal minPrice,
+            @RequestParam(required = false) BigDecimal maxPrice
     ) {
-        var productQuery = new ProductQuery(query, categoryId, page, size, sort, descending);
+        var productQuery = new ProductQuery(search, categoryId, brandId, minPrice, maxPrice, page, size, sort, descending);
         return ResponseEntity.ok(productService.search(productQuery));
     }
 

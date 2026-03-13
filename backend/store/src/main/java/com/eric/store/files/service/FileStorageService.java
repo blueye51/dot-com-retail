@@ -27,7 +27,6 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class FileStorageService {
 
     private final S3Client s3;
@@ -51,6 +50,7 @@ public class FileStorageService {
 
     }
 
+    @Transactional
     public StoredImage uploadPublic(MultipartFile file) {
         validate(file);
         try {
@@ -66,6 +66,7 @@ public class FileStorageService {
         }
     }
 
+    @Transactional
     public StoredImage uploadPrivate(MultipartFile file) {
         validate(file);
         try {

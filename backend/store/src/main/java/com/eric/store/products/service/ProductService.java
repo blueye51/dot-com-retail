@@ -24,7 +24,6 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class ProductService {
     private final ProductRepository productRepository;
     private final ProductImageService productImageService;
@@ -32,7 +31,7 @@ public class ProductService {
     private final ProductMapper productMapper;
     private final BrandService brandService;
 
-
+    @Transactional
     public Product create(ProductCreateRequest req) {
         Category category = categoryRepository.findById(req.categoryId())
                 .orElseThrow(() -> new NotFoundException("Category", req.categoryId()));
@@ -59,6 +58,7 @@ public class ProductService {
         return savedProduct;
     }
 
+    @Transactional(readOnly = true)
     public Page<ProductCard> search(ProductQuery query) {
         Pageable pageable = toPageable(query);
         Page<Product> products = findProducts(query, pageable);
@@ -76,11 +76,15 @@ public class ProductService {
         Specification<Product> spec = ProductSpecification.fetchBrand()
                 .and(ProductSpecification.fetchCategory())
                 .and(ProductSpecification.hasCategory(q.categoryId()))
-                .and(ProductSpecification.nameContains(q.query()));
+                .and(ProductSpecification.hasBrand(q.brandId()))
+                .and(ProductSpecification.nameContains(q.query()))
+                .and(ProductSpecification.priceGreaterThanOrEqual(q.minPrice()))
+                .and(ProductSpecification.priceLessThanOrEqual(q.maxPrice()));
         return productRepository.findAll(spec, pageable);
     }
 
 
+    @Transactional(readOnly = true)
     public ProductResponse getProductResponseById(UUID id) {
         return productMapper.toResponse(findProductById(id));
     }

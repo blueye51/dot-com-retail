@@ -19,11 +19,11 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class ProductImageService {
     private final ProductImageRepository productImageRepository;
     private final FileRepository fileRepository;
 
+    @Transactional
     public ProductImage create(ImageCreate imageCreate, Product product) {
         FileEntity file = fileRepository.findById(imageCreate.fileKey())
                 .orElseThrow(() -> new NotFoundException("FileEntity", imageCreate.fileKey()));
@@ -59,6 +59,7 @@ public class ProductImageService {
         }
     }
 
+    @Transactional(readOnly = true)
     public Map<UUID, String> loadThumbnailUrls(Page<Product> products) {
         List<UUID> productIds = products.stream().map(Product::getId).toList();
         if (productIds.isEmpty()) return Map.of();

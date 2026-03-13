@@ -17,6 +17,7 @@ export function ProductCard({
             <img className={styles.thumbnail} src={imageUrl} alt={name}/>
             <p>&gt;{category}</p>
             <h2>{name}</h2>
+            <h3>{price} {currency}</h3>
             <button className={styles.addToCartButton} disabled={stock <= 0}>Add to Cart</button>
         </Link>
     )

@@ -8,6 +8,7 @@ import com.eric.store.brands.entity.Brand;
 import com.eric.store.brands.repository.BrandRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -18,17 +19,18 @@ public class BrandService {
     private final BrandRepository brandRepository;
     private final BrandMapper brandMapper;
 
+    @Transactional
     public Brand create(BrandRequest req) {
-        Brand brand = new Brand();
-        brand.setName(req.name());
-        return brandRepository.save(brand);
+        return brandRepository.save(new Brand(req.name()));
     }
 
+    @Transactional(readOnly = true)
     public List<BrandResponse> getAllBrands() {
         List<Brand> brands = brandRepository.findAll();
         return brandMapper.mapBrands(brands);
     }
 
+    @Transactional(readOnly = true)
     public Brand findById(UUID id) {
         return brandRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Brand not found", id));

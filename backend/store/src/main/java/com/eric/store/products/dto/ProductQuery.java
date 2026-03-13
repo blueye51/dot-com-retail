@@ -3,11 +3,15 @@ package com.eric.store.products.dto;
 import com.eric.store.common.util.StringUtils;
 import com.eric.store.common.util.UuidUtils;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 public record ProductQuery(
         String query,
         UUID categoryId,
+        UUID brandId,
+        BigDecimal minPrice,
+        BigDecimal maxPrice,
         int page,
         int size,
         SortField sort,
@@ -17,10 +21,15 @@ public record ProductQuery(
     private static final int DEFAULT_SIZE = 12;
     private static final int MAX_SIZE = 100;
 
-    public ProductQuery(String query, String categoryId, Integer page, Integer size, String sort, boolean descending) {
+    public ProductQuery(String query, String categoryId, String brandId,
+                        BigDecimal minPrice, BigDecimal maxPrice,
+                        Integer page, Integer size, String sort, boolean descending) {
         this(
                 StringUtils.normalize(query),
                 UuidUtils.parseUuidOrNull(categoryId),
+                UuidUtils.parseUuidOrNull(brandId),
+                minPrice,
+                maxPrice,
                 page == null ? DEFAULT_PAGE : Math.max(0, page),
                 size == null ? DEFAULT_SIZE : Math.min(MAX_SIZE, Math.max(1, size)),
                 SortField.fromString(sort).orElse(SortField.CREATED_AT),
