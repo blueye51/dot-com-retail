@@ -3,8 +3,8 @@ import {useEffect, useState} from "react";
 import {Link} from "react-router-dom";
 import {useSelector} from "react-redux";
 import {paths} from "../routes.js";
-import Modal from "../modal/modal.jsx";
-import Settings from "./settings.jsx";
+import Modal from "../modal/Modal.jsx";
+import Settings from "./Settings.jsx";
 
 
 export default function Profile() {

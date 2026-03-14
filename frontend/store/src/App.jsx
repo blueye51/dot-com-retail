@@ -5,30 +5,30 @@ import {useEffect, useState} from "react";
 import {refreshAccessToken} from "./components/useFetch.js";
 import {PATHS, paths} from './components/routes.js'
 
-import Login from './components/login/login.jsx'
-import MainLayout from "./components/layouts/mainLayout.jsx";
-import AdminMenu from "./components/adminMenu/adminMenu.jsx";
-import RequiredRole from "./components/auth/requiredRole.jsx";
-import RequiredAuth from "./components/auth/requiredAuth.jsx";
-import Unauthorized from "./components/auth/unauthorized.jsx";
-import Home from "./components/home/home.jsx";
-import ProductList from "./components/product/productList/productList.jsx";
-import MissingAuth from "./components/auth/missingAuth.jsx";
-import ProductCreation from "./components/product/productCreation/productCreation.jsx";
-import CategoryTree from "./components/category/categoryTree/categoryTree.jsx";
-import CategoryAdmin from "./components/category/categoryAdmin/categoryAdmin.jsx";
-import {Register} from "./components/register/register.jsx";
-import ProductPage from "./components/product/productPage.jsx";
+import Login from './components/login/Login.jsx'
+import MainLayout from "./components/layouts/MainLayout.jsx";
+import AdminMenu from "./components/adminMenu/AdminMenu.jsx";
+import RequiredRole from "./components/auth/RequiredRole.jsx";
+import RequiredAuth from "./components/auth/RequiredAuth.jsx";
+import Unauthorized from "./components/auth/Unauthorized.jsx";
+import Home from "./components/home/Home.jsx";
+import ProductList from "./components/product/productList/ProductList.jsx";
+import MissingAuth from "./components/auth/MissingAuth.jsx";
+import ProductCreation from "./components/product/productCreation/ProductCreation.jsx";
+import CategoryTree from "./components/category/categoryTree/CategoryTree.jsx";
+import CategoryAdmin from "./components/category/categoryAdmin/CategoryAdmin.jsx";
+import {Register} from "./components/register/Register.jsx";
+import ProductPage from "./components/product/ProductPage.jsx";
 import OAuth2Callback from "./components/OAuth2Callback.jsx";
-import Profile from "./components/profile/profile.jsx";
-import UnverifiedEmail from "./components/auth/unverifiedEmail.jsx";
-import EmailVerification from "./components/verification/emailVerification.jsx";
-import EmailVerifyToken from "./components/verification/emailVerifyToken.jsx";
-import ForgotPassword from "./components/auth/forgotPassword.jsx";
-import ResetPassword from "./components/auth/resetPassword.jsx";
-import TwoFactorVerification from "./components/verification/twoFactorVerification.jsx";
+import Profile from "./components/profile/Profile.jsx";
+import UnverifiedEmail from "./components/auth/UnverifiedEmail.jsx";
+import EmailVerification from "./components/verification/EmailVerification.jsx";
+import EmailVerifyToken from "./components/verification/EmailVerifyToken.jsx";
+import ForgotPassword from "./components/auth/ForgotPassword.jsx";
+import ResetPassword from "./components/auth/ResetPassword.jsx";
+import TwoFactorVerification from "./components/verification/TwoFactorVerification.jsx";
 import BrandCreate from "./components/brand/brandCreate/BrandCreate.jsx";
-import DeleteAccount from "./components/profile/deleteAccount.jsx";
+import DeleteAccount from "./components/profile/DeleteAccount.jsx";
 
 
 function App() {

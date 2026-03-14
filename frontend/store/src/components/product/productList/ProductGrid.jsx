@@ -1,9 +1,9 @@
 import useFetch from "../../useFetch.js";
 import {useEffect, useMemo, useState} from "react";
 import {useSearchParams} from "react-router-dom";
-import styles from "./productGrid.module.css"
-import {ProductCard} from "../productUI/productCard.jsx";
-import CategoryTree from "../../category/categoryTree/categoryTree.jsx";
+import styles from "./ProductGrid.module.css"
+import {ProductCard} from "../productUI/ProductCard.jsx";
+import CategoryTree from "../../category/categoryTree/CategoryTree.jsx";
 
 
 export default function ProductGrid() {

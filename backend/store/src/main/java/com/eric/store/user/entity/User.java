@@ -27,14 +27,14 @@ public class User {
     private String name;
 
     @ManyToMany
-    @JoinTable(name="user_roles", joinColumns=@JoinColumn(name="user_id"),
-            inverseJoinColumns=@JoinColumn(name="role_id"))
+    @JoinTable(
+            name="user_roles",
+            joinColumns=@JoinColumn(name="user_id"),
+            inverseJoinColumns=@JoinColumn(name="role_id")
+    )
     private Set<Role> roles = new HashSet<>();
 
     private String passwordHash;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Order> orders = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

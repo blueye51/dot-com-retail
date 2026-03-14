@@ -49,15 +49,13 @@ public class Product {
     @Column(nullable = false)
     private Integer stock;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "product")
     private List<ProductImage> productImages = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> orderItems = new ArrayList<>();
 
     //Timestamps automation
     @Column(nullable = false, updatable = false)
@@ -76,11 +74,6 @@ public class Product {
         this.updatedAt = OffsetDateTime.now(ZoneOffset.UTC);
     }
 
-    /**
-     * Not to be used directly. Use Category.addProduct(Product) instead to
-     * ensure bidirectional consistency.
-     * @param category
-     */
     public void setCategory(Category category) {
         this.category = Objects.requireNonNull(category);
     }

@@ -38,11 +38,6 @@ public class ProductImage {
         this.sortOrder = sortOrder;
     }
 
-    /**
-     * Not to be used directly. Use Product.addImage(Image) instead to
-     * ensure bidirectional consistency.
-     * @param product
-     */
     public void setProduct(Product product) {
         this.product = Objects.requireNonNull(product);
     }

@@ -1,4 +1,4 @@
-import styles from "./login.module.css";
+import styles from "./Login.module.css";
 import {useEffect, useRef, useState} from "react";
 import {useDispatch} from "react-redux";
 import {Turnstile} from "@marsidev/react-turnstile";

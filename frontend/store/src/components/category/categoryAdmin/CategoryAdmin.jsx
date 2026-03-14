@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import useFetch from "../../useFetch.js";
-import CategoryAdminNode from "./categoryAdminNode.jsx";
-import styles from "./categoryAdmin.module.css";
+import CategoryAdminNode from "./CategoryAdminNode.jsx";
+import styles from "./CategoryAdmin.module.css";
 
 function buildTree(categories) {
     const map = {};

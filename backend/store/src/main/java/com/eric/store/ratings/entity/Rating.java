@@ -1,25 +1,22 @@
-package com.eric.store.orders.entity;
+package com.eric.store.ratings.entity;
 
+import com.eric.store.products.entity.Product;
 import com.eric.store.user.entity.User;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.UUID;
 
 @Entity
-@Table(
-        name = "orders",
-        indexes = {
-                @Index(name = "idx_orders_user_created", columnList = "user_id, created_at"),
-        }
-)
+@Table(name = "ratings", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "product_id"})})
 @Getter
 @Setter
 @NoArgsConstructor
-public class Order {
-
+public class Rating {
     @Id
     @GeneratedValue
     private UUID id;
@@ -27,7 +24,15 @@ public class Order {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private User user;
 
-    //Timestamps automation
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    private Product product;
+
+    @Column(nullable = false)
+    private int score; // 1-5
+
+    @Column(length = 1000)
+    private String comment;
+
     @Column(nullable = false, updatable = false)
     private OffsetDateTime createdAt;
 

@@ -60,7 +60,7 @@ class ProductControllerIT {
         p.setCurrency(CurrencyProvider.EUR);
         p.setStock(10);
         p.setBrand(brand);
-        category.addProduct(p);
+        p.setCategory(category);
         return productRepository.save(p);
     }
 
@@ -113,7 +113,7 @@ class ProductControllerIT {
         phone.setPrice(new BigDecimal("1099.99"));
         phone.setCurrency(CurrencyProvider.EUR);
         phone.setStock(5);
-        phones.addProduct(phone);
+        phone.setCategory(phones);
         productRepository.save(phone);
 
         mockMvc.perform(get("/api/products/page")
@@ -137,7 +137,7 @@ class ProductControllerIT {
         macbook.setCurrency(CurrencyProvider.EUR);
         macbook.setStock(5);
         macbook.setBrand(apple);
-        category.addProduct(macbook);
+        macbook.setCategory(category);
         productRepository.save(macbook);
 
         mockMvc.perform(get("/api/products/page")

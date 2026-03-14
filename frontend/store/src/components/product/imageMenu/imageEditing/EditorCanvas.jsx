@@ -1,5 +1,5 @@
 import {forwardRef, useCallback, useEffect, useImperativeHandle, useLayoutEffect, useRef} from "react";
-import styles from "./editorCanvas.module.css";
+import styles from "./EditorCanvas.module.css";
 
 function clamp(v, min, max) {
     return Math.min(max, Math.max(min, v));

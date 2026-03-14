@@ -2,7 +2,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import useFetch from "../../useFetch.js";
 import {useEffect, useMemo, useState} from "react";
 import {paths} from "../../routes.js";
-import styles from "./productList.module.css";
+import styles from "./ProductList.module.css";
 import ProductRow from "../productUI/productRow/ProductRow.jsx";
 
 function ProductList () {

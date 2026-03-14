@@ -7,6 +7,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
 @Entity
+@Table(name = "file_entities")
 @Getter
 @Setter
 @NoArgsConstructor

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import styles from "./categoryAdmin.module.css";
+import styles from "./CategoryAdmin.module.css";
 import useFetch from "../../useFetch.js";
 
 export default function CategoryAdminNode({ node, onRefresh }) {

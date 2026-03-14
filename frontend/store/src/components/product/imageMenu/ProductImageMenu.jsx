@@ -1,8 +1,8 @@
-import styles from './productImageMenu.module.css';
-import Modal from "../../modal/modal.jsx";
-import ImageUpload from "./imageUpload/imageUpload.jsx";
+import styles from './ProductImageMenu.module.css';
+import Modal from "../../modal/Modal.jsx";
+import ImageUpload from "./imageUpload/ImageUpload.jsx";
 import {useEffect, useState} from "react";
-import ImageEditing from "./imageEditing/imageEditing.jsx";
+import ImageEditing from "./imageEditing/ImageEditing.jsx";
 import useFetch from "../../useFetch.js";
 
 function ProductImageMenu({maxFiles = 1, setImages, images}) {

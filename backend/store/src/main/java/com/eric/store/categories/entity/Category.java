@@ -1,6 +1,5 @@
 package com.eric.store.categories.entity;
 
-import com.eric.store.products.entity.Product;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,9 +29,6 @@ public class Category {
     @Column(nullable = false, updatable = false)
     private boolean isLeaf;
 
-    @OneToMany(mappedBy = "category")
-    private List<Product> products = new ArrayList<>();
-
     @OneToMany(mappedBy = "parentCategory", cascade={CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Category> subcategories = new ArrayList<>();
 
@@ -56,11 +52,6 @@ public class Category {
     public void removeChild(Category child) {
         this.subcategories.remove(child);
         child.parentCategory = null;
-    }
-
-    public void addProduct(Product product) {
-        products.add(product);
-        product.setCategory(this);
     }
 
 }

@@ -1,7 +1,7 @@
-import styles from './mainLayout.module.css'
-import Header from "../header/header.jsx";
+import styles from './MainLayout.module.css'
+import Header from "../header/Header.jsx";
 import {Outlet} from "react-router-dom";
-import Footer from "../footer/footer.jsx";
+import Footer from "../footer/Footer.jsx";
 
 function MainLayout () {
     return (

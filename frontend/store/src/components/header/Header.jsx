@@ -1,4 +1,4 @@
-import styles from './header.module.css'
+import styles from './Header.module.css'
 import {useState} from "react";
 import {Link, useNavigate} from 'react-router-dom';
 import {useSelector} from "react-redux";

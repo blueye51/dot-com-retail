@@ -1,4 +1,4 @@
-import CategoryNode from "../categoryNode.jsx";
+import CategoryNode from "../CategoryNode.jsx";
 import {useMemo} from "react";
 import useFetch from "../../useFetch.js";
 

@@ -1,8 +1,8 @@
 import {Link, useNavigate} from "react-router-dom";
 import useFetch from "../../useFetch.js";
 import {useCallback, useEffect, useState} from "react";
-import styles from './productCreation.module.css';
-import ProductImageMenu from "../imageMenu/productImageMenu.jsx";
+import styles from './ProductCreation.module.css';
+import ProductImageMenu from "../imageMenu/ProductImageMenu.jsx";
 import {PATHS, paths} from "../../routes.js";
 
 function ProductCreation() {

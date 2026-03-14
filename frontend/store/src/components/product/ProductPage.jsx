@@ -1,7 +1,7 @@
 import {useParams} from "react-router-dom";
 import useFetch from "../useFetch.js";
-import styles from "./productPage.module.css"
-import Modal from "../modal/modal.jsx";
+import styles from "./ProductPage.module.css"
+import Modal from "../modal/Modal.jsx";
 import {useState} from "react";
 import defaultImage from "../../assets/default_image.png";
 

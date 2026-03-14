@@ -49,7 +49,7 @@ class ProductServiceTest {
 
         Category cat = new Category();
         cat.setName("Laptops");
-        cat.addProduct(p);
+        p.setCategory(cat);
 
         Brand brand = new Brand();
         brand.setName("TestBrand");

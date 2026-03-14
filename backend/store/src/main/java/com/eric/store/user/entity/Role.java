@@ -20,9 +20,6 @@ public class Role {
     @Column(nullable = false)
     private String name;
 
-    @ManyToMany(mappedBy = "roles")
-    private Set<User> users = new HashSet<>();
-
     public Role(String name) {
         this.name = name;
     }

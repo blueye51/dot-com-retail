@@ -1,4 +1,4 @@
-import styles from './register.module.css';
+import styles from './Register.module.css';
 import useFetch from "../useFetch.js";
 import {useRef, useState} from "react";
 import { Turnstile } from "@marsidev/react-turnstile";

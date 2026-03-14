@@ -1,4 +1,4 @@
-import ProductGrid from "../product/productList/productGrid.jsx";
+import ProductGrid from "../product/productList/ProductGrid.jsx";
 
 export default function Home () {
     return(

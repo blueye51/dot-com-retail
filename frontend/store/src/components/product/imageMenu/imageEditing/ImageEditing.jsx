@@ -1,6 +1,6 @@
-import styles from './imageEditing.module.css';
+import styles from './ImageEditing.module.css';
 import {useCallback, useEffect, useRef, useState} from "react";
-import EditorCanvas from "./editorCanvas.jsx";
+import EditorCanvas from "./EditorCanvas.jsx";
 
 function ImageEditing({file, onDone, outputType = "image/webp", quality = 0.9, loading = false}) {
     const wrapRef = useRef(null);

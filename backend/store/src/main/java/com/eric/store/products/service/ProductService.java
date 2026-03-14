@@ -43,8 +43,7 @@ public class ProductService {
             product.setBrand(brand);
         }
 
-        category.addProduct(product);
-
+        product.setCategory(category);
         Product savedProduct = productRepository.save(product);
 
 

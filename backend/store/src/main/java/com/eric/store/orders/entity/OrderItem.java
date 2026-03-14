@@ -34,11 +34,11 @@ public class OrderItem {
     private Integer quantity;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "order_id", nullable = false)
+    @JoinColumn(nullable = false)
     private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "product_id", nullable = false)
+    @JoinColumn(nullable = false)
     private Product product;
 
     //Total calculation at the moment of persisting or updating

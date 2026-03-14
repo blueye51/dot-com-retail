@@ -1,5 +1,5 @@
-import styles from './imageUpload.module.css';
-import Modal from "../../../modal/modal.jsx";
+import styles from './ImageUpload.module.css';
+import Modal from "../../../modal/Modal.jsx";
 import useFetch from "../../../useFetch.js";
 import {useEffect} from "react";
 

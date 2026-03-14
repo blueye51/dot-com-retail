@@ -1,4 +1,4 @@
-import styles from './productCard.module.css';
+import styles from './ProductCard.module.css';
 import {Link} from "react-router-dom";
 import {paths} from "../../routes.js";
 

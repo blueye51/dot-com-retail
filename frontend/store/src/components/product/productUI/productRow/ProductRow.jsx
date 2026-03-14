@@ -1,4 +1,4 @@
-import styles from './productRow.module.css';
+import styles from './ProductRow.module.css';
 import {useMemo} from "react";
 import defaultImage from "../../../../assets/default_image.png";
 

@@ -1,4 +1,4 @@
-import Footer from "../footer/footer.jsx";
+import Footer from "../footer/Footer.jsx";
 import {Outlet} from "react-router-dom";
 
 function FooterOnly () {

@@ -211,7 +211,7 @@ public class DataSeeder implements CommandLineRunner {
         product.setHeight(height);
         product.setDepth(depth);
         product.setWeight(weight);
-        category.addProduct(product);
+        product.setCategory(category);
 
         for (int i = 0; i < imageFiles.size(); i++) {
             product.addImage(new ProductImage(imageFiles.get(i), i));
