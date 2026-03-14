@@ -19,7 +19,8 @@ export const PATHS = {
     verify2fa: "/verify-2fa",
     brandCreate: "/brandCreate",
     forgotPassword: "/forgot-password",
-    resetPassword: "/reset-password/:token"
+    resetPassword: "/reset-password/:token",
+    deleteAccount: "/delete-account"
 };
 
 export const paths = {
@@ -41,4 +42,5 @@ export const paths = {
     brandCreate: () => PATHS.brandCreate,
     forgotPassword: () => PATHS.forgotPassword,
     resetPassword: (token) => generatePath(PATHS.resetPassword, {token}),
+    deleteAccount: () => PATHS.deleteAccount,
 }

@@ -95,6 +95,7 @@ public class AuthController {
                 .build();
     }
 
+
     public record CodeExchangeRequest(String code) {}
 
     @PostMapping(value = "/oauth2/exchange", consumes = MediaType.APPLICATION_JSON_VALUE)

@@ -139,6 +139,18 @@ public class UserService {
     }
 
     @Transactional
+    public void deleteAccount(UUID userId, String password) {
+        User user = findById(userId);
+        if (user.getProvider() != AuthProvider.LOCAL) {
+            throw new IllegalArgumentException("OAuth2 accounts cannot be deleted with a password");
+        }
+        if (!passwordEncoder.matches(password, user.getPasswordHash())) {
+            throw new InvalidEmailOrPassword("Wrong password");
+        }
+        userRepository.delete(user);
+    }
+
+    @Transactional
     public void setEmailVerified(UUID id) {
         User user = findById(id);
         user.setEmailVerified(true);

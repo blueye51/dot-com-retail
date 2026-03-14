@@ -36,6 +36,7 @@ export default function Profile() {
             <p>email: {user.email}</p>
             {!emailVerified && <Link to={paths.verifyEmail()}>Verify Email</Link>}
             {user.provider === "LOCAL" && <Link to={paths.forgotPassword()}>Change Password</Link>}
+            {user.provider === "LOCAL" && <Link to={paths.deleteAccount()}>Delete Account</Link>}
             <button onClick={toggleSettings}>settings</button>
             <Modal open={settingsOpen} onClose={toggleSettings}>
                 <Settings />

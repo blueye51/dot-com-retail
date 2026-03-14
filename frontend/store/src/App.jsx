@@ -28,6 +28,7 @@ import ForgotPassword from "./components/auth/forgotPassword.jsx";
 import ResetPassword from "./components/auth/resetPassword.jsx";
 import TwoFactorVerification from "./components/verification/twoFactorVerification.jsx";
 import BrandCreate from "./components/brand/brandCreate/BrandCreate.jsx";
+import DeleteAccount from "./components/profile/deleteAccount.jsx";
 
 
 function App() {
@@ -82,6 +83,7 @@ function App() {
                     {/* Authenticated */}
                     <Route element={<RequiredAuth/>}>
                         <Route path={PATHS.profile} element={<Profile/>}/>
+                        <Route path={PATHS.deleteAccount} element={<DeleteAccount/>}/>
                     </Route>
 
                     {/* Admin */}
