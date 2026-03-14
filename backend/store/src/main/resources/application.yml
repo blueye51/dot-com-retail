@@ -75,4 +75,7 @@ storage:
   upload:
     allowed-types:
       - image/webp
+      - image/jpeg
+      - image/png
+      - image/avif
     max-size-bytes: 20971520  # 20MB

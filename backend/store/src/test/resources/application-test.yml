@@ -1,0 +1,60 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: test-client-id
+            client-secret: test-client-secret
+            scope:
+              - openid
+              - profile
+              - email
+        provider:
+          google:
+            issuer-uri: https://accounts.google.com
+
+server:
+  port: 0
+  ssl:
+    enabled: false
+
+app:
+  frontend-base-url: http://localhost:5173
+  oauth2:
+    allowed-redirect-uris: "http://localhost:5173/oauth2/callback"
+    default-redirect-uri: "http://localhost:5173/oauth2/callback"
+  resend:
+    api-key: test-key
+    from-email: test@test.com
+  turnstile:
+    secret: test-secret
+  jwt:
+    secret-b64: dGVzdHNlY3JldHRoYXRpc2xvbmdlbm91Z2hmb3JobWFjc2hhMjU2a2V5MTIzNA==
+    access-expiration-minutes: 15
+    refresh-expiration-days: 30
+  cookie:
+    same-site: Strict
+  admin:
+    seed-email: ""
+
+storage:
+  s3:
+    endpoint: http://localhost:9000
+    accessKey: test
+    secretKey: test
+    bucket: test
+    region: us-east-1
+    publicBaseUrl: http://localhost:9000/test
+  upload:
+    allowed-types:
+      - image/webp
+    max-size-bytes: 20971520
+
+logging:
+  level:
+    root: WARN

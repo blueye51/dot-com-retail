@@ -21,19 +21,69 @@ public record ProductQuery(
     private static final int DEFAULT_SIZE = 12;
     private static final int MAX_SIZE = 100;
 
-    public ProductQuery(String query, String categoryId, String brandId,
-                        BigDecimal minPrice, BigDecimal maxPrice,
-                        Integer page, Integer size, String sort, boolean descending) {
-        this(
-                StringUtils.normalize(query),
-                UuidUtils.parseUuidOrNull(categoryId),
-                UuidUtils.parseUuidOrNull(brandId),
-                minPrice,
-                maxPrice,
-                page == null ? DEFAULT_PAGE : Math.max(0, page),
-                size == null ? DEFAULT_SIZE : Math.min(MAX_SIZE, Math.max(1, size)),
-                SortField.fromString(sort).orElse(SortField.CREATED_AT),
-                descending
-        );
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private String query;
+        private UUID categoryId;
+        private UUID brandId;
+        private BigDecimal minPrice;
+        private BigDecimal maxPrice;
+        private int page = DEFAULT_PAGE;
+        private int size = DEFAULT_SIZE;
+        private SortField sort = SortField.CREATED_AT;
+        private boolean descending = false;
+
+        public Builder query(String query) {
+            this.query = StringUtils.normalize(query);
+            return this;
+        }
+
+        public Builder categoryId(String categoryId) {
+            this.categoryId = UuidUtils.parseUuidOrNull(categoryId);
+            return this;
+        }
+
+        public Builder brandId(String brandId) {
+            this.brandId = UuidUtils.parseUuidOrNull(brandId);
+            return this;
+        }
+
+        public Builder minPrice(BigDecimal minPrice) {
+            this.minPrice = minPrice;
+            return this;
+        }
+
+        public Builder maxPrice(BigDecimal maxPrice) {
+            this.maxPrice = maxPrice;
+            return this;
+        }
+
+        public Builder page(Integer page) {
+            this.page = page == null ? DEFAULT_PAGE : Math.max(0, page);
+            return this;
+        }
+
+        public Builder size(Integer size) {
+            this.size = size == null ? DEFAULT_SIZE : Math.min(MAX_SIZE, Math.max(1, size));
+            return this;
+        }
+
+        public Builder sort(String sort) {
+            this.sort = SortField.fromString(sort).orElse(SortField.CREATED_AT);
+            return this;
+        }
+
+        public Builder descending(boolean descending) {
+            this.descending = descending;
+            return this;
+        }
+
+        public ProductQuery build() {
+            return new ProductQuery(query, categoryId, brandId,
+                    minPrice, maxPrice, page, size, sort, descending);
+        }
     }
 }

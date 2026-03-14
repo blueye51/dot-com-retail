@@ -36,7 +36,17 @@ public class ProductController {
             @RequestParam(required = false) BigDecimal minPrice,
             @RequestParam(required = false) BigDecimal maxPrice
     ) {
-        var productQuery = new ProductQuery(search, categoryId, brandId, minPrice, maxPrice, page, size, sort, descending);
+        var productQuery = ProductQuery.builder()
+                .page(page)
+                .size(size)
+                .sort(sort)
+                .descending(descending)
+                .query(search)
+                .categoryId(categoryId)
+                .brandId(brandId)
+                .minPrice(minPrice)
+                .maxPrice(maxPrice)
+                .build();
         return ResponseEntity.ok(productService.search(productQuery));
     }
 
