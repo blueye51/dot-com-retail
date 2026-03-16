@@ -24,6 +24,28 @@ Copy the example environment file and fill in your values:
 cp .env.example .env
 ```
 
+Most values in `.env.example` have working defaults. The ones you need to set up:
+
+#### Resend (email delivery)
+
+1. Go to [resend.com](https://resend.com) and create an account.
+2. In the dashboard, go to **API Keys** and click **Create API Key**.
+3. Give it any name, click **Create**, and copy the key.
+4. Paste it into `.env` as `RESEND_API_KEY`.
+
+> **Note:** On the free tier, Resend can only send emails to the account owner's email address. Use that same email for `ADMIN_SEED_EMAIL` and when registering in the app.
+
+#### Google OAuth2
+
+1. Go to [console.cloud.google.com/auth](https://console.cloud.google.com/auth).
+2. Create a new project (or select an existing one).
+3. Create an **OAuth client ID** (application type: Web application).
+4. Under **Authorised JavaScript origins**, add: `https://localhost:5173`
+5. Under **Authorised redirect URIs**, add: `https://localhost:8443/login/oauth2/code/google`
+6. Copy the **Client ID** and **Client Secret** into `.env` as `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`.
+
+> If you don't want to set up Google OAuth2 yourself, you can ask me to add your Google email as a test user on my OAuth app.
+
 ### Quick Start
 
 ```bash
@@ -220,11 +242,13 @@ Users can toggle between **metric** (cm, kg) and **imperial** (inches, lb) units
 
 ## Automated Tests
 
-The project includes automated tests covering multiple layers:
+Tests live in `backend/store/src/test/` and use **Testcontainers** to spin up real PostgreSQL and Redis instances per test run — no mocks for infrastructure, so tests hit the same database and cache the application uses in production.
 
-- **Unit tests** -Test individual service methods and utility logic in isolation.
-- **API integration tests** -Verify endpoint behavior, request validation, and response structure using Spring Boot's test framework.
-- **Security tests** -Validate that protected endpoints enforce authentication and role-based access, and that public endpoints remain accessible without credentials.
+- **`ProductServiceTest`** -Unit tests for the product search service using Mockito. Tests that filters, pagination, sorting, and thumbnail mapping work correctly at the service layer without needing a database.
+- **`ProductControllerIT`** -Integration tests that boot the full Spring context and hit the `/api/products/page` endpoint via MockMvc. Tests search by name, price range filtering, category/brand filtering, sort ordering, and pagination against a real PostgreSQL database.
+- **`SecurityIT`** -Integration tests for the security layer. Verifies that public endpoints (products, brands) are accessible without a token, protected endpoints return 401 without a token and 200 with a valid one, invalid tokens are rejected, and admin endpoints enforce role-based access (403 for regular users, 204 for admins).
+
+The test profile (`application-test.yml`) uses `ddl-auto: create-drop` so each run starts with a clean schema, disables SSL, and stubs out external services (OAuth2, Resend, Turnstile) with dummy values so tests run without any API keys.
 
 ---
 
