@@ -49,7 +49,16 @@ public class Product {
     @Column(nullable = false)
     private Integer stock;
 
-    @OneToMany(mappedBy = "product")
+    @Column(nullable = false)
+    private double averageRating = 0.0;
+
+    @Column(nullable = false)
+    private int totalRatings = 0;
+
+    @Column(nullable = false)
+    private long viewCount = 0;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.PERSIST)
     private List<ProductImage> productImages = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

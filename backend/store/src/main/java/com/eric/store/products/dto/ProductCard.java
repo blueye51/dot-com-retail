@@ -13,6 +13,8 @@ public record ProductCard(
         CurrencyProvider currency,
         String brand,
         Integer stock,
+        double averageRating,
+        int totalRatings,
         String category,
         String imageUrl
 ) {

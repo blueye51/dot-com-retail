@@ -1,9 +1,11 @@
 import {Link, useNavigate} from "react-router-dom";
 import useFetch from "../../useFetch.js";
 import {useCallback, useEffect, useState} from "react";
+import {useSelector} from "react-redux";
 import styles from './ProductCreation.module.css';
 import ProductImageMenu from "../imageMenu/ProductImageMenu.jsx";
 import {PATHS, paths} from "../../routes.js";
+import {inToCm, lbToKg} from "../../units.js";
 
 function ProductCreation() {
 
@@ -37,6 +39,7 @@ function ProductCreation() {
     const [brandId, setBrandId] = useState('');
 
     const [images, setImages] = useState([]);
+    const imperial = useSelector((s) => s.settings.imperialUnits);
 
     const navigate = useNavigate();
 
@@ -84,6 +87,15 @@ function ProductCreation() {
             )
         );
 
+    const toMetricDimension = (v) => {
+        const n = toOptionalNumber(v);
+        return n == null ? null : imperial ? inToCm(n) : n;
+    };
+    const toMetricWeight = (v) => {
+        const n = toOptionalNumber(v);
+        return n == null ? null : imperial ? lbToKg(n) : n;
+    };
+
     const buildProduct = () => {
         const base = {
             name: name.trim(),
@@ -91,10 +103,10 @@ function ProductCreation() {
             currency,
             description: description.trim() || null,
 
-            width: toOptionalNumber(width),
-            height: toOptionalNumber(height),
-            depth: toOptionalNumber(depth),
-            weight: toOptionalNumber(weight),
+            width: toMetricDimension(width),
+            height: toMetricDimension(height),
+            depth: toMetricDimension(depth),
+            weight: toMetricWeight(weight),
 
             brandId: brandId || null,
             stock: stock.trim() === "" ? null : Number(stock),
@@ -244,7 +256,7 @@ function ProductCreation() {
                 />
             </div>
             <div>
-                <label htmlFor="width">Width:</label>
+                <label htmlFor="width">Width ({imperial ? "in" : "cm"}):</label>
                 <input
                     onChange={(e) => setWidth(e.target.value)}
                     placeholder="width"
@@ -253,7 +265,7 @@ function ProductCreation() {
                 />
             </div>
             <div>
-                <label htmlFor="height">Height:</label>
+                <label htmlFor="height">Height ({imperial ? "in" : "cm"}):</label>
                 <input
                     onChange={(e) => setHeight(e.target.value)}
                     placeholder="height"
@@ -262,7 +274,7 @@ function ProductCreation() {
                 />
             </div>
             <div>
-                <label htmlFor="depth">Depth:</label>
+                <label htmlFor="depth">Depth ({imperial ? "in" : "cm"}):</label>
                 <input
                     onChange={(e) => setDepth(e.target.value)}
                     placeholder="depth"
@@ -271,7 +283,7 @@ function ProductCreation() {
                 />
             </div>
             <div>
-                <label htmlFor="weight">Weight:</label>
+                <label htmlFor="weight">Weight ({imperial ? "lb" : "kg"}):</label>
                 <input
                     onChange={(e) => setWeight(e.target.value)}
                     placeholder="weight"

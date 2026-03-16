@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {setAuth, buildAuthFromToken} from "./store.js";
+import {setAuth, buildAuthFromToken, setSettings} from "./store.js";
 
 const BASE_URL = import.meta.env.VITE_API_BASE ;
 
@@ -26,6 +26,15 @@ export async function refreshAccessToken(dispatch) {
     return refreshInFlight;
 }
 
+
+export async function fetchUserSettings(dispatch, token) {
+    const res = await fetch(`${BASE_URL}/api/users/me/settings`, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return;
+    const data = await res.json();
+    dispatch(setSettings(data));
+}
 
 // --- helpers ---
 function isPlainObject(x) {

@@ -184,10 +184,47 @@ The search system is built on **JPA Specifications**, which compose filters dyna
 - **Category filter** -Filter by exact category ID.
 - **Brand filter** -Filter by exact brand ID.
 - **Price range** -Min and max price boundaries.
-- **Sorting** -By name, price, or creation date, ascending or descending.
+- **Sorting** -By name, price, creation date, or relevance, ascending or descending.
+- **Relevance sorting** -A simple popularity-based relevance score. Products are ranked by a combination of rating count and average rating, surfacing popular and well-reviewed items first.
 - **Pagination** -Page-based with configurable page size (max 100).
 
 Each filter is an independent `Specification` that gets combined with `.and()`. This makes it trivial to add new filters -write a new specification method and add it to the composition chain. The query also uses `LEFT JOIN FETCH` on brand and category to avoid N+1 query problems.
+
+---
+
+## Ratings & Reviews
+
+Users can rate and review products directly from the product page. Each rating includes a score (1–5) and an optional text comment. The system tracks:
+
+- **Average rating** -Computed per product and returned in both product listings and detail views.
+- **Total rating count** -Displayed alongside the average to give context on how many reviews a product has received.
+- **Star display** -A visual star component renders the average rating on product cards and the product detail page.
+
+Ratings are tied to authenticated users and stored in the database with a foreign key to the product. The average and count are maintained on the product entity for efficient querying without needing to aggregate on every request.
+
+---
+
+## User Settings
+
+User preferences are stored server-side and fetched after every successful authentication (login, OAuth2, 2FA). Settings are kept in a Redux slice on the frontend, making them globally accessible without extra API calls.
+
+### Imperial Units
+
+Users can toggle between **metric** (cm, kg) and **imperial** (inches, lb) units in their profile settings. The backend always stores values in metric — conversion is purely a frontend concern:
+
+- **Product display** -The product detail page converts dimensions and weight to the user's preferred unit system.
+- **Product creation** -Input labels dynamically show the active unit. Values entered in imperial are converted to metric before being sent to the backend.
+- **Conversion utilities** -A shared `units.js` module provides bidirectional converters (`cmToIn`, `inToCm`, `kgToLb`, `lbToKg`) and display formatters (`formatDimension`, `formatWeight`).
+
+---
+
+## Automated Tests
+
+The project includes automated tests covering multiple layers:
+
+- **Unit tests** -Test individual service methods and utility logic in isolation.
+- **API integration tests** -Verify endpoint behavior, request validation, and response structure using Spring Boot's test framework.
+- **Security tests** -Validate that protected endpoints enforce authentication and role-based access, and that public endpoints remain accessible without credentials.
 
 ---
 

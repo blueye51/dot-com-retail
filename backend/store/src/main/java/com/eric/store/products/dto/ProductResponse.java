@@ -18,6 +18,9 @@ public record ProductResponse(
         String brand,
         Integer stock,
         UUID categoryId,
+        double averageRating,
+        int totalRatings,
+        long viewCount,
         OffsetDateTime createdAt,
         List<ImageResponse> images
 ) {

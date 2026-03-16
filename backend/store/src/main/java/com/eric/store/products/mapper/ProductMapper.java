@@ -40,6 +40,8 @@ public class ProductMapper {
                 product.getCurrency(),
                 product.getBrand() != null ? product.getBrand().getName() : null,
                 product.getStock(),
+                product.getAverageRating(),
+                product.getTotalRatings(),
                 product.getCategory().getName(),
                 thumbnail
         );
@@ -71,6 +73,9 @@ public class ProductMapper {
                 product.getBrand() != null ? product.getBrand().getName() : null,
                 product.getStock(),
                 product.getCategory().getId(),
+                product.getAverageRating(),
+                product.getTotalRatings(),
+                product.getViewCount(),
                 product.getCreatedAt(),
                 mapImages(product.getProductImages())
         );

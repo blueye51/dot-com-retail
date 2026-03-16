@@ -1,5 +1,5 @@
 import {useLocation, useNavigate, Navigate} from "react-router-dom";
-import useFetch from "../useFetch.js";
+import useFetch, {fetchUserSettings} from "../useFetch.js";
 import {useState} from "react";
 import {useDispatch} from "react-redux";
 import {buildAuthFromToken, setAuth} from "../store.js";
@@ -27,6 +27,7 @@ export default function TwoFactorVerification() {
         try {
             const result = await reFetch({ body: { tempCode: state.tempCode, otpCode } });
             dispatch(setAuth(buildAuthFromToken(result.accessToken)));
+            fetchUserSettings(dispatch, result.accessToken);
             navigate(state.from || paths.home(), { replace: true });
         } catch (err) {
             alert("Verification failed: " + (err.message || "Unknown error"));

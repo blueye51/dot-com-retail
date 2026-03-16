@@ -28,7 +28,7 @@ export default function ProductGrid() {
             page: String(pageNumber),
             size: String(pageSize),
             ...(sort && { sort }),
-            ...(descending && { descending: String(descending) }),
+            descending: String(descending),
             ...(search && { search }),
             ...(categoryId && { categoryId }),
             ...(brandId && { brandId }),
@@ -106,6 +106,8 @@ export default function ProductGrid() {
                         <option value="createdAt">Newest</option>
                         <option value="name">Name</option>
                         <option value="price">Price</option>
+                        <option value="averageRating">Rating</option>
+                        <option value="viewCount">Relevance</option>
                     </select>
                     <label className={styles.checkboxLabel}>
                         <input

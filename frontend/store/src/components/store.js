@@ -30,10 +30,23 @@ const authSlice = createSlice({
     }
 })
 
+const settingsSlice = createSlice({
+    name: "settings",
+    initialState: { imperialUnits: false },
+    reducers: {
+        setSettings: (state, action) => {
+            state.imperialUnits = action.payload.imperialUnits ?? false;
+        },
+        clearSettings: () => ({ imperialUnits: false }),
+    }
+})
+
 export const { setAuth, logout } = authSlice.actions;
+export const { setSettings, clearSettings } = settingsSlice.actions;
 
 export const store = configureStore({
     reducer: {
-        auth: authSlice.reducer
+        auth: authSlice.reducer,
+        settings: settingsSlice.reducer,
     }
 })

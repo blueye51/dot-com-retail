@@ -3,14 +3,27 @@ import useFetch from "../useFetch.js";
 import styles from "./ProductPage.module.css"
 import Modal from "../modal/Modal.jsx";
 import {useState} from "react";
+import {useSelector} from "react-redux";
 import defaultImage from "../../assets/default_image.png";
+import Stars from "./productUI/Stars.jsx";
+import {formatDimension, kgToLb} from "../units.js";
 
 
 export default function ProductPage() {
     const {id} = useParams();
     const {data: product, loading, error} = useFetch(`/api/products/${id}`);
+    const imperial = useSelector((s) => s.settings.imperialUnits);
 
     const [imageOpen, setImageOpen] = useState(false)
+    const [ratingOpen, setRatingOpen] = useState(false);
+    const [score, setScore] = useState(5);
+    const [comment, setComment] = useState("");
+
+    const {reFetch: submitRating, loading: ratingLoading, error: ratingError} = useFetch("/api/ratings", {
+        method: "POST",
+        withAuth: true,
+        immediate: false,
+    });
 
     const closeImage = () => {
         setImageOpen(false)
@@ -66,6 +79,7 @@ export default function ProductPage() {
                 <div className={styles.info}>
                     <h1>{product.name}</h1>
                     <p>{product.brand}</p>
+                    <Stars rating={product.averageRating} count={product.totalRatings} />
 
                     <div>
                         <span>{product.price.toFixed(2)} {product.currency}</span>
@@ -75,12 +89,48 @@ export default function ProductPage() {
 
                     <p>{product.description}</p>
 
+                    <button onClick={() => setRatingOpen(true)}>Rate this product</button>
+                    <Modal open={ratingOpen} onClose={() => setRatingOpen(false)}>
+                        <form className={styles.ratingForm} onSubmit={async (e) => {
+                            e.preventDefault();
+                            try {
+                                await submitRating({body: {productId: id, score, comment}});
+                                setRatingOpen(false);
+                                setScore(5);
+                                setComment("");
+                            } catch {}
+                        }}>
+                            <h3>Rate {product.name}</h3>
+                            <label>
+                                Score
+                                <select value={score} onChange={(e) => setScore(Number(e.target.value))}>
+                                    {[5, 4, 3, 2, 1].map(n => (
+                                        <option key={n} value={n}>{n}</option>
+                                    ))}
+                                </select>
+                            </label>
+                            <label>
+                                Comment
+                                <textarea
+                                    value={comment}
+                                    onChange={(e) => setComment(e.target.value)}
+                                    placeholder="Write a review..."
+                                    rows={3}
+                                />
+                            </label>
+                            {ratingError && <p className={styles.error}>Failed to submit rating</p>}
+                            <button type="submit" disabled={ratingLoading}>
+                                {ratingLoading ? "Submitting..." : "Submit"}
+                            </button>
+                        </form>
+                    </Modal>
+
                     <div>
                         <h3>Dimensions</h3>
-                        <p>Width: {product.width} cm</p>
-                        <p>Height: {product.height} cm</p>
-                        <p>Depth: {product.depth} cm</p>
-                        <p>Weight: {product.weight} g</p>
+                        <p>Width: {formatDimension(product.width, imperial)}</p>
+                        <p>Height: {formatDimension(product.height, imperial)}</p>
+                        <p>Depth: {formatDimension(product.depth, imperial)}</p>
+                        <p>Weight: {product.weight != null ? (imperial ? `${kgToLb(product.weight)} lb` : `${product.weight} kg`) : null}</p>
                     </div>
                 </div>
             </div>

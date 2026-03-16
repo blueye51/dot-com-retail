@@ -12,7 +12,12 @@ import java.time.ZoneOffset;
 import java.util.UUID;
 
 @Entity
-@Table(name = "ratings", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "product_id"})})
+@Table(name = "ratings",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "product_id"})},
+        indexes = {
+                @Index(name = "idx_rating_user_created", columnList = "user_id, created_at"),
+                @Index(name = "idx_rating_product_created", columnList = "product_id, created_at")
+        })
 @Getter
 @Setter
 @NoArgsConstructor

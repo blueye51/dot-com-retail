@@ -83,8 +83,9 @@ public class ProductService {
     }
 
 
-    @Transactional(readOnly = true)
+    @Transactional
     public ProductResponse getProductResponseById(UUID id) {
+        productRepository.incrementViewCount(id);
         return productMapper.toResponse(findProductWithImagesById(id));
     }
 

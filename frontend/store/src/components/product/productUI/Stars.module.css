@@ -1,0 +1,29 @@
+.stars {
+    display: inline-flex;
+    align-items: center;
+    font-size: 1.1em;
+}
+
+.starWrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.emptyStar {
+    color: #ccc;
+}
+
+.filledStar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    color: #f5a623;
+}
+
+.count {
+    margin-left: 0.3em;
+    font-size: 0.85em;
+    color: #666;
+}

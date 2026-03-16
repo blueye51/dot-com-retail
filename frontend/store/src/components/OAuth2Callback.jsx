@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setAuth, buildAuthFromToken } from "./store.js";
 import { paths } from "./routes.js";
-import useFetch from "./useFetch.js";
+import useFetch, { fetchUserSettings } from "./useFetch.js";
 
 const API_BASE = import.meta.env.VITE_API_BASE;
 
@@ -41,6 +41,7 @@ function OAuth2Callback() {
     useEffect(() => {
         if (!data) return;
         dispatch(setAuth(buildAuthFromToken(data.accessToken)));
+        fetchUserSettings(dispatch, data.accessToken);
         navigate(paths.home(), { replace: true });
     }, [data]);
 

@@ -166,6 +166,7 @@ public class UserService {
     public UserSettings updateSettings(UUID userId, UserSettingsDto dto) {
         UserSettings settings = getSettings(userId);
         settings.setTwoFactorEnabled(dto.twoFactorEnabled());
+        settings.setImperialUnits(dto.imperialUnits());
         return settings;
     }
 }

@@ -1,6 +1,6 @@
 import {useDispatch} from "react-redux";
 import {useNavigate} from "react-router-dom";
-import {logout} from "./store.js";
+import {logout, clearSettings} from "./store.js";
 import useFetch from "./useFetch.js";
 import {paths} from "./routes.js";
 
@@ -22,6 +22,7 @@ export function useLogout() {
             return;
         }
         dispatch(logout());
+        dispatch(clearSettings());
         navigate(paths.login(), {replace: true});
     };
 

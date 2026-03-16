@@ -5,7 +5,9 @@ import java.util.Optional;
 public enum SortField {
     CREATED_AT("createdAt"),
     NAME("name"),
-    PRICE("price");
+    PRICE("price"),
+    AVERAGE_RATING("averageRating"),
+    VIEW_COUNT("viewCount");
 
     private final String value;
 

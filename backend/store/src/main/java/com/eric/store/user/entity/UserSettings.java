@@ -21,4 +21,6 @@ public class UserSettings {
     private User user;
 
     private boolean twoFactorEnabled = false;
+
+    private boolean imperialUnits = false;
 }

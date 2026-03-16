@@ -3,7 +3,7 @@ import {useEffect, useRef, useState} from "react";
 import {useDispatch} from "react-redux";
 import {Turnstile} from "@marsidev/react-turnstile";
 import {setAuth, buildAuthFromToken} from "../store.js";
-import useFetch from "../useFetch.js";
+import useFetch, {fetchUserSettings} from "../useFetch.js";
 import {useNavigate, useLocation, Link} from "react-router-dom";
 import {paths} from "../routes.js";
 
@@ -61,6 +61,7 @@ function Login() {
                 return;
             }
             dispatch(setAuth(buildAuthFromToken(result.accessToken)));
+            fetchUserSettings(dispatch, result.accessToken);
             navigate(from, { replace: true });
         } catch (err) {
             alert("Login failed: " + (err.message || "Unknown error"));

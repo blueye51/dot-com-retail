@@ -2,7 +2,7 @@ import './App.css'
 import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
 import {useDispatch} from "react-redux";
 import {useEffect, useState} from "react";
-import {refreshAccessToken} from "./components/useFetch.js";
+import {refreshAccessToken, fetchUserSettings} from "./components/useFetch.js";
 import {PATHS, paths} from './components/routes.js'
 
 import Login from './components/login/Login.jsx'
@@ -38,11 +38,12 @@ function App() {
     useEffect(() => {
         const checkToken = async () => {
             try {
-                await refreshAccessToken(dispatch);
+                const token = await refreshAccessToken(dispatch);
+                await fetchUserSettings(dispatch, token);
             } catch {
                 console.log("No valid refresh token found.");
             } finally {
-                setLoading(false); // ✅ release UI after check
+                setLoading(false);
             }
         };
         void checkToken();

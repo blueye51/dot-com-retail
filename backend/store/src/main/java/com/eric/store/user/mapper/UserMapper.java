@@ -28,7 +28,8 @@ public class UserMapper {
 
     public UserSettingsDto toUserSettingsDto(UserSettings s) {
         return new UserSettingsDto(
-                s.isTwoFactorEnabled()
+                s.isTwoFactorEnabled(),
+                s.isImperialUnits()
         );
     }
 }

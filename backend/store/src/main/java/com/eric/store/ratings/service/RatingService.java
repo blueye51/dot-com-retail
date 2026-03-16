@@ -1,6 +1,8 @@
 package com.eric.store.ratings.service;
 
 import com.eric.store.common.exceptions.NotFoundException;
+import com.eric.store.products.entity.Product;
+import com.eric.store.products.repository.ProductRepository;
 import com.eric.store.products.service.ProductService;
 import com.eric.store.ratings.dto.RatingDto;
 import com.eric.store.ratings.dto.RatingRequest;
@@ -22,13 +24,18 @@ public class RatingService {
     private final RatingRepository ratingRepository;
     private final RatingMapper ratingMapper;
     private final ProductService productService;
+    private final ProductRepository productRepository;
     private final UserService userService;
 
+    @Transactional
     public Rating create(RatingRequest req, UUID userId) {
         Rating rating = ratingMapper.toRating(req);
-        rating.setProduct(productService.findById(req.productId()));
+        Product product = productService.findById(req.productId());
+        rating.setProduct(product);
         rating.setUser(userService.findById(userId));
-        return ratingRepository.save(rating);
+        Rating saved = ratingRepository.save(rating);
+        recalculateRatingStats(product);
+        return saved;
     }
 
     @Transactional(readOnly = true)
@@ -40,18 +47,19 @@ public class RatingService {
 
     @Transactional(readOnly = true)
     public List<RatingDto> getByUserId(UUID userId) {
-        return ratingRepository.findByUserId(userId).stream()
+        return ratingRepository.findByUserIdOrderByCreatedAtDesc(userId).stream()
                 .map(ratingMapper::toDto)
                 .toList();
     }
 
     @Transactional(readOnly = true)
     public List<RatingDto> getByProductId(UUID productId) {
-        return ratingRepository.findByProductId(productId).stream()
+        return ratingRepository.findByProductIdOrderByCreatedAtDesc(productId).stream()
                 .map(ratingMapper::toDto)
                 .toList();
     }
 
+    @Transactional
     public RatingDto update(UUID id, RatingRequest req, UUID userId) {
         Rating rating = ratingRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Rating", id));
@@ -60,15 +68,27 @@ public class RatingService {
         }
         rating.setScore(req.score());
         rating.setComment(req.comment());
-        return ratingMapper.toDto(ratingRepository.save(rating));
+        Rating saved = ratingRepository.save(rating);
+        recalculateRatingStats(saved.getProduct());
+        return ratingMapper.toDto(saved);
     }
 
+    @Transactional
     public void delete(UUID id, UUID userId) {
         Rating rating = ratingRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Rating", id));
         if (!rating.getUser().getId().equals(userId)) {
             throw new IllegalArgumentException("You can only delete your own ratings");
         }
+        Product product = rating.getProduct();
         ratingRepository.delete(rating);
+        ratingRepository.flush();
+        recalculateRatingStats(product);
+    }
+
+    private void recalculateRatingStats(Product product) {
+        product.setAverageRating(ratingRepository.averageScoreByProductId(product.getId()));
+        product.setTotalRatings(ratingRepository.countByProductId(product.getId()));
+        productRepository.save(product);
     }
 }
