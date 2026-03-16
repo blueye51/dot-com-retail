@@ -2,6 +2,19 @@
 
 A full-stack e-commerce application built with Spring Boot and React.
 
+## Table of Contents
+
+- [Setup](#setup)
+- [Tech Stack](#tech-stack)
+- [ACID Compliance](#acid-compliance)
+- [Security](#security)
+- [Scalability](#scalability)
+- [Product Search](#product-search)
+- [Ratings & Reviews](#ratings--reviews)
+- [User Settings](#user-settings)
+- [Automated Tests](#automated-tests)
+- [Entity Relationship Diagram (ERD)](#entity-relationship-diagram-erd)
+
 ## Setup
 
 ### Prerequisites
@@ -34,6 +47,8 @@ Most values in `.env.example` have working defaults. The ones you need to set up
 4. Paste it into `.env` as `RESEND_API_KEY`.
 
 > **Note:** On the free tier, Resend can only send emails to the account owner's email address. Use that same email for `ADMIN_SEED_EMAIL` and when registering in the app.
+>
+> **Note:** The admin account has 2FA forced on. If you want to test the app as a regular user without 2FA, register with a different email than the one set in `ADMIN_SEED_EMAIL`.
 
 #### Google OAuth2
 
