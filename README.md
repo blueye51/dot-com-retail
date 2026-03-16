@@ -70,7 +70,7 @@ Most values in `.env.example` have working defaults. The ones you need to set up
 ### Quick Start
 
 ```bash
-docker compose --profile full up --build
+docker compose --profile full up --build -d
 ```
 
 This starts all services: PostgreSQL, Redis, MinIO, the backend API, and the frontend. Once everything is up:
