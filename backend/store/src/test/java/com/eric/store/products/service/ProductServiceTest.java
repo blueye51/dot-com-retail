@@ -86,7 +86,7 @@ class ProductServiceTest {
 
         ProductCard expectedCard = new ProductCard(
                 laptop.getId(), "Galaxy Book", new BigDecimal("999.99"),
-                CurrencyProvider.EUR, "TestBrand", 10, "Laptops", null
+                CurrencyProvider.EUR, "TestBrand", 10, 0.0, 0, "Laptops", null
         );
         when(productMapper.toCard(eq(laptop), any())).thenReturn(expectedCard);
 
@@ -172,7 +172,7 @@ class ProductServiceTest {
             Product p = inv.getArgument(0);
             String thumb = inv.getArgument(1);
             return new ProductCard(p.getId(), p.getName(), p.getPrice(),
-                    p.getCurrency(), "TestBrand", 10, "Laptops", thumb);
+                    p.getCurrency(), "TestBrand", 10,0.0, 0, "Laptops", thumb);
         });
 
         Page<ProductCard> result = productService.search(ProductQuery.builder().build());
