@@ -23,11 +23,9 @@ public class ProductImage {
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "file_key", nullable = false)
     private FileEntity file;
 
     @Column(name = "sort_order", nullable = false)

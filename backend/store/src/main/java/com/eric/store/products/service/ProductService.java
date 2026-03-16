@@ -85,11 +85,16 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public ProductResponse getProductResponseById(UUID id) {
-        return productMapper.toResponse(findProductById(id));
+        return productMapper.toResponse(findProductWithImagesById(id));
     }
 
-    private Product findProductById(UUID id) {
+    private Product findProductWithImagesById(UUID id) {
         return productRepository.findByIdWithImages(id)
+                .orElseThrow(() -> new NotFoundException("Product", id));
+    }
+
+    public Product findById(UUID id) {
+        return productRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Product", id));
     }
 }
