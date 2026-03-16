@@ -1,6 +1,6 @@
 # i-love-shopping
 
-A full-stack **Business-to-Consumer (B2C)** e-commerce application built with Spring Boot and React.
+A full-stack e-commerce application built with Spring Boot and React.
 
 ## Table of Contents
 
@@ -15,8 +15,6 @@ A full-stack **Business-to-Consumer (B2C)** e-commerce application built with Sp
 - [ACID Compliance](#acid-compliance)
 - [Security](#security)
 - [Scalability](#scalability)
-- [Product Data Model](#product-data-model)
-- [Category Browsing](#category-browsing)
 - [Product Search](#product-search)
 - [Ratings & Reviews](#ratings--reviews)
 - [User Settings](#user-settings)
@@ -147,29 +145,13 @@ Spring Boot and PostgreSQL handle most of this by default -the combination provi
 
 ### JWT Access Tokens
 
-Authentication uses **JSON Web Tokens (JWTs)** as access tokens. A JWT consists of three parts:
-
-- **Header** -Specifies the token type (`JWT`) and the signing algorithm (`HS256`).
-- **Payload** -Contains the claims: user ID, roles, email verification status, and 2FA status.
-- **Signature** -An HMAC-SHA hash of the encoded header and payload using a secret key. This ensures the token hasn't been tampered with.
-
-These three parts are Base64-encoded and joined with dots (`header.payload.signature`). This means:
+Authentication uses **JSON Web Tokens (JWTs)** as access tokens. Each token contains the user's ID, roles, email verification status, and 2FA status as claims, signed with an **HMAC-SHA** secret key. This means:
 
 - The server can verify any request by checking the signature -no database lookup needed per request.
 - Tokens cannot be forged or tampered with because every claim is part of the signature calculation. Changing any piece of data in the token invalidates the signature.
 - Access tokens expire after **15 minutes**, limiting the damage window if a token is ever compromised.
 
-**Access tokens are stored in memory** on the client side (in Redux state), not in `localStorage` or cookies. This means they don't persist across page refreshes or browser tabs, which limits exposure -if the tab is closed, the token is gone. A fresh access token is obtained via the refresh flow when needed.
-
 Refresh tokens are opaque values stored in Redis (not JWTs), delivered via **HttpOnly, Secure** cookies so they're inaccessible to JavaScript.
-
-### Token Revocation
-
-Both access and refresh tokens can be revoked:
-
-- **Refresh tokens** -On logout, the frontend calls `DELETE /api/auth/refresh/logout`. The backend deletes the refresh token from Redis and clears the refresh cookie from the response. Since refresh tokens are stored as `refreshToken:{sha256_hash}` keys in Redis, deletion is immediate and the token can never be used again.
-- **Access tokens** -Access tokens are short-lived (15 min) and stored only in memory. On logout, the frontend clears the token from Redux state. Since the access token is not persisted anywhere, clearing it from memory is equivalent to revocation. Any remaining copies expire naturally within minutes.
-- **Rotation-based invalidation** -On every token refresh, the old refresh token is deleted from Redis and a new one is issued. If an attacker tries to reuse a rotated token, it will not be found in Redis and the request will be rejected.
 
 ### Two-Factor Authentication (2FA)
 
@@ -217,13 +199,6 @@ The security layer is configured as a stateless API:
 - **Cloudflare Turnstile** CAPTCHA is validated on registration and login to prevent automated attacks.
 - Endpoints are secured by role: admin routes require `ROLE_ADMIN`, public routes (products, categories, brands) are open, and everything else requires authentication.
 
-### Input Validation
-
-User input is validated on both the client and server sides for all authentication forms:
-
-- **Server-side (Spring Boot)** -Auth DTOs use Jakarta Bean Validation annotations. `UserLogin` requires `@NotBlank` on email, password, and CAPTCHA token. `UserRegister` adds a `@Pattern` constraint enforcing at least 8 characters with uppercase, lowercase, digit, and symbol requirements. Controllers use `@Valid` on `@RequestBody` parameters so invalid requests are rejected before reaching business logic.
-- **Client-side (React)** -Login and registration forms use HTML5 validation attributes (`type="email"`, `required`) for immediate browser-level feedback. Forms also check for the presence of a valid Turnstile CAPTCHA token before submission and trim whitespace from email and name inputs.
-
 ### Protection Against Common Attacks
 
 - **SQL Injection** -All database queries go through JPA/Hibernate with parameterized queries. No raw SQL string concatenation.
@@ -243,45 +218,6 @@ The application is designed to be straightforward to extend:
 - **Redis for ephemeral state** -Keeping temporary data out of PostgreSQL means the relational database stays focused on persistent data and doesn't accumulate cleanup debt.
 - **Stateless authentication** -JWT-based auth means the backend can be horizontally scaled behind a load balancer without sticky sessions.
 - **Docker Compose** -The entire stack is containerized with health checks and dependency ordering, making it reproducible across environments.
-
----
-
-## Product Data Model
-
-Each product in the database includes the following fields:
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | UUID | Primary key |
-| `name` | String | Product name (required) |
-| `description` | String | Product description |
-| `price` | BigDecimal | Price with 2 decimal places (required) |
-| `currency` | Enum | Currency code (required) |
-| `stock` | Integer | Stock quantity (required) |
-| `category` | Category | Product category via foreign key (required) |
-| `brand` | Brand | Product brand via foreign key |
-| `productImages` | List | One-to-many relation to product images |
-| `weight` | BigDecimal | Weight in kilograms |
-| `width` | BigDecimal | Width in centimeters |
-| `height` | BigDecimal | Height in centimeters |
-| `depth` | BigDecimal | Depth in centimeters |
-| `averageRating` | double | Cached average rating |
-| `totalRatings` | int | Cached rating count |
-| `viewCount` | long | Product view counter |
-| `createdAt` | OffsetDateTime | Auto-set creation timestamp (UTC) |
-| `updatedAt` | OffsetDateTime | Auto-updated timestamp (UTC) |
-
-Dimensions and weight are always stored in **metric** units. The frontend converts to **imperial** (inches, lb) based on user preference (see [User Settings](#user-settings)).
-
----
-
-## Category Browsing
-
-Products are organized into a **hierarchical category tree**. Categories support arbitrary nesting depth through a parent-child self-referential relationship:
-
-- **Tree navigation** -The frontend renders categories as an expandable/collapsible tree using a recursive `CategoryNode` component. Non-leaf categories display expand/collapse indicators (▶/▼), and clicking a leaf category filters products to that category.
-- **Hierarchy enforcement** -Leaf categories cannot have children (enforced at the entity level). Root categories have no parent.
-- **Admin management** -Admins can create, rename, and delete categories via the API. The tree structure is fetched from `GET /api/categories` and built client-side from the flat list into a nested hierarchy.
 
 ---
 
