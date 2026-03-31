@@ -2,12 +2,14 @@ package com.eric.store.categories.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SoftDelete;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
+@SoftDelete
 @Table(
         name = "categories",
         indexes = {

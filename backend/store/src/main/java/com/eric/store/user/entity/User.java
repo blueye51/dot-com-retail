@@ -4,6 +4,7 @@ package com.eric.store.user.entity;
 import com.eric.store.orders.entity.Order;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SoftDelete;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -11,6 +12,7 @@ import java.util.*;
 
 @Entity
 @Table(name = "users")
+@SoftDelete
 @Getter
 @Setter
 @NoArgsConstructor

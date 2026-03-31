@@ -5,6 +5,7 @@ import com.eric.store.categories.entity.Category;
 import com.eric.store.orders.entity.OrderItem;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SoftDelete;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -13,6 +14,7 @@ import java.util.*;
 
 @Entity
 @Table(name = "products")
+@SoftDelete
 @Getter
 @Setter
 @NoArgsConstructor
