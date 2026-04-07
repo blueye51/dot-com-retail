@@ -6,6 +6,7 @@ import {setAuth, buildAuthFromToken} from "../store.js";
 import useFetch, {fetchUserSettings} from "../useFetch.js";
 import {useNavigate, useLocation, Link} from "react-router-dom";
 import {paths} from "../routes.js";
+import {mergeGuestCart} from "../useCartMerge.js";
 
 function Login() {
     const navigate = useNavigate();
@@ -62,6 +63,7 @@ function Login() {
             }
             dispatch(setAuth(buildAuthFromToken(result.accessToken)));
             fetchUserSettings(dispatch, result.accessToken);
+            mergeGuestCart(dispatch, result.accessToken);
             navigate(from, { replace: true });
         } catch (err) {
             alert("Login failed: " + (err.message || "Unknown error"));

@@ -15,6 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -62,5 +63,13 @@ public class ProductController {
     public ResponseEntity<ProductResponse> getProduct(@PathVariable UUID id) {
         ProductResponse product = productService.getProductResponseById(id);
         return ResponseEntity.ok(product);
+    }
+
+    @GetMapping("/related")
+    public ResponseEntity<List<ProductCard>> getRelatedProducts(
+            @RequestParam List<UUID> productIds,
+            @RequestParam(defaultValue = "8") int limit
+    ) {
+        return ResponseEntity.ok(productService.getRelatedProducts(productIds, Math.min(limit, 20)));
     }
 }

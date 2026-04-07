@@ -1,5 +1,6 @@
 package com.eric.store.user.service;
 
+import com.eric.store.common.entity.Address;
 import com.eric.store.common.exceptions.AuthProviderConflictException;
 import com.eric.store.user.dto.UserLogin;
 import com.eric.store.user.dto.UserRegister;
@@ -168,5 +169,11 @@ public class UserService {
         settings.setTwoFactorEnabled(dto.twoFactorEnabled());
         settings.setImperialUnits(dto.imperialUnits());
         return settings;
+    }
+
+    @Transactional
+    public void saveAddress(UUID userId, Address address) {
+        User user = findById(userId);
+        user.setSavedAddress(address);
     }
 }

@@ -20,7 +20,12 @@ export const PATHS = {
     brandCreate: "/brandCreate",
     forgotPassword: "/forgot-password",
     resetPassword: "/reset-password/:token",
-    deleteAccount: "/delete-account"
+    deleteAccount: "/delete-account",
+    cart: "/cart",
+    checkout: "/checkout",
+    orderConfirmation: "/order/:orderId/confirmation",
+    orders: "/orders",
+    order: "/order/:orderId"
 };
 
 export const paths = {
@@ -43,4 +48,9 @@ export const paths = {
     forgotPassword: () => PATHS.forgotPassword,
     resetPassword: (token) => generatePath(PATHS.resetPassword, {token}),
     deleteAccount: () => PATHS.deleteAccount,
+    cart: () => PATHS.cart,
+    checkout: () => PATHS.checkout,
+    orderConfirmation: (orderId) => generatePath(PATHS.orderConfirmation, {orderId}),
+    orders: () => PATHS.orders,
+    order: (orderId) => generatePath(PATHS.order, {orderId}),
 }

@@ -41,6 +41,11 @@ app:
     same-site: Strict
   admin:
     seed-email: ""
+  stripe:
+    secret-key: sk_test_fake
+    webhook-secret: whsec_fake
+  encryption:
+    key: dGVzdGVuY3J5cHRpb25rZXkxMjM0NTY3ODkwYWJjZGVm
 
 storage:
   s3:

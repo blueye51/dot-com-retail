@@ -61,7 +61,15 @@ public class ProductImageService {
 
     @Transactional(readOnly = true)
     public Map<UUID, String> loadThumbnailUrls(Page<Product> products) {
-        List<UUID> productIds = products.stream().map(Product::getId).toList();
+        return loadThumbnailUrlsByIds(products.stream().map(Product::getId).toList());
+    }
+
+    @Transactional(readOnly = true)
+    public Map<UUID, String> loadThumbnailUrls(List<Product> products) {
+        return loadThumbnailUrlsByIds(products.stream().map(Product::getId).toList());
+    }
+
+    private Map<UUID, String> loadThumbnailUrlsByIds(List<UUID> productIds) {
         if (productIds.isEmpty()) return Map.of();
 
         return productImageRepository.findThumbnails(productIds).stream()

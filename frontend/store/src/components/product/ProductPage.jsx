@@ -3,21 +3,30 @@ import useFetch from "../useFetch.js";
 import styles from "./ProductPage.module.css"
 import Modal from "../modal/Modal.jsx";
 import {useState} from "react";
-import {useSelector} from "react-redux";
+import {useSelector, useDispatch} from "react-redux";
 import defaultImage from "../../assets/default_image.png";
 import Stars from "./productUI/Stars.jsx";
 import {formatDimension, kgToLb} from "../units.js";
+import {addToGuestCart, setCart} from "../store.js";
 
 
 export default function ProductPage() {
     const {id} = useParams();
+    const dispatch = useDispatch();
     const {data: product, loading, error} = useFetch(`/api/products/${id}`);
     const imperial = useSelector((s) => s.settings.imperialUnits);
+    const {token} = useSelector((s) => s.auth);
 
     const [imageOpen, setImageOpen] = useState(false)
     const [ratingOpen, setRatingOpen] = useState(false);
     const [score, setScore] = useState(5);
     const [comment, setComment] = useState("");
+
+    const {reFetch: addToCartApi, loading: cartLoading} = useFetch("/api/cart", {
+        method: "POST",
+        withAuth: true,
+        immediate: false,
+    });
 
     const {reFetch: submitRating, loading: ratingLoading, error: ratingError} = useFetch("/api/ratings", {
         method: "POST",
@@ -84,7 +93,27 @@ export default function ProductPage() {
                     <div>
                         <span>{product.price.toFixed(2)} {product.currency}</span>
                         <p>{product.stock > 0 ? `In Stock: ${product.stock}` : "Out of Stock"}</p>
-                        <button disabled={product.stock <= 0}>Add to Cart</button>
+                        <button disabled={product.stock <= 0 || cartLoading} onClick={async () => {
+                            if (token) {
+                                try {
+                                    const result = await addToCartApi({body: {productId: id, quantity: 1}});
+                                    if (result) dispatch(setCart(result));
+                                } catch {}
+                            } else {
+                                const imageUrl = product.images?.length > 0 ? product.images[0].url : null;
+                                dispatch(addToGuestCart({
+                                    productId: id,
+                                    productName: product.name,
+                                    price: product.price,
+                                    currency: product.currency,
+                                    quantity: 1,
+                                    stock: product.stock,
+                                    imageUrl,
+                                }));
+                            }
+                        }}>
+                            {cartLoading ? "Adding..." : "Add to Cart"}
+                        </button>
                     </div>
 
                     <p>{product.description}</p>

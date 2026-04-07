@@ -2,14 +2,16 @@ package com.eric.store.categories.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.SoftDelete;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
-@SoftDelete
+@SQLDelete(sql = "UPDATE categories SET deleted = true WHERE id = ?")
+@SQLRestriction("deleted = false")
 @Table(
         name = "categories",
         indexes = {
@@ -30,6 +32,9 @@ public class Category {
 
     @Column(nullable = false, updatable = false)
     private boolean isLeaf;
+
+    @Column(nullable = false)
+    private boolean deleted = false;
 
     @OneToMany(mappedBy = "parentCategory", cascade={CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Category> subcategories = new ArrayList<>();

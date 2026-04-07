@@ -1,0 +1,132 @@
+.page {
+    padding: 2rem;
+    box-sizing: border-box;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.filters {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+.filters select,
+.filters input {
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    border: 1px solid #ccc;
+}
+
+.filters label {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.85rem;
+    color: #555;
+}
+
+.orderList {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.orderCard {
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    text-decoration: none;
+    color: inherit;
+}
+
+.orderCard:hover {
+    border-color: #0a2045;
+}
+
+.orderHeader {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.itemList {
+    list-style: none;
+    padding: 0;
+}
+
+.itemList li {
+    padding: 0.25rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.date {
+    color: #777;
+    font-size: 0.85rem;
+}
+
+.itemCount {
+    color: #555;
+    font-size: 0.85rem;
+}
+
+.error {
+    color: red;
+}
+
+.status_PAID {
+    color: #2e7d32;
+}
+
+.status_PENDING_PAYMENT {
+    color: #ed6c02;
+}
+
+.status_PAYMENT_FAILED {
+    color: #d32f2f;
+}
+
+.status_CANCELLED {
+    color: #777;
+}
+
+.status_REFUNDED {
+    color: #6a1b9a;
+}
+
+.cancelBtn {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background: #d32f2f;
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+}
+
+.cancelBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.links {
+    margin-top: 1.5rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.pagination button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}

@@ -1,11 +1,12 @@
 package com.eric.store.auth.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
 @Service
+@Slf4j
 public class EmailService {
     private final RestClient restClient;
     private final String from;
@@ -22,13 +23,19 @@ public class EmailService {
 
     public record EmailRequest(String from, String to, String subject, String html) {}
 
-    @Async
     public void sendEmail(String to, String subject, String html) {
-        restClient.post()
-                .uri("/emails")
-                .body(new EmailRequest(from, to, subject, html))
-                .retrieve()
-                .toBodilessEntity();
+        log.info("Sending email to={}, subject={}", to, subject);
+        try {
+            restClient.post()
+                    .uri("/emails")
+                    .body(new EmailRequest(from, to, subject, html))
+                    .retrieve()
+                    .toBodilessEntity();
+            log.info("Email sent successfully to={}", to);
+        } catch (Exception e) {
+            log.error("Failed to send email to={}: {}", to, e.getMessage());
+            throw e;
+        }
     }
 
     public void sendCodeEmail(String to, String code) {

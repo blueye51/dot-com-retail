@@ -5,7 +5,8 @@ import com.eric.store.categories.entity.Category;
 import com.eric.store.orders.entity.OrderItem;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.SoftDelete;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
@@ -14,7 +15,8 @@ import java.util.*;
 
 @Entity
 @Table(name = "products")
-@SoftDelete
+@SQLDelete(sql = "UPDATE products SET deleted = true WHERE id = ? AND version = ?")
+@SQLRestriction("deleted = false")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -48,6 +50,9 @@ public class Product {
     @JoinColumn(name = "brand_id")
     private Brand brand;
 
+    @Version
+    private Long version;
+
     @Column(nullable = false)
     private Integer stock;
 
@@ -59,6 +64,9 @@ public class Product {
 
     @Column(nullable = false)
     private long viewCount = 0;
+
+    @Column(nullable = false)
+    private boolean deleted = false;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.PERSIST)
     private List<ProductImage> productImages = new ArrayList<>();

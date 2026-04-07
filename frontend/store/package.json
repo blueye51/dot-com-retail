@@ -12,6 +12,8 @@
   "dependencies": {
     "@marsidev/react-turnstile": "^1.4.2",
     "@reduxjs/toolkit": "^2.9.0",
+    "@stripe/react-stripe-js": "^6.1.0",
+    "@stripe/stripe-js": "^9.0.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-redux": "^9.2.0",

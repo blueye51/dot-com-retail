@@ -3,6 +3,7 @@ import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
 import {useDispatch} from "react-redux";
 import {useEffect, useState} from "react";
 import {refreshAccessToken, fetchUserSettings} from "./components/useFetch.js";
+import {setCart} from "./components/store.js";
 import {PATHS, paths} from './components/routes.js'
 
 import Login from './components/login/Login.jsx'
@@ -29,6 +30,11 @@ import ResetPassword from "./components/auth/ResetPassword.jsx";
 import TwoFactorVerification from "./components/verification/TwoFactorVerification.jsx";
 import BrandCreate from "./components/brand/brandCreate/BrandCreate.jsx";
 import DeleteAccount from "./components/profile/DeleteAccount.jsx";
+import Cart from "./components/cart/Cart.jsx";
+import Checkout from "./components/checkout/Checkout.jsx";
+import OrderConfirmation from "./components/order/OrderConfirmation.jsx";
+import Orders from "./components/order/Orders.jsx";
+import OrderDetail from "./components/order/OrderDetail.jsx";
 
 
 function App() {
@@ -40,6 +46,16 @@ function App() {
             try {
                 const token = await refreshAccessToken(dispatch);
                 await fetchUserSettings(dispatch, token);
+                // Load server cart for logged-in users
+                const BASE_URL = import.meta.env.VITE_API_BASE;
+                const res = await fetch(`${BASE_URL}/api/cart`, {
+                    headers: {Authorization: `Bearer ${token}`},
+                    credentials: "include",
+                });
+                if (res.ok) {
+                    const cart = await res.json();
+                    dispatch(setCart(cart));
+                }
             } catch {
                 console.log("No valid refresh token found.");
             } finally {
@@ -80,11 +96,16 @@ function App() {
                     {/* Public */}
                     <Route path={PATHS.home} element={<Home/>}/>
                     <Route path={PATHS.product} element={<ProductPage/>}/>
+                    <Route path={PATHS.cart} element={<Cart/>}/>
 
                     {/* Authenticated */}
                     <Route element={<RequiredAuth/>}>
                         <Route path={PATHS.profile} element={<Profile/>}/>
                         <Route path={PATHS.deleteAccount} element={<DeleteAccount/>}/>
+                        <Route path={PATHS.checkout} element={<Checkout/>}/>
+                        <Route path={PATHS.orderConfirmation} element={<OrderConfirmation/>}/>
+                        <Route path={PATHS.orders} element={<Orders/>}/>
+                        <Route path={PATHS.order} element={<OrderDetail/>}/>
                     </Route>
 
                     {/* Admin */}

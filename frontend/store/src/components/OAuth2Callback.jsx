@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { setAuth, buildAuthFromToken } from "./store.js";
 import { paths } from "./routes.js";
 import useFetch, { fetchUserSettings } from "./useFetch.js";
+import { mergeGuestCart } from "./useCartMerge.js";
 
 const API_BASE = import.meta.env.VITE_API_BASE;
 
@@ -42,6 +43,7 @@ function OAuth2Callback() {
         if (!data) return;
         dispatch(setAuth(buildAuthFromToken(data.accessToken)));
         fetchUserSettings(dispatch, data.accessToken);
+        mergeGuestCart(dispatch, data.accessToken);
         navigate(paths.home(), { replace: true });
     }, [data]);
 

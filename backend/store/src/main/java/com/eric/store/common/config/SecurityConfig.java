@@ -36,7 +36,8 @@ public class SecurityConfig {
                                 "/api/categories/**", "/api/products/**", "/api/brands/**",
                                 "/api/images/**", "/oauth2/**",
                                 "/login/oauth2/**",
-                                "/api/email-verification/verify")
+                                "/api/email-verification/verify",
+                                "/api/payments/webhook")
                         .permitAll()
                         .requestMatchers("/api/admin/**")
                         .hasRole("ADMIN")

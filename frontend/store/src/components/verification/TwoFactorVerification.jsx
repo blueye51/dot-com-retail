@@ -4,6 +4,7 @@ import {useState} from "react";
 import {useDispatch} from "react-redux";
 import {buildAuthFromToken, setAuth} from "../store.js";
 import {paths} from "../routes.js";
+import {mergeGuestCart} from "../useCartMerge.js";
 
 export default function TwoFactorVerification() {
     const dispatch = useDispatch();
@@ -28,6 +29,7 @@ export default function TwoFactorVerification() {
             const result = await reFetch({ body: { tempCode: state.tempCode, otpCode } });
             dispatch(setAuth(buildAuthFromToken(result.accessToken)));
             fetchUserSettings(dispatch, result.accessToken);
+            mergeGuestCart(dispatch, result.accessToken);
             navigate(state.from || paths.home(), { replace: true });
         } catch (err) {
             alert("Verification failed: " + (err.message || "Unknown error"));

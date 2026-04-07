@@ -19,8 +19,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -97,5 +99,34 @@ public class ProductService {
     public Product findById(UUID id) {
         return productRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Product", id));
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProductCard> getRelatedProducts(List<UUID> productIds, int limit) {
+        List<Product> cartProducts = productRepository.findAllById(productIds);
+        if (cartProducts.isEmpty()) return List.of();
+
+        List<UUID> categoryIds = cartProducts.stream()
+                .map(p -> p.getCategory().getId())
+                .distinct()
+                .toList();
+
+        // First: products in the same categories
+        List<Product> related = new java.util.ArrayList<>(productRepository.findRelatedByCategoryIds(
+                categoryIds, productIds, PageRequest.of(0, limit)));
+
+        // Fallback: fill remaining slots with top-rated products
+        if (related.size() < limit) {
+            List<UUID> excludeIds = new java.util.ArrayList<>(productIds);
+            excludeIds.addAll(related.stream().map(Product::getId).toList());
+            List<Product> filler = productRepository.findTopRatedExcluding(
+                    excludeIds, PageRequest.of(0, limit - related.size()));
+            related.addAll(filler);
+        }
+
+        Map<UUID, String> thumbnails = productImageService.loadThumbnailUrls(related);
+        return related.stream()
+                .map(p -> productMapper.toCard(p, thumbnails.get(p.getId())))
+                .toList();
     }
 }

@@ -8,6 +8,8 @@ import defaultPfp from "../../assets/default_pfp.svg"
 
 function Header () {
     const {roles, token, emailVerified} = useSelector((state) => state.auth);
+    const cartItems = useSelector((s) => s.cart.items);
+    const cartCount = cartItems.reduce((sum, i) => sum + i.quantity, 0);
     const isAdmin = roles.includes("ADMIN");
 
     const [search, setSearch] = useState("");
@@ -39,6 +41,7 @@ function Header () {
                 {token ? (
                     <>
                         {isAdmin && <Link to={paths.admin()}>Admin Panel</Link>}
+                        <Link to={paths.orders()}>Orders</Link>
                         {!emailVerified && <Link to={paths.verifyEmail()}>Verify Email</Link>}
                         <button onClick={handleLogout} disabled={loading}>
                             {loading ? "Logging out..." : "Logout"}
@@ -50,7 +53,10 @@ function Header () {
                         <Link to={paths.register()}>Register</Link>
                     </>
                 )}
-                <Link to="#">🛒</Link>
+                <Link to={paths.cart()} className={styles.cartLink}>
+                    🛒
+                    {cartCount > 0 && <span className={styles.cartBadge}>{cartCount}</span>}
+                </Link>
                 <Link to={paths.profile()}>
                     <img className={styles.profileImage} src={defaultPfp} alt="Profile image"/>
                 </Link>

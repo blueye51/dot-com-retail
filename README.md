@@ -18,6 +18,11 @@ A full-stack e-commerce application built with Spring Boot and React.
 - [Product Search](#product-search)
 - [Ratings & Reviews](#ratings--reviews)
 - [User Settings](#user-settings)
+- [Cart & Related Products](#cart--related-products)
+- [Checkout](#checkout)
+- [Orders & Refunds](#orders--refunds)
+- [Message Queue (RabbitMQ)](#message-queue-rabbitmq)
+- [Soft Delete](#soft-delete)
 - [Automated Tests](#automated-tests)
 - [Entity Relationship Diagram (ERD)](#entity-relationship-diagram-erd)
 
@@ -33,8 +38,8 @@ A full-stack e-commerce application built with Spring Boot and React.
 ### Clone
 
 ```bash
-git clone https://gitea.kood.tech/ericrand/i-love-shopping1.git
-cd i-love-shopping1
+git clone https://gitea.kood.tech/ericrand/i-love-shopping2.git
+cd i-love-shopping2
 ```
 
 ### Environment
@@ -67,13 +72,54 @@ Most values in `.env.example` have working defaults. The ones you need to set up
 
 > If you don't want to set up Google OAuth2 yourself, you can ask me to add your Google email as a test user on my OAuth app.
 
+#### Stripe (payments)
+
+1. Go to [dashboard.stripe.com](https://dashboard.stripe.com) and create an account.
+2. In **Developers > API keys**, copy the **Publishable key** into `.env` as `STRIPE_PUBLISHABLE_KEY` and the **Secret key** as `STRIPE_SECRET_KEY`.
+3. Set up a local webhook listener using the [Stripe CLI](https://docs.stripe.com/stripe-cli):
+
+   Download the Stripe CLI and log in with your Stripe account:
+   ```bash
+   stripe login
+   ```
+   Forward events to the backend webhook endpoint:
+   ```bash
+   stripe listen --forward-to https://localhost:8443/api/payments/webhook
+   ```
+   Copy the webhook signing secret it prints (starts with `whsec_`) into `.env` as `STRIPE_WEBHOOK_SECRET`.
+
+   You can test the webhook with:
+   ```bash
+   stripe trigger payment_intent.succeeded
+   ```
+
+> Use Stripe's test mode for development. Test card number: `4242 4242 4242 4242` with any future expiry and any CVC.
+
+#### Google Places API (address autocomplete)
+
+1. In [Google Cloud Console](https://console.cloud.google.com), enable the **Places API (New)** and the **Maps JavaScript API**.
+2. Create an API key (or use an existing one) and restrict it to these APIs.
+3. Paste it into `.env` as `GOOGLE_MAPS_API_KEY`.
+
+> This is optional. If not configured, users can still enter addresses manually during checkout.
+
+#### Encryption Key
+
+Generate a 256-bit AES encryption key for encrypting sensitive data at rest:
+
+```bash
+openssl rand -base64 32
+```
+
+Paste the output into `.env` as `ENCRYPTION_KEY`.
+
 ### Quick Start
 
 ```bash
 docker compose --profile full up --build -d
 ```
 
-This starts all services: PostgreSQL, Redis, MinIO, the backend API, and the frontend. Once everything is up:
+This starts all services: PostgreSQL, Redis, RabbitMQ, MinIO, the backend API, and the frontend. Once everything is up:
 
 - **Frontend:** https://localhost:5173
 - **Backend API:** https://localhost:8443
@@ -125,6 +171,14 @@ Redis is ideal here because all of this data is ephemeral -it doesn't need to su
 **MinIO** handles all image storage (product images, etc.). It implements the full **Amazon S3 API**, which means the application uses the standard AWS S3 SDK to interact with it. This makes migration to Amazon S3 in production a single configuration change -just swap the endpoint URL and credentials, no code changes needed.
 
 Images are organized into public and private prefixes within a single bucket. Public images are served directly via URL, while private files use time-limited presigned URLs for secure access.
+
+### RabbitMQ (Message Broker)
+
+**RabbitMQ** handles asynchronous event-driven communication. When a Stripe payment webhook is received, the backend publishes a payment status event to a RabbitMQ exchange. A consumer processes the event asynchronously — updating the order status and sending a confirmation email. This decouples the webhook response from downstream processing, so payment confirmation is fast and email delivery failures don't block the payment flow.
+
+### Stripe (Payment Processing)
+
+**Stripe** handles all payment processing. The backend creates PaymentIntents for each checkout, and the frontend uses Stripe Elements (via `@stripe/react-stripe-js`) to securely collect card details. Stripe webhooks notify the backend of payment outcomes, which are then processed through RabbitMQ. The integration also supports full refunds when a paid order is cancelled.
 
 ---
 
@@ -207,6 +261,21 @@ The security layer is configured as a stateless API:
 - **Brute Force** -OTP cooldowns, token expiration, and Turnstile CAPTCHA limit automated attack surface.
 - **CORS** -Strict origin allowlist prevents cross-origin requests from unauthorized domains.
 
+### Encryption at Rest
+
+Sensitive data stored in the database is encrypted using **AES-256-GCM** via a JPA `AttributeConverter`. Each value is encrypted with a unique random IV (initialization vector) before being written to the database, and decrypted transparently when read back into the application.
+
+Encrypted fields include:
+- **Order shipping addresses** -name, street address, city, state, zip, country
+- **User saved addresses** -the same address fields on the user profile
+- **Payment transaction IDs** -Stripe PaymentIntent IDs stored on orders
+
+The encryption key is a 256-bit AES key provided as a base64-encoded environment variable (`ENCRYPTION_KEY`). GCM mode provides both confidentiality and authenticity — tampered ciphertext is detected and rejected during decryption.
+
+### Inventory Concurrency Control
+
+The `Product` entity uses **optimistic locking** via JPA's `@Version` annotation. When two transactions try to modify the same product's stock simultaneously (e.g., two orders being fulfilled at the same time), the second transaction detects the version mismatch and fails with an `OptimisticLockException` rather than silently overwriting the first transaction's changes. This prevents overselling without the performance cost of pessimistic database locks.
+
 ---
 
 ## Scalability
@@ -216,6 +285,7 @@ The application is designed to be straightforward to extend:
 - **Modular package structure** -Each domain (products, orders, users, auth, files, categories, brands) lives in its own package with its own controller, service, repository, DTOs, and entities. Adding a new domain means adding a new package without touching existing code.
 - **S3-compatible storage** -MinIO can be swapped to Amazon S3 by changing configuration. No code changes needed.
 - **Redis for ephemeral state** -Keeping temporary data out of PostgreSQL means the relational database stays focused on persistent data and doesn't accumulate cleanup debt.
+- **Asynchronous processing** -RabbitMQ decouples time-sensitive operations (like webhook responses) from downstream tasks (like sending emails). This improves response times and makes the system resilient to temporary failures in external services.
 - **Stateless authentication** -JWT-based auth means the backend can be horizontally scaled behind a load balancer without sticky sessions.
 - **Docker Compose** -The entire stack is containerized with health checks and dependency ordering, making it reproducible across environments.
 
@@ -263,15 +333,99 @@ Users can toggle between **metric** (cm, kg) and **imperial** (inches, lb) units
 
 ---
 
+## Cart & Related Products
+
+The cart lets authenticated users add, update, and remove items. Each cart item tracks a product and quantity, and the cart total is computed server-side by summing `price * quantity` across all items.
+
+When a user logs in, any items they had in their browser's local storage (guest cart) are merged with their server-side cart. If the same product exists in both, quantities are combined.
+
+The cart page also includes a **"You might also like"** section that recommends related products. The backend finds products in the same categories as the items already in the cart, excludes products that are already in the cart, filters out out-of-stock items, and ranks results by average rating. The frontend renders these in a horizontal scrollable row.
+
+---
+
+## Checkout
+
+Checkout is a two-step flow: **address form** followed by **payment**.
+
+### Address Input with Google Places Autocomplete
+
+The address form integrates with the **Google Places API (New)** to provide autocomplete suggestions as the user types. When a suggestion is selected, the structured address components (street, city, state, zip, country) are automatically parsed and filled into the form fields. Users can also enter addresses manually.
+
+### Saved Addresses
+
+Users can check a **"Save this address"** option during checkout. The address is stored on their user profile as a reusable `@Embeddable` value object shared between the `User` and `Order` entities. On subsequent checkouts, the saved address is automatically prefilled.
+
+### Shipping Options
+
+Two shipping options are available:
+
+- **Standard Shipping** (5-7 business days) - $4.99
+- **Express Shipping** (2-3 business days) - $14.99
+
+The selected shipping cost is added to the order total. Shipping method and cost are stored on the order for reference.
+
+### Payment
+
+Payment is handled through **Stripe**. The backend creates a PaymentIntent with the order total (items + shipping), and the frontend uses Stripe Elements to collect card details. On successful payment confirmation, the order status transitions from `PENDING_PAYMENT` to `PAID`.
+
+---
+
+## Orders & Refunds
+
+### Order Management
+
+Users can view their order history with filtering by:
+
+- **Status** - Pending Payment, Paid, Cancelled, Refunded
+- **Date range** - From and to date pickers for narrowing results
+
+Each order displays its items, quantities, prices, shipping address, shipping method, shipping cost, and total.
+
+### Refund Workflow
+
+When a user cancels a **paid** order:
+
+1. A **Stripe refund** is triggered via the Stripe Refunds API for the full payment amount.
+2. **Inventory is restored** - each item's stock is incremented back by its quantity.
+3. The order status changes to **REFUNDED**.
+
+Cancelling a `PENDING_PAYMENT` order simply marks it as `CANCELLED` without any payment processing.
+
+### Soft Delete
+
+Products, brands, categories, and users use **soft delete** instead of hard delete. Records are marked with a `deleted = true` flag rather than being removed from the database. This preserves referential integrity - orders that reference a deleted product still have valid data. The implementation uses `@SQLDelete` and `@SQLRestriction("deleted = false")` so soft-deleted records are automatically excluded from all queries without extra filtering logic.
+
+---
+
+## Message Queue (RabbitMQ)
+
+**RabbitMQ** handles asynchronous communication between services. When a Stripe webhook confirms a payment:
+
+1. The webhook handler publishes a **payment status event** to a RabbitMQ exchange.
+2. A **consumer** picks up the event and processes it - updating the order status to `PAID` and sending a confirmation email to the customer via Resend.
+
+This decouples payment processing from email delivery. If the email service is temporarily down, the message stays in the queue and can be retried without affecting the payment flow.
+
+---
+
 ## Automated Tests
 
-Tests live in `backend/store/src/test/` and use **Testcontainers** to spin up real PostgreSQL and Redis instances per test run — no mocks for infrastructure, so tests hit the same database and cache the application uses in production.
+Tests live in `backend/store/src/test/` and use **Testcontainers** to spin up real PostgreSQL, Redis, and RabbitMQ instances per test run — no mocks for infrastructure, so tests hit the same database, cache, and message broker the application uses in production.
 
-- **`ProductServiceTest`** -Unit tests for the product search service using Mockito. Tests that filters, pagination, sorting, and thumbnail mapping work correctly at the service layer without needing a database.
-- **`ProductControllerIT`** -Integration tests that boot the full Spring context and hit the `/api/products/page` endpoint via MockMvc. Tests search by name, price range filtering, category/brand filtering, sort ordering, and pagination against a real PostgreSQL database.
-- **`SecurityIT`** -Integration tests for the security layer. Verifies that public endpoints (products, brands) are accessible without a token, protected endpoints return 401 without a token and 200 with a valid one, invalid tokens are rejected, and admin endpoints enforce role-based access (403 for regular users, 204 for admins).
+### Unit Tests (Mockito)
 
-The test profile (`application-test.yml`) uses `ddl-auto: create-drop` so each run starts with a clean schema, disables SSL, and stubs out external services (OAuth2, Resend, Turnstile) with dummy values so tests run without any API keys.
+- **`ProductServiceTest`** — Tests for the product search service. Verifies that filters, pagination, sorting, and thumbnail mapping work correctly at the service layer without needing a database.
+- **`CartServiceTest`** — 12 tests covering all cart operations: adding items (new and existing products), updating quantities, removing items, clearing the cart, calculating totals, ownership checks (preventing users from modifying other users' carts), and merging guest carts on login.
+- **`OrderServiceTest`** — 11 tests covering checkout (total calculation including shipping cost), order retrieval, cancellation workflows (pending orders cancel directly, paid orders trigger Stripe refund and inventory restoration), and edge cases like cancelling already-cancelled or failed orders.
+- **`PaymentEventConsumerTest`** — Tests for the RabbitMQ consumer that processes payment events, updates order status, and sends confirmation emails.
+
+### Integration Tests (Testcontainers + MockMvc)
+
+- **`ProductControllerIT`** — Tests that boot the full Spring context and hit the `/api/products/page` endpoint via MockMvc. Covers search by name, price range filtering, category/brand filtering, sort ordering, and pagination against a real PostgreSQL database.
+- **`SecurityIT`** — Tests for the security layer. Verifies that public endpoints are accessible without a token, protected endpoints return 401 without a token and 200 with a valid one, invalid tokens are rejected, and admin endpoints enforce role-based access.
+- **`AuthFlowIT`** — 7 tests covering the full authentication flow: successful registration, duplicate email detection, weak password rejection, missing field validation, successful login with token response, wrong password rejection, and non-existent user handling. Mocks the Turnstile CAPTCHA service to avoid hitting Cloudflare in tests.
+
+The test profile (`application-test.yml`) uses `ddl-auto: create-drop` so each run starts with a clean schema, disables SSL, and stubs out external services (OAuth2, Resend, Turnstile, Stripe) with dummy values so tests run without any API keys.
 
 ---
 

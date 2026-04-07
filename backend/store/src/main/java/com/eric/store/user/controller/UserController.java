@@ -1,5 +1,8 @@
 package com.eric.store.user.controller;
 
+import com.eric.store.common.entity.Address;
+import com.eric.store.orders.dto.AddressResponse;
+import com.eric.store.user.dto.AddressRequest;
 import com.eric.store.user.dto.UserProfile;
 import com.eric.store.user.dto.UserSettingsDto;
 import com.eric.store.user.entity.User;
@@ -44,6 +47,33 @@ public class UserController {
     ) {
         UserSettings settings = userService.updateSettings(userId, dto);
         return ResponseEntity.ok(userMapper.toUserSettingsDto(settings));
+    }
+
+    @GetMapping("/me/address")
+    public ResponseEntity<AddressResponse> getAddress(@AuthenticationPrincipal UUID userId) {
+        User user = userService.findById(userId);
+        Address a = user.getSavedAddress();
+        if (a == null) return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(new AddressResponse(
+                a.getName(), a.getAddressLine1(), a.getAddressLine2(),
+                a.getCity(), a.getState(), a.getZip(), a.getCountry()
+        ));
+    }
+
+    @PutMapping("/me/address")
+    public ResponseEntity<AddressResponse> saveAddress(
+            @AuthenticationPrincipal UUID userId,
+            @RequestBody @Valid AddressRequest req
+    ) {
+        Address address = new Address(
+                req.name(), req.addressLine1(), req.addressLine2(),
+                req.city(), req.state(), req.zip(), req.country()
+        );
+        userService.saveAddress(userId, address);
+        return ResponseEntity.ok(new AddressResponse(
+                address.getName(), address.getAddressLine1(), address.getAddressLine2(),
+                address.getCity(), address.getState(), address.getZip(), address.getCountry()
+        ));
     }
 
     public record DeleteAccountRequest(@NotBlank String password) {}
