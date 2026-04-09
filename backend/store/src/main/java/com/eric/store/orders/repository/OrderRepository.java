@@ -38,6 +38,21 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
             @Param("to") OffsetDateTime to,
             Pageable pageable);
 
+    @Query("""
+                SELECT o FROM Order o
+                LEFT JOIN FETCH o.items
+                JOIN FETCH o.user
+                WHERE (CAST(:status AS string) IS NULL OR o.status = :status)
+                  AND (CAST(:from AS timestamp) IS NULL OR o.createdAt >= :from)
+                  AND (CAST(:to AS timestamp) IS NULL OR o.createdAt <= :to)
+                ORDER BY o.createdAt DESC
+            """)
+    Page<Order> findAllFiltered(
+            @Param("status") OrderStatus status,
+            @Param("from") OffsetDateTime from,
+            @Param("to") OffsetDateTime to,
+            Pageable pageable);
+
     Optional<Order> findByPaymentIntentId(String paymentIntentId);
 
     @Query("""

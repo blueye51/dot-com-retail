@@ -1,4 +1,5 @@
 import styles from './Register.module.css';
+import {Helmet} from "react-helmet-async";
 import useFetch from "../useFetch.js";
 import {useRef, useState} from "react";
 import { Turnstile } from "@marsidev/react-turnstile";
@@ -45,6 +46,10 @@ export function Register() {
 
     return (
         <div className={styles.main}>
+            <Helmet>
+                <title>Register - Electronics Store</title>
+                <meta name="description" content="Create an account to start shopping electronics with fast delivery and great prices." />
+            </Helmet>
             <h1>Register</h1>
 
             <form onSubmit={handleRegister}>

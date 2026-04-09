@@ -8,12 +8,16 @@ import defaultImage from "../../assets/default_image.png";
 import Stars from "./productUI/Stars.jsx";
 import {formatDimension, kgToLb} from "../units.js";
 import {addToGuestCart, setCart} from "../store.js";
+import NotFound from "../error/NotFound.jsx";
+import ErrorMessage from "../error/ErrorMessage.jsx";
+import {Helmet} from "react-helmet-async";
 
 
 export default function ProductPage() {
     const {id} = useParams();
     const dispatch = useDispatch();
     const {data: product, loading, error} = useFetch(`/api/products/${id}`);
+    const {data: reviews, reFetch: refreshReviews} = useFetch(`/api/ratings/product/${id}/reviews`, {withAuth: true});
     const imperial = useSelector((s) => s.settings.imperialUnits);
     const {token} = useSelector((s) => s.auth);
 
@@ -21,6 +25,7 @@ export default function ProductPage() {
     const [ratingOpen, setRatingOpen] = useState(false);
     const [score, setScore] = useState(5);
     const [comment, setComment] = useState("");
+    const [votingId, setVotingId] = useState(null);
 
     const {reFetch: addToCartApi, loading: cartLoading} = useFetch("/api/cart", {
         method: "POST",
@@ -34,16 +39,28 @@ export default function ProductPage() {
         immediate: false,
     });
 
+    const BASE_URL = import.meta.env.VITE_API_BASE;
+
+    const handleVote = async (ratingId) => {
+        if (!token) return;
+        setVotingId(ratingId);
+        try {
+            await fetch(`${BASE_URL}/api/ratings/${ratingId}/helpful`, {
+                method: "POST",
+                headers: {Authorization: `Bearer ${token}`},
+                credentials: "include",
+            });
+            await refreshReviews();
+        } catch {} finally { setVotingId(null); }
+    };
+
     const closeImage = () => {
         setImageOpen(false)
     }
 
     if (loading) return <div className={styles.page}>Loading…</div>;
-    if (error) {
-        console.log(error)
-        return <div className={styles.page}>Failed to load.</div>;
-    }
-    if (!product) return <div className={styles.page}>Not found.</div>;
+    if (error) return <ErrorMessage message="Failed to load product." />;
+    if (!product) return <NotFound />;
 
     const renderImage = () => {
         const images = product.images
@@ -80,6 +97,10 @@ export default function ProductPage() {
 
     return (
         <div className={styles.page}>
+            <Helmet>
+                <title>{product.name} - Electronics Store</title>
+                <meta name="description" content={`Buy ${product.name} for ${product.price.toFixed(2)} ${product.currency}. ${product.description?.substring(0, 120) || ""}`} />
+            </Helmet>
             <div className={styles.product}>
                 <div className={styles.media}>
                     {renderImage()}
@@ -127,9 +148,10 @@ export default function ProductPage() {
                                 setRatingOpen(false);
                                 setScore(5);
                                 setComment("");
+                                await refreshReviews();
                             } catch {}
                         }}>
-                            <h3>Rate {product.name}</h3>
+                            <h2>Rate {product.name}</h2>
                             <label>
                                 Score
                                 <select value={score} onChange={(e) => setScore(Number(e.target.value))}>
@@ -155,7 +177,7 @@ export default function ProductPage() {
                     </Modal>
 
                     <div>
-                        <h3>Dimensions</h3>
+                        <h2>Dimensions</h2>
                         <p>Width: {formatDimension(product.width, imperial)}</p>
                         <p>Height: {formatDimension(product.height, imperial)}</p>
                         <p>Depth: {formatDimension(product.depth, imperial)}</p>
@@ -163,6 +185,31 @@ export default function ProductPage() {
                     </div>
                 </div>
             </div>
+
+            {reviews && reviews.length > 0 && (
+                <section className={styles.reviews}>
+                    <h2>Customer Reviews</h2>
+                    {reviews.map((r) => (
+                        <div key={r.id} className={styles.reviewCard}>
+                            <div className={styles.reviewHeader}>
+                                <strong>{r.userName}</strong>
+                                <Stars rating={r.score} />
+                                <span className={styles.reviewDate}>
+                                    {new Date(r.createdAt).toLocaleDateString()}
+                                </span>
+                            </div>
+                            <p className={styles.reviewComment}>{r.comment}</p>
+                            <button
+                                className={`${styles.helpfulBtn} ${r.votedByCurrentUser ? styles.helpfulActive : ""}`}
+                                disabled={!token || votingId === r.id}
+                                onClick={() => handleVote(r.id)}
+                            >
+                                Helpful ({r.helpfulCount})
+                            </button>
+                        </div>
+                    ))}
+                </section>
+            )}
         </div>
     );
 }

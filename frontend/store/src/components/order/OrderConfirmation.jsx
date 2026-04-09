@@ -5,6 +5,9 @@ import {useEffect} from "react";
 import useFetch from "../useFetch.js";
 import {paths} from "../routes.js";
 import {clearCart} from "../store.js";
+import NotFound from "../error/NotFound.jsx";
+import ErrorMessage from "../error/ErrorMessage.jsx";
+import {Helmet} from "react-helmet-async";
 
 export default function OrderConfirmation() {
     const {orderId} = useParams();
@@ -21,11 +24,12 @@ export default function OrderConfirmation() {
     }, [dispatch]);
 
     if (loading) return <div className={styles.page}>Loading...</div>;
-    if (error) return <div className={styles.page}>Failed to load order.</div>;
-    if (!order) return <div className={styles.page}>Order not found.</div>;
+    if (error) return <ErrorMessage message="Failed to load order." />;
+    if (!order) return <NotFound />;
 
     return (
         <div className={styles.page}>
+            <Helmet><title>Order Confirmation - Electronics Store</title></Helmet>
             {redirectStatus === "succeeded" ? (
                 <>
                     <h1>Payment Successful!</h1>

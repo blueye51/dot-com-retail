@@ -1,0 +1,16 @@
+name,price,currency,stock,category,brand,description,width,height,depth,weight
+Razer DeathAdder V3,79.99,EUR,120,Computer mice,,Ergonomic esports mouse with 30K optical sensor,12.8,6.8,4.4,0.059
+Logitech MX Master 3S,99.99,EUR,85,Computer mice,Logitech,Wireless performance mouse with MagSpeed scroll wheel,12.5,8.4,5.1,0.141
+Samsung Galaxy S25 Ultra,1299.99,EUR,40,Phones,Samsung,6.9 inch Dynamic AMOLED display with S Pen and 200MP camera,16.3,7.9,0.87,0.218
+Apple iPhone 16 Pro,1199.00,EUR,55,Phones,Apple,6.3 inch Super Retina XDR with A18 Pro chip,14.95,7.12,0.83,0.199
+Sony WH-1000XM5,349.99,EUR,70,Headphones,Sony,Industry-leading noise cancelling wireless headphones,25.2,19.5,5.5,0.25
+Apple AirPods Pro 3,279.00,EUR,95,Earbuds,Apple,Active noise cancellation with adaptive transparency and USB-C,3.07,2.18,2.4,0.005
+ASUS ROG Zephyrus G16,1899.99,EUR,20,Laptops,ASUS,16 inch gaming laptop with RTX 4070 and OLED display,35.4,24.3,1.59,1.85
+Alienware Aurora R16,2499.99,EUR,15,Desktops,Alienware,Gaming desktop with Intel i9-14900KF and RTX 4080 Super,22.9,43.7,36.5,13.6
+Logitech G Pro X Superlight 2,159.99,EUR,60,Computer mice,Logitech,Ultra-lightweight wireless gaming mouse at 60g,12.55,6.35,4.0,0.06
+Sony WF-1000XM5,299.99,EUR,45,Earbuds,Sony,Premium noise cancelling true wireless earbuds,,,0.0257,
+Samsung Galaxy Book4 Ultra,2399.99,EUR,10,Laptops,Samsung,16 inch AMOLED laptop with Intel Core Ultra 9 and RTX 4070,35.59,24.63,1.69,1.86
+ASUS ProArt Display PA278QV,329.00,EUR,30,Desktops,ASUS,27 inch WQHD professional monitor with 100% sRGB,61.4,36.3,21.1,6.2
+Budget Wireless Mouse,9.99,EUR,500,Computer mice,,Simple 2.4GHz wireless mouse for everyday use,10.5,6.0,3.5,0.075
+Samsung Galaxy Buds3 Pro,249.99,EUR,65,Earbuds,Samsung,AI-powered active noise cancellation with 360 Audio,1.88,2.2,2.28,0.005
+Apple MacBook Air M3,1099.00,EUR,35,Laptops,Apple,13.6 inch Liquid Retina with M3 chip and 18-hour battery life,30.41,21.5,1.13,1.24

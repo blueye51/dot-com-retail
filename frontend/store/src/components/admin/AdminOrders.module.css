@@ -1,0 +1,148 @@
+.page {
+    padding: 2rem;
+    box-sizing: border-box;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.filters {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+.filters select,
+.filters input {
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    border: 1px solid #555;
+    background: #1e1e1e;
+    color: #e0e0e0;
+}
+
+.filters label {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.85rem;
+    color: #aaa;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.table th,
+.table td {
+    padding: 0.75rem 0.5rem;
+    text-align: left;
+    border-bottom: 1px solid #333;
+}
+
+.table th {
+    color: #aaa;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.customerName {
+    font-weight: 500;
+}
+
+.customerEmail {
+    color: #888;
+    font-size: 0.8rem;
+}
+
+.viewBtn {
+    padding: 0.3rem 0.6rem;
+    background: #2a6cb6;
+    color: white;
+    border-radius: 0.25rem;
+    text-decoration: none;
+    font-size: 0.8rem;
+}
+
+.viewBtn:hover {
+    background: #1e5a9e;
+}
+
+.detailCard {
+    border: 1px solid #444;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    background: #1a1a1a;
+}
+
+.itemList {
+    list-style: none;
+    padding: 0;
+}
+
+.itemList li {
+    padding: 0.25rem 0;
+    border-bottom: 1px solid #333;
+}
+
+.statusUpdate {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+
+.statusUpdate select {
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    border: 1px solid #555;
+    background: #1e1e1e;
+    color: #e0e0e0;
+}
+
+.statusUpdate button {
+    padding: 0.5rem 1rem;
+    background: #2a6cb6;
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+}
+
+.statusUpdate button:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.links {
+    margin-top: 1.5rem;
+}
+
+.error {
+    color: #d32f2f;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.pagination button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.status_PAID { color: #2e7d32; }
+.status_PROCESSING { color: #0288d1; }
+.status_SHIPPED { color: #7b1fa2; }
+.status_DELIVERED { color: #2e7d32; }
+.status_PENDING_PAYMENT { color: #ed6c02; }
+.status_PAYMENT_FAILED { color: #d32f2f; }
+.status_CANCELLED { color: #777; }
+.status_REFUNDED { color: #6a1b9a; }

@@ -1,4 +1,5 @@
 import styles from "./Login.module.css";
+import {Helmet} from "react-helmet-async";
 import {useEffect, useRef, useState} from "react";
 import {useDispatch} from "react-redux";
 import {Turnstile} from "@marsidev/react-turnstile";
@@ -76,7 +77,11 @@ function Login() {
 
     return (
         <div className={styles.loginContainer}>
-            <h2>Login</h2>
+            <Helmet>
+                <title>Login - Electronics Store</title>
+                <meta name="description" content="Sign in to your account to manage orders, track deliveries, and shop faster." />
+            </Helmet>
+            <h1>Login</h1>
             {location.state?.error && <p className={styles.errorMsg}>{location.state.error}</p>}
             {location.state?.success && <p className={styles.successMsg}>{location.state.success}</p>}
 

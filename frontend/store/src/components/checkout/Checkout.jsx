@@ -1,4 +1,5 @@
 import styles from './Checkout.module.css';
+import {Helmet} from "react-helmet-async";
 import {useState, useEffect, useCallback} from "react";
 import {useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
@@ -182,6 +183,10 @@ export default function Checkout() {
 
     return (
         <div className={styles.page}>
+            <Helmet>
+                <title>Checkout - Electronics Store</title>
+                <meta name="description" content="Complete your purchase with secure payment processing." />
+            </Helmet>
             <h1>Shipping Address</h1>
             <form onSubmit={handleAddressSubmit} className={styles.addressForm}>
                 <label className={styles.field}>

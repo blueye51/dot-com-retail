@@ -20,7 +20,7 @@
     padding: 0;
     font-size: 0.75rem;
 }
-.card h2 {
+.card h3 {
     margin: 0;
     padding: 0;
     display: -webkit-box;
@@ -28,7 +28,9 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
-.card h3 {
+.price {
+    font-size: 1rem;
+    font-weight: 700;
     margin: 0;
     padding: 0;
 }

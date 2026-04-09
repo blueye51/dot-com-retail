@@ -38,6 +38,17 @@ public class Rating {
     @Column(length = 1000)
     private String comment;
 
+    @Column(nullable = false)
+    private int helpfulCount = 0;
+
+    @ElementCollection
+    @CollectionTable(name = "rating_votes", joinColumns = @JoinColumn(name = "rating_id"))
+    @Column(name = "user_id")
+    private java.util.Set<UUID> votedUserIds = new java.util.HashSet<>();
+
+    @Column(nullable = false)
+    private boolean hidden = false;
+
     @Column(nullable = false, updatable = false)
     private OffsetDateTime createdAt;
 

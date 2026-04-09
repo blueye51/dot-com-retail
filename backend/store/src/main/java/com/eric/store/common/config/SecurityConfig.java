@@ -3,6 +3,7 @@ package com.eric.store.common.config;
 import com.eric.store.auth.security.oAuth2.OAuth2FailureHandler;
 import com.eric.store.auth.security.oAuth2.OAuth2SuccessHandler;
 import com.eric.store.auth.security.tokens.JwtAuthFilter;
+import com.eric.store.common.ratelimit.RateLimitFilter;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
+    private final RateLimitFilter rateLimitFilter;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final OAuth2FailureHandler oAuth2FailureHandler;
 
@@ -37,7 +39,8 @@ public class SecurityConfig {
                                 "/api/images/**", "/oauth2/**",
                                 "/login/oauth2/**",
                                 "/api/email-verification/verify",
-                                "/api/payments/webhook")
+                                "/api/payments/webhook",
+                                "/api/ratings/product/*/reviews")
                         .permitAll()
                         .requestMatchers("/api/admin/**")
                         .hasRole("ADMIN")
@@ -55,7 +58,8 @@ public class SecurityConfig {
                         .accessDeniedHandler((req, res, accessEx) ->
                                 res.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden"))
                 )
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class) ;
+                .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
 

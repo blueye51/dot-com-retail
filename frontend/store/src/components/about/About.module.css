@@ -1,0 +1,20 @@
+.page {
+    max-width: 700px;
+    margin: 2rem auto;
+    padding: 2rem;
+    line-height: 1.7;
+}
+
+.page h1 {
+    margin-bottom: 1rem;
+}
+
+.page h2 {
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.page p {
+    color: #ccc;
+    font-size: 1.05rem;
+}

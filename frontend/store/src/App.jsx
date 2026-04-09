@@ -30,11 +30,20 @@ import ResetPassword from "./components/auth/ResetPassword.jsx";
 import TwoFactorVerification from "./components/verification/TwoFactorVerification.jsx";
 import BrandCreate from "./components/brand/brandCreate/BrandCreate.jsx";
 import DeleteAccount from "./components/profile/DeleteAccount.jsx";
+import ProductEdit from "./components/product/productEdit/ProductEdit.jsx";
+import AdminOrders from "./components/admin/AdminOrders.jsx";
+import AdminOrderDetail from "./components/admin/AdminOrderDetail.jsx";
+import AdminUsers from "./components/admin/AdminUsers.jsx";
+import BulkUpload from "./components/admin/BulkUpload.jsx";
+import AdminReviews from "./components/admin/AdminReviews.jsx";
 import Cart from "./components/cart/Cart.jsx";
 import Checkout from "./components/checkout/Checkout.jsx";
 import OrderConfirmation from "./components/order/OrderConfirmation.jsx";
 import Orders from "./components/order/Orders.jsx";
 import OrderDetail from "./components/order/OrderDetail.jsx";
+import About from "./components/about/About.jsx";
+import Support from "./components/support/Support.jsx";
+import NotFound from "./components/error/NotFound.jsx";
 
 
 function App() {
@@ -97,6 +106,8 @@ function App() {
                     <Route path={PATHS.home} element={<Home/>}/>
                     <Route path={PATHS.product} element={<ProductPage/>}/>
                     <Route path={PATHS.cart} element={<Cart/>}/>
+                    <Route path={PATHS.about} element={<About/>}/>
+                    <Route path={PATHS.support} element={<Support/>}/>
 
                     {/* Authenticated */}
                     <Route element={<RequiredAuth/>}>
@@ -116,10 +127,19 @@ function App() {
                         <Route path={PATHS.createProduct} element={<ProductCreation/>}/>
                         <Route path={PATHS.categoryTree} element={<CategoryTree/>}/>
                         <Route path={PATHS.categoryAdmin} element={<CategoryAdmin/>}/>
+                        <Route path={PATHS.editProduct} element={<ProductEdit/>}/>
+                        <Route path={PATHS.adminOrders} element={<AdminOrders/>}/>
+                        <Route path={PATHS.adminOrder} element={<AdminOrderDetail/>}/>
+                        <Route path={PATHS.adminUsers} element={<AdminUsers/>}/>
+                        <Route path={PATHS.bulkUpload} element={<BulkUpload/>}/>
+                        <Route path={PATHS.adminReviews} element={<AdminReviews/>}/>
                     </Route>
                 </Route>
 
-                <Route path={PATHS.any} element={<Navigate to={paths.home()} replace/>}/>
+                {/* 404 */}
+                <Route element={<MainLayout/>}>
+                    <Route path={PATHS.any} element={<NotFound/>}/>
+                </Route>
             </Routes>
         </BrowserRouter>
     )

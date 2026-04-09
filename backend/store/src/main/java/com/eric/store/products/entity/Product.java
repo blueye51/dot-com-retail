@@ -68,7 +68,7 @@ public class Product {
     @Column(nullable = false)
     private boolean deleted = false;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductImage> productImages = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

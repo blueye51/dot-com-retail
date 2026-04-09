@@ -14,6 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -59,6 +62,29 @@ public class RatingService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<RatingDto> getReviewsByProductId(UUID productId, UUID currentUserId) {
+        return ratingRepository.findReviewsByProductId(productId).stream()
+                .map(r -> ratingMapper.toDto(r, currentUserId))
+                .toList();
+    }
+
+    @Transactional
+    public RatingDto voteHelpful(UUID ratingId, UUID userId) {
+        Rating rating = ratingRepository.findById(ratingId)
+                .orElseThrow(() -> new NotFoundException("Rating", ratingId));
+        if (rating.getUser().getId().equals(userId)) {
+            throw new IllegalArgumentException("You cannot vote on your own review");
+        }
+        if (!rating.getVotedUserIds().add(userId)) {
+            rating.getVotedUserIds().remove(userId);
+            rating.setHelpfulCount(rating.getHelpfulCount() - 1);
+        } else {
+            rating.setHelpfulCount(rating.getHelpfulCount() + 1);
+        }
+        return ratingMapper.toDto(ratingRepository.save(rating), userId);
+    }
+
     @Transactional
     public RatingDto update(UUID id, RatingRequest req, UUID userId) {
         Rating rating = ratingRepository.findById(id)
@@ -86,9 +112,37 @@ public class RatingService {
         recalculateRatingStats(product);
     }
 
+    // ── Admin methods ──
+
+    @Transactional(readOnly = true)
+    public Page<RatingDto> getAllReviewsForAdmin(int page, int size) {
+        return ratingRepository.findAllReviewsForAdmin(PageRequest.of(page, size))
+                .map(ratingMapper::toAdminDto);
+    }
+
+    @Transactional
+    public RatingDto toggleHidden(UUID ratingId) {
+        Rating rating = ratingRepository.findById(ratingId)
+                .orElseThrow(() -> new NotFoundException("Rating", ratingId));
+        rating.setHidden(!rating.isHidden());
+        Rating saved = ratingRepository.save(rating);
+        recalculateRatingStats(saved.getProduct());
+        return ratingMapper.toAdminDto(saved);
+    }
+
+    @Transactional
+    public void adminDelete(UUID ratingId) {
+        Rating rating = ratingRepository.findById(ratingId)
+                .orElseThrow(() -> new NotFoundException("Rating", ratingId));
+        Product product = rating.getProduct();
+        ratingRepository.delete(rating);
+        ratingRepository.flush();
+        recalculateRatingStats(product);
+    }
+
     private void recalculateRatingStats(Product product) {
         product.setAverageRating(ratingRepository.averageScoreByProductId(product.getId()));
-        product.setTotalRatings(ratingRepository.countByProductId(product.getId()));
+        product.setTotalRatings(ratingRepository.countVisibleByProductId(product.getId()));
         productRepository.save(product);
     }
 }

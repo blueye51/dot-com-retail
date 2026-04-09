@@ -38,7 +38,7 @@ export default function TwoFactorVerification() {
 
     return (
         <div>
-            <h2>Two-Factor Verification</h2>
+            <h1>Two-Factor Verification</h1>
             <p>A code has been sent to your email.</p>
             <form onSubmit={handleSubmit}>
                 <input

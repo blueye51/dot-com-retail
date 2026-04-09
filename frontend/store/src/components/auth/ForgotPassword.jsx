@@ -27,7 +27,7 @@ export default function ForgotPassword() {
 
     return (
         <div>
-            <h2>Forgot Password</h2>
+            <h1>Forgot Password</h1>
             <form onSubmit={handleSubmit}>
                 <label htmlFor="email">Email:</label>
                 <input

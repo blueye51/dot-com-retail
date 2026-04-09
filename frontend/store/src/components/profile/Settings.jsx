@@ -40,7 +40,7 @@ export default function Settings() {
 
     return (
         <div className={styles.container}>
-            <h3>Settings</h3>
+            <h2>Settings</h2>
             <label>
                 <input
                     type="checkbox"

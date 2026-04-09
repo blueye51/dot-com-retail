@@ -37,7 +37,7 @@ export default function DeleteAccount() {
 
     return (
         <div>
-            <h2>Delete Account</h2>
+            <h1>Delete Account</h1>
             <p>This action is permanent and cannot be undone. All your data will be deleted.</p>
             <form onSubmit={handleDelete}>
                 <label>

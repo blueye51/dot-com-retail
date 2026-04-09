@@ -22,6 +22,8 @@ A full-stack e-commerce application built with Spring Boot and React.
 - [Checkout](#checkout)
 - [Orders & Refunds](#orders--refunds)
 - [Message Queue (RabbitMQ)](#message-queue-rabbitmq)
+- [Admin Panel](#admin-panel)
+- [Rate Limiting](#rate-limiting)
 - [Soft Delete](#soft-delete)
 - [Automated Tests](#automated-tests)
 - [Entity Relationship Diagram (ERD)](#entity-relationship-diagram-erd)
@@ -258,7 +260,7 @@ The security layer is configured as a stateless API:
 - **SQL Injection** -All database queries go through JPA/Hibernate with parameterized queries. No raw SQL string concatenation.
 - **XSS** -The API is a pure JSON REST API. No server-side HTML rendering. The React frontend handles output encoding.
 - **Token Theft** -Access tokens are short-lived (15 min). Refresh tokens are in HttpOnly cookies inaccessible to JavaScript. Token rotation on every refresh invalidates old tokens.
-- **Brute Force** -OTP cooldowns, token expiration, and Turnstile CAPTCHA limit automated attack surface.
+- **Brute Force** -OTP cooldowns, token expiration, Turnstile CAPTCHA, and per-IP rate limiting limit automated attack surface.
 - **CORS** -Strict origin allowlist prevents cross-origin requests from unauthorized domains.
 
 ### Encryption at Rest
@@ -390,6 +392,52 @@ When a user cancels a **paid** order:
 3. The order status changes to **REFUNDED**.
 
 Cancelling a `PENDING_PAYMENT` order simply marks it as `CANCELLED` without any payment processing.
+
+---
+
+## Admin Panel
+
+The admin panel is accessible to users with the `ADMIN` role and provides full management capabilities:
+
+### Product Management
+
+- **Product list** with edit and delete actions per product.
+- **Product creation** with name, description, price, stock, dimensions, category, brand, and image uploads.
+- **Product editing** that pre-populates all fields and supports replacing images.
+- **Bulk product upload** via CSV or JSON files. Products are resolved by category and brand name. If a row fails validation, the remaining rows are still processed and a per-row error report is returned listing every invalid field.
+
+### Order Management
+
+- **Order list** with filters by status and date range, showing customer info, totals, and item counts.
+- **Order detail view** with full line items, shipping address, and a status update dropdown.
+- **Shipping status tracking** with expanded statuses: `PENDING_PAYMENT`, `PAID`, `PROCESSING`, `SHIPPED`, `DELIVERED`, `PAYMENT_FAILED`, `CANCELLED`, `REFUNDED`.
+- Status changes to `REFUNDED` automatically trigger a Stripe refund and inventory restoration.
+
+### User Management
+
+- **User list** with search by name or email, showing provider, email verification status, roles, and join date.
+- **Role management** — grant or revoke the `ADMIN` role per user.
+
+### Review Moderation
+
+- **Review list** with pagination, showing reviewer, product link, rating, comment, and helpful count.
+- **Hide/Unhide** reviews — hidden reviews are excluded from public product pages and average rating calculations but remain in the database.
+- **Delete** reviews permanently.
+
+---
+
+## Rate Limiting
+
+API rate limiting is implemented using **Bucket4j** with a token bucket algorithm. A servlet filter (`RateLimitFilter`) runs before authentication and applies per-IP rate limits:
+
+- **General API endpoints** — 50 requests per minute per IP.
+- **Auth endpoints** (`/api/auth/*`) — 10 requests per minute per IP, stricter to prevent brute-force login and registration abuse.
+
+When a client exceeds their limit, the server responds with **HTTP 429 Too Many Requests** and a `Retry-After` header indicating how many seconds to wait. Successful responses include an `X-Rate-Limit-Remaining` header showing remaining tokens.
+
+The filter respects `X-Forwarded-For` headers for clients behind proxies, and buckets are stored in-memory using `ConcurrentHashMap` for thread-safe access.
+
+---
 
 ### Soft Delete
 

@@ -39,6 +39,16 @@ public class RatingController {
         return ResponseEntity.ok(ratingService.getByProductId(productId));
     }
 
+    @GetMapping("/product/{productId}/reviews")
+    public ResponseEntity<List<RatingDto>> getReviews(@PathVariable UUID productId, @AuthenticationPrincipal UUID userId) {
+        return ResponseEntity.ok(ratingService.getReviewsByProductId(productId, userId));
+    }
+
+    @PostMapping("/{id}/helpful")
+    public ResponseEntity<RatingDto> voteHelpful(@PathVariable UUID id, @AuthenticationPrincipal UUID userId) {
+        return ResponseEntity.ok(ratingService.voteHelpful(id, userId));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<RatingDto> update(@PathVariable UUID id, @Valid @RequestBody RatingRequest req, @AuthenticationPrincipal UUID userId) {
         return ResponseEntity.ok(ratingService.update(id, req, userId));

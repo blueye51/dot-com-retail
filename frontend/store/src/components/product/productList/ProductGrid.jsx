@@ -97,7 +97,7 @@ export default function ProductGrid() {
                 </form>
 
                 <div className={styles.filterSection}>
-                    <h4 className={styles.filterTitle}>Sort By</h4>
+                    <h2 className={styles.filterTitle}>Sort By</h2>
                     <select
                         value={sort}
                         onChange={(e) => handleFilterChange("sort", e.target.value)}
@@ -120,7 +120,7 @@ export default function ProductGrid() {
                 </div>
 
                 <div className={styles.filterSection}>
-                    <h4 className={styles.filterTitle}>Brand</h4>
+                    <h2 className={styles.filterTitle}>Brand</h2>
                     <select
                         value={brandId}
                         onChange={(e) => handleFilterChange("brandId", e.target.value)}
@@ -134,7 +134,7 @@ export default function ProductGrid() {
                 </div>
 
                 <div className={styles.filterSection}>
-                    <h4 className={styles.filterTitle}>Price Range</h4>
+                    <h2 className={styles.filterTitle}>Price Range</h2>
                     <div className={styles.priceInputs}>
                         <input
                             type="number"
@@ -159,7 +159,7 @@ export default function ProductGrid() {
 
                 <div className={styles.filterSection}>
                     <div className={styles.filterHeader}>
-                        <h4 className={styles.filterTitle}>Category</h4>
+                        <h2 className={styles.filterTitle}>Category</h2>
                         {categoryId && (
                             <button
                                 onClick={() => handleFilterChange("categoryId", "")}

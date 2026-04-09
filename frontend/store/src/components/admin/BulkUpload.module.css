@@ -1,0 +1,113 @@
+.page {
+    padding: 2rem;
+    box-sizing: border-box;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.hint {
+    color: #aaa;
+    font-size: 0.9rem;
+    margin: 0.25rem 0;
+}
+
+.hint code {
+    background: #333;
+    padding: 0.1rem 0.3rem;
+    border-radius: 0.2rem;
+    font-size: 0.85rem;
+}
+
+.example {
+    margin: 1rem 0;
+    background: #1a1a1a;
+    border: 1px solid #444;
+    border-radius: 0.5rem;
+    padding: 1rem;
+}
+
+.example h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.9rem;
+    color: #aaa;
+}
+
+.example pre {
+    margin: 0;
+    font-size: 0.8rem;
+    overflow-x: auto;
+    color: #ccc;
+}
+
+.uploadArea {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+
+.uploadArea button {
+    padding: 0.5rem 1.5rem;
+    background: #2a6cb6;
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+}
+
+.uploadArea button:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.result {
+    margin-top: 1rem;
+}
+
+.summary {
+    font-size: 1.1rem;
+    display: flex;
+    gap: 1.5rem;
+}
+
+.success {
+    color: #2e7d32;
+    font-weight: 600;
+}
+
+.failure {
+    color: #d32f2f;
+    font-weight: 600;
+}
+
+.errorList {
+    margin-top: 1rem;
+    border: 1px solid #444;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    background: #1a1a1a;
+}
+
+.errorList h3 {
+    margin: 0 0 0.75rem 0;
+    color: #d32f2f;
+}
+
+.errorRow {
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #333;
+}
+
+.errorRow:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.errorRow ul {
+    margin: 0.25rem 0 0 1.5rem;
+    padding: 0;
+    color: #e57373;
+    font-size: 0.9rem;
+}

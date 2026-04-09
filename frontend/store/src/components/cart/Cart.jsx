@@ -7,6 +7,8 @@ import useFetch from "../useFetch.js";
 import {setCart, updateGuestCartQuantity, removeFromGuestCart} from "../store.js";
 import defaultImage from "../../assets/default_image.png";
 import {ProductCard} from "../product/productUI/ProductCard.jsx";
+import ErrorMessage from "../error/ErrorMessage.jsx";
+import {Helmet} from "react-helmet-async";
 
 const BASE_URL = import.meta.env.VITE_API_BASE;
 
@@ -83,7 +85,7 @@ export default function Cart() {
     }, [token, authFetch, reFetch, dispatch]);
 
     if (loading) return <div className={styles.page}>Loading...</div>;
-    if (error && token) return <div className={styles.page}>Failed to load cart.</div>;
+    if (error && token) return <ErrorMessage message="Failed to load cart." />;
 
     const items = cart.items;
     const total = cart.total;
@@ -100,6 +102,10 @@ export default function Cart() {
 
     return (
         <div className={styles.page}>
+            <Helmet>
+                <title>Cart - Electronics Store</title>
+                <meta name="description" content="Review items in your shopping cart and proceed to checkout." />
+            </Helmet>
             <h1>Your Cart</h1>
             <div className={styles.cartLayout}>
                 <div className={styles.itemList}>

@@ -1,8 +1,10 @@
 import styles from './Order.module.css';
+import {Helmet} from "react-helmet-async";
 import {useState} from "react";
 import {Link} from "react-router-dom";
 import useFetch from "../useFetch.js";
 import {paths} from "../routes.js";
+import ErrorMessage from "../error/ErrorMessage.jsx";
 
 export default function Orders() {
     const [status, setStatus] = useState("");
@@ -23,6 +25,10 @@ export default function Orders() {
 
     return (
         <div className={styles.page}>
+            <Helmet>
+                <title>My Orders - Electronics Store</title>
+                <meta name="description" content="View and track your order history." />
+            </Helmet>
             <h1>My Orders</h1>
 
             <div className={styles.filters}>
@@ -32,6 +38,9 @@ export default function Orders() {
                     <option value="PAID">Paid</option>
                     <option value="PAYMENT_FAILED">Failed</option>
                     <option value="CANCELLED">Cancelled</option>
+                    <option value="PROCESSING">Processing</option>
+                    <option value="SHIPPED">Shipped</option>
+                    <option value="DELIVERED">Delivered</option>
                     <option value="REFUNDED">Refunded</option>
                 </select>
                 <label>
@@ -45,7 +54,7 @@ export default function Orders() {
             </div>
 
             {loading && <p>Loading...</p>}
-            {error && <p className={styles.error}>Failed to load orders.</p>}
+            {error && <ErrorMessage message="Failed to load orders." />}
 
             {!loading && orders.length === 0 && <p>No orders found.</p>}
 

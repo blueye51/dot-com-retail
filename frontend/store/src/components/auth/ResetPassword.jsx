@@ -31,7 +31,7 @@ export default function ResetPassword() {
 
     return (
         <div>
-            <h2>Reset Password</h2>
+            <h1>Reset Password</h1>
             <form onSubmit={handleSubmit}>
                 <div>
                     <label htmlFor="password">New Password:</label>

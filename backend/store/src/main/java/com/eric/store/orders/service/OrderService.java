@@ -4,10 +4,7 @@ import com.eric.store.cart.entity.CartItem;
 import com.eric.store.cart.repository.CartRepository;
 import com.eric.store.common.entity.Address;
 import com.eric.store.common.exceptions.NotFoundException;
-import com.eric.store.orders.dto.CheckoutRequest;
-import com.eric.store.orders.dto.CheckoutResponse;
-import com.eric.store.orders.dto.OrderResponse;
-import com.eric.store.orders.dto.OrderSummary;
+import com.eric.store.orders.dto.*;
 import com.eric.store.orders.dto.ShippingOption;
 import com.eric.store.orders.entity.Order;
 import com.eric.store.orders.entity.OrderItem;
@@ -166,6 +163,47 @@ public class OrderService {
             throw new IllegalArgumentException("This order cannot be cancelled");
         }
 
+        return orderMapper.toResponse(order);
+    }
+
+    // ── Admin methods ──
+
+    @Transactional(readOnly = true)
+    public Page<AdminOrderSummary> getAllOrders(String status, OffsetDateTime from, OffsetDateTime to, int page, int size) {
+        OrderStatus orderStatus = (status != null && !status.isBlank()) ? OrderStatus.valueOf(status) : null;
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Order> orders = orderRepository.findAllFiltered(orderStatus, from, to, pageable);
+        return orders.map(orderMapper::toAdminSummary);
+    }
+
+    @Transactional(readOnly = true)
+    public OrderResponse getByIdAdmin(UUID orderId) {
+        Order order = orderRepository.findByIdWithItems(orderId)
+                .orElseThrow(() -> new NotFoundException("Order", orderId));
+        return orderMapper.toResponse(order);
+    }
+
+    @Transactional
+    public OrderResponse updateStatus(UUID orderId, String newStatus) {
+        Order order = orderRepository.findByIdWithItems(orderId)
+                .orElseThrow(() -> new NotFoundException("Order", orderId));
+
+        OrderStatus target = OrderStatus.valueOf(newStatus);
+        order.setStatus(target);
+
+        // If admin refunds, also trigger Stripe refund and restore inventory
+        if (target == OrderStatus.REFUNDED && order.getPaymentIntentId() != null) {
+            paymentService.refund(order.getPaymentIntentId());
+            for (OrderItem item : order.getItems()) {
+                Product product = productRepository.findById(item.getProduct().getId())
+                        .orElseThrow(() -> new NotFoundException("Product", item.getProduct().getId()));
+                product.setStock(product.getStock() + item.getQuantity());
+                productRepository.save(product);
+            }
+            log.info("Admin refunded order {} and restored inventory", orderId);
+        }
+
+        orderRepository.save(order);
         return orderMapper.toResponse(order);
     }
 

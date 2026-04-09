@@ -23,6 +23,11 @@ import com.eric.store.user.entity.AuthProvider;
 
 import com.eric.store.user.entity.UserSettings;
 
+import com.eric.store.user.dto.AdminUserDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+
 import java.util.Optional;
 import java.util.UUID;
 
@@ -175,5 +180,41 @@ public class UserService {
     public void saveAddress(UUID userId, Address address) {
         User user = findById(userId);
         user.setSavedAddress(address);
+    }
+
+    // ── Admin methods ──
+
+    @Transactional(readOnly = true)
+    public Page<AdminUserDto> searchUsers(String search, int page, int size) {
+        var pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+        return userRepository.searchUsers(search, pageable).map(this::toAdminDto);
+    }
+
+    @Transactional(readOnly = true)
+    public AdminUserDto getAdminUserById(UUID id) {
+        User user = userRepository.findByIdWithRoles(id)
+                .orElseThrow(() -> new NotFoundException("User", id));
+        return toAdminDto(user);
+    }
+
+    @Transactional
+    public AdminUserDto revokeAdmin(UUID id) {
+        User user = findById(id);
+        Role adminRole = roleRepository.findByName("ADMIN")
+                .orElseThrow(() -> new NotFoundException("Role", "ADMIN"));
+        user.getRoles().remove(adminRole);
+        return toAdminDto(user);
+    }
+
+    private AdminUserDto toAdminDto(User user) {
+        return new AdminUserDto(
+                user.getId(),
+                user.getName(),
+                user.getEmail(),
+                user.getProvider().name(),
+                user.isEmailVerified(),
+                user.getRoles().stream().map(Role::getName).sorted().toList(),
+                user.getCreatedAt()
+        );
     }
 }

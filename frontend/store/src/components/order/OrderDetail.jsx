@@ -4,6 +4,9 @@ import useFetch from "../useFetch.js";
 import {paths} from "../routes.js";
 import {useSelector} from "react-redux";
 import {useState} from "react";
+import NotFound from "../error/NotFound.jsx";
+import ErrorMessage from "../error/ErrorMessage.jsx";
+import {Helmet} from "react-helmet-async";
 
 const BASE_URL = import.meta.env.VITE_API_BASE;
 
@@ -32,11 +35,14 @@ export default function OrderDetail() {
     };
 
     if (loading) return <div className={styles.page}>Loading...</div>;
-    if (error) return <div className={styles.page}>Failed to load order.</div>;
-    if (!order) return <div className={styles.page}>Order not found.</div>;
+    if (error) return <ErrorMessage message="Failed to load order." />;
+    if (!order) return <NotFound />;
 
     return (
         <div className={styles.page}>
+            <Helmet>
+                <title>Order #{order.id.substring(0, 8)} - Electronics Store</title>
+            </Helmet>
             <h1>Order #{order.id.substring(0, 8)}</h1>
 
             <div className={styles.orderCard}>
@@ -50,7 +56,7 @@ export default function OrderDetail() {
 
                 {order.shippingAddress && (
                     <>
-                        <h3>Shipping Address</h3>
+                        <h2>Shipping Address</h2>
                         <p>{order.shippingAddress.name}</p>
                         <p>{order.shippingAddress.addressLine1}{order.shippingAddress.addressLine2 ? `, ${order.shippingAddress.addressLine2}` : ""}</p>
                         <p>{order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.zip}</p>
@@ -58,7 +64,7 @@ export default function OrderDetail() {
                     </>
                 )}
 
-                <h3>Items</h3>
+                <h2>Items</h2>
                 <ul className={styles.itemList}>
                     {order.items.map((item) => (
                         <li key={item.id}>

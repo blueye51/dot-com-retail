@@ -1,0 +1,111 @@
+.page {
+    padding: 2rem;
+    box-sizing: border-box;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.searchBar {
+    margin-bottom: 1rem;
+}
+
+.searchBar input {
+    width: 100%;
+    max-width: 400px;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    border: 1px solid #555;
+    background: #1e1e1e;
+    color: #e0e0e0;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.table th,
+.table td {
+    padding: 0.75rem 0.5rem;
+    text-align: left;
+    border-bottom: 1px solid #333;
+}
+
+.table th {
+    color: #aaa;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.email {
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.roleBadge {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-right: 0.3rem;
+    background: #333;
+    color: #ccc;
+}
+
+.adminBadge {
+    background: #1b5e20;
+    color: #a5d6a7;
+}
+
+.grantBtn {
+    padding: 0.3rem 0.6rem;
+    background: #2a6cb6;
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.grantBtn:hover:not(:disabled) {
+    background: #1e5a9e;
+}
+
+.revokeBtn {
+    padding: 0.3rem 0.6rem;
+    background: #c0392b;
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.revokeBtn:hover:not(:disabled) {
+    background: #a93226;
+}
+
+.grantBtn:disabled,
+.revokeBtn:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.error {
+    color: #d32f2f;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.pagination button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}

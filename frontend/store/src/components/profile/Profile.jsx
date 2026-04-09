@@ -5,6 +5,8 @@ import {useSelector} from "react-redux";
 import {paths} from "../routes.js";
 import Modal from "../modal/Modal.jsx";
 import Settings from "./Settings.jsx";
+import ErrorMessage from "../error/ErrorMessage.jsx";
+import {Helmet} from "react-helmet-async";
 
 
 export default function Profile() {
@@ -23,14 +25,16 @@ export default function Profile() {
         setUser(data)
     }, [data]);
 
-    if (error) {
-        return <p>Error</p>
-    }
+    if (error) return <ErrorMessage message="Failed to load profile." />;
     if (loading) {
         return <p>Loading...</p>
     }
     return (
         <div>
+            <Helmet>
+                <title>Profile - Electronics Store</title>
+                <meta name="description" content="Manage your account settings, addresses, and preferences." />
+            </Helmet>
             <p>profile</p>
             <p>name: {user.name}</p>
             <p>email: {user.email}</p>

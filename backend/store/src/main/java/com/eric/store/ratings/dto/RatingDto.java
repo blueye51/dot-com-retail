@@ -6,9 +6,14 @@ import java.util.UUID;
 public record RatingDto(
         UUID id,
         UUID userId,
+        String userName,
         UUID productId,
+        String productName,
         int score,
         String comment,
+        int helpfulCount,
+        boolean votedByCurrentUser,
+        boolean hidden,
         OffsetDateTime createdAt,
         OffsetDateTime updatedAt
 ) {

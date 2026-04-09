@@ -1,0 +1,138 @@
+.page {
+    padding: 2rem;
+    box-sizing: border-box;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.reviewList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.reviewCard {
+    border: 1px solid #444;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    background: #1a1a1a;
+}
+
+.hiddenReview {
+    opacity: 0.5;
+    border-color: #d32f2f;
+}
+
+.reviewHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+}
+
+.productLink {
+    color: #4a9eff;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.productLink:hover {
+    text-decoration: underline;
+}
+
+.date {
+    color: #888;
+    font-size: 0.85rem;
+}
+
+.hiddenBadge {
+    background: #d32f2f;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.1rem 0.4rem;
+    border-radius: 0.2rem;
+}
+
+.comment {
+    margin: 0.5rem 0;
+    line-height: 1.5;
+}
+
+.meta {
+    color: #888;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+}
+
+.actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.hideBtn {
+    padding: 0.3rem 0.6rem;
+    background: #ed6c02;
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.hideBtn:hover:not(:disabled) {
+    background: #d45d02;
+}
+
+.showBtn {
+    padding: 0.3rem 0.6rem;
+    background: #2e7d32;
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.showBtn:hover:not(:disabled) {
+    background: #1b5e20;
+}
+
+.deleteBtn {
+    padding: 0.3rem 0.6rem;
+    background: #c0392b;
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.deleteBtn:hover:not(:disabled) {
+    background: #a93226;
+}
+
+.hideBtn:disabled,
+.showBtn:disabled,
+.deleteBtn:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.error {
+    color: #d32f2f;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.pagination button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}

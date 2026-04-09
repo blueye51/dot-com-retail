@@ -25,7 +25,15 @@ export const PATHS = {
     checkout: "/checkout",
     orderConfirmation: "/order/:orderId/confirmation",
     orders: "/orders",
-    order: "/order/:orderId"
+    order: "/order/:orderId",
+    editProduct: "/editProduct/:id",
+    adminOrders: "/admin/orders",
+    adminOrder: "/admin/orders/:orderId",
+    adminUsers: "/admin/users",
+    bulkUpload: "/admin/bulk-upload",
+    adminReviews: "/admin/reviews",
+    about: "/about",
+    support: "/support"
 };
 
 export const paths = {
@@ -53,4 +61,12 @@ export const paths = {
     orderConfirmation: (orderId) => generatePath(PATHS.orderConfirmation, {orderId}),
     orders: () => PATHS.orders,
     order: (orderId) => generatePath(PATHS.order, {orderId}),
+    editProduct: (id) => generatePath(PATHS.editProduct, {id}),
+    adminOrders: () => PATHS.adminOrders,
+    adminOrder: (orderId) => generatePath(PATHS.adminOrder, {orderId}),
+    adminUsers: () => PATHS.adminUsers,
+    bulkUpload: () => PATHS.bulkUpload,
+    adminReviews: () => PATHS.adminReviews,
+    about: () => PATHS.about,
+    support: () => PATHS.support,
 }

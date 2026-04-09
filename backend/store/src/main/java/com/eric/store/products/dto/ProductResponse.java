@@ -16,6 +16,7 @@ public record ProductResponse(
         BigDecimal depth,
         BigDecimal weight,
         String brand,
+        UUID brandId,
         Integer stock,
         UUID categoryId,
         double averageRating,

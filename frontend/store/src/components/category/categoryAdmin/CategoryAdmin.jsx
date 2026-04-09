@@ -50,7 +50,7 @@ export default function CategoryAdmin() {
     return (
         <div className={styles.main}>
             <div className={styles.header}>
-                <h2>Categories</h2>
+                <h1>Categories</h1>
                 <button onClick={() => setAdding(p => !p)}>+ New Root Category</button>
             </div>
 

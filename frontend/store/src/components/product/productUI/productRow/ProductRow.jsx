@@ -19,7 +19,7 @@ export default function ProductRow ({ product }) {
             />
 
             <div className={styles.meta}>
-                <h3 className={styles.name}>{product.name}</h3>
+                <h2 className={styles.name}>{product.name}</h2>
 
                 <div className={styles.line}>
                     <span>Price:</span>

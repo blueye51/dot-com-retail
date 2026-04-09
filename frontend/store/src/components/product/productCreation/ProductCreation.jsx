@@ -6,6 +6,7 @@ import styles from './ProductCreation.module.css';
 import ProductImageMenu from "../imageMenu/ProductImageMenu.jsx";
 import {PATHS, paths} from "../../routes.js";
 import {inToCm, lbToKg} from "../../units.js";
+import {Helmet} from "react-helmet-async";
 
 function ProductCreation() {
 
@@ -148,7 +149,8 @@ function ProductCreation() {
 
     return (
         <div className={styles.main}>
-            <h2>Product Creation Page</h2>
+            <Helmet><title>Create Product - Admin</title></Helmet>
+            <h1>Product Creation Page</h1>
             <div>
                 <label htmlFor="name">Name:</label>
                 <input

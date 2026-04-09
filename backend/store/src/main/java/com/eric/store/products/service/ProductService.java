@@ -86,6 +86,52 @@ public class ProductService {
 
 
     @Transactional
+    public ProductResponse update(UUID id, ProductCreateRequest req) {
+        Product product = productRepository.findByIdWithImages(id)
+                .orElseThrow(() -> new NotFoundException("Product", id));
+
+        product.setName(req.name());
+        product.setPrice(req.price());
+        product.setCurrency(req.currency());
+        product.setDescription(req.description());
+        product.setWidth(req.width());
+        product.setHeight(req.height());
+        product.setDepth(req.depth());
+        product.setWeight(req.weight());
+        product.setStock(req.stock());
+
+        Category category = categoryRepository.findById(req.categoryId())
+                .orElseThrow(() -> new NotFoundException("Category", req.categoryId()));
+        product.setCategory(category);
+
+        if (req.brandId() != null) {
+            product.setBrand(brandService.findById(req.brandId()));
+        } else {
+            product.setBrand(null);
+        }
+
+        // Replace images: clear old, add new
+        product.getProductImages().clear();
+        productRepository.flush();
+
+        if (req.images() != null && !req.images().isEmpty()) {
+            productImageService.validateSortOrders(req.images());
+            for (ImageCreate imageDto : req.images()) {
+                productImageService.create(imageDto, product);
+            }
+        }
+
+        return productMapper.toResponse(productRepository.save(product));
+    }
+
+    @Transactional
+    public void delete(UUID id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Product", id));
+        productRepository.delete(product);
+    }
+
+    @Transactional
     public ProductResponse getProductResponseById(UUID id) {
         productRepository.incrementViewCount(id);
         return productMapper.toResponse(findProductWithImagesById(id));

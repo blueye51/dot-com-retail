@@ -2,6 +2,7 @@ package com.eric.store.orders.mapper;
 
 import com.eric.store.common.entity.Address;
 import com.eric.store.orders.dto.AddressResponse;
+import com.eric.store.orders.dto.AdminOrderSummary;
 import com.eric.store.orders.dto.OrderItemResponse;
 import com.eric.store.orders.dto.OrderResponse;
 import com.eric.store.orders.dto.OrderSummary;
@@ -59,6 +60,19 @@ public class OrderMapper {
                 order.getTotalPrice(),
                 order.getCurrency(),
                 order.getItems().size(),
+                order.getCreatedAt()
+        );
+    }
+
+    public AdminOrderSummary toAdminSummary(Order order) {
+        return new AdminOrderSummary(
+                order.getId(),
+                order.getStatus().name(),
+                order.getTotalPrice(),
+                order.getCurrency(),
+                order.getItems().size(),
+                order.getUser().getEmail(),
+                order.getUser().getName(),
                 order.getCreatedAt()
         );
     }

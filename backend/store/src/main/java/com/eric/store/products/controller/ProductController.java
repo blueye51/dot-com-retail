@@ -65,6 +65,19 @@ public class ProductController {
         return ResponseEntity.ok(product);
     }
 
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ProductResponse> updateProduct(@PathVariable UUID id, @Valid @RequestBody ProductCreateRequest req) {
+        return ResponseEntity.ok(productService.update(id, req));
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteProduct(@PathVariable UUID id) {
+        productService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/related")
     public ResponseEntity<List<ProductCard>> getRelatedProducts(
             @RequestParam List<UUID> productIds,

@@ -71,6 +71,7 @@ public class ProductMapper {
                 product.getDepth(),
                 product.getWeight(),
                 product.getBrand() != null ? product.getBrand().getName() : null,
+                product.getBrand() != null ? product.getBrand().getId() : null,
                 product.getStock(),
                 product.getCategory().getId(),
                 product.getAverageRating(),
@@ -89,6 +90,7 @@ public class ProductMapper {
 
     private ImageResponse toImageResponse(ProductImage image) {
         return new ImageResponse(
+                image.getFile().getKey(),
                 image.getFile().getUrl(),
                 image.getSortOrder()
         );
