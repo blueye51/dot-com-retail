@@ -40,8 +40,8 @@ A full-stack e-commerce application built with Spring Boot and React.
 ### Clone
 
 ```bash
-git clone https://gitea.kood.tech/ericrand/i-love-shopping2.git
-cd i-love-shopping2
+git clone https://gitea.kood.tech/ericrand/i-love-shopping3.git
+cd i-love-shopping3
 ```
 
 ### Environment
