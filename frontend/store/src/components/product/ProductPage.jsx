@@ -2,7 +2,7 @@ import {useParams} from "react-router-dom";
 import useFetch from "../useFetch.js";
 import styles from "./ProductPage.module.css"
 import Modal from "../modal/Modal.jsx";
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import {useSelector, useDispatch} from "react-redux";
 import defaultImage from "../../assets/default_image.png";
 import Stars from "./productUI/Stars.jsx";
@@ -11,6 +11,7 @@ import {addToGuestCart, setCart} from "../store.js";
 import NotFound from "../error/NotFound.jsx";
 import ErrorMessage from "../error/ErrorMessage.jsx";
 import {Helmet} from "react-helmet-async";
+import {ProductCard} from "./productUI/ProductCard.jsx";
 
 
 export default function ProductPage() {
@@ -21,6 +22,7 @@ export default function ProductPage() {
     const imperial = useSelector((s) => s.settings.imperialUnits);
     const {token} = useSelector((s) => s.auth);
 
+    const [related, setRelated] = useState([]);
     const [imageOpen, setImageOpen] = useState(false)
     const [ratingOpen, setRatingOpen] = useState(false);
     const [score, setScore] = useState(5);
@@ -40,6 +42,14 @@ export default function ProductPage() {
     });
 
     const BASE_URL = import.meta.env.VITE_API_BASE;
+
+    useEffect(() => {
+        if (!id) return;
+        fetch(`${BASE_URL}/api/products/related?productIds=${id}&limit=8`)
+            .then((res) => res.ok ? res.json() : [])
+            .then(setRelated)
+            .catch(() => setRelated([]));
+    }, [id]);
 
     const handleVote = async (ratingId) => {
         if (!token) return;
@@ -208,6 +218,19 @@ export default function ProductPage() {
                             </button>
                         </div>
                     ))}
+                </section>
+            )}
+
+            {related.length > 0 && (
+                <section className={styles.relatedSection}>
+                    <h2>You Might Also Like</h2>
+                    <div className={styles.relatedScroll}>
+                        {related.map((p) => (
+                            <div key={p.id} className={styles.relatedCard}>
+                                <ProductCard {...p} />
+                            </div>
+                        ))}
+                    </div>
                 </section>
             )}
         </div>

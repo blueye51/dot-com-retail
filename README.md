@@ -307,6 +307,10 @@ The search system is built on **JPA Specifications**, which compose filters dyna
 
 Each filter is an independent `Specification` that gets combined with `.and()`. This makes it trivial to add new filters -write a new specification method and add it to the composition chain. The query also uses `LEFT JOIN FETCH` on brand and category to avoid N+1 query problems.
 
+### Quick Search Suggestions
+
+The header search bar provides **dynamic autocomplete suggestions** as the user types. After a 300ms debounce (to avoid firing on every keystroke), the frontend queries the product search API for the top 5 matches and displays them in a dropdown below the search bar. Each suggestion shows the product thumbnail, name, and price. Clicking a suggestion navigates directly to that product page, while pressing Enter performs a full search as usual. Clicking outside the dropdown dismisses it.
+
 ---
 
 ## Ratings & Reviews

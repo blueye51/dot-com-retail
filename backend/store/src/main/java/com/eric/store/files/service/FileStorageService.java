@@ -19,10 +19,16 @@ import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignReques
 
 import software.amazon.awssdk.core.exception.SdkException;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -34,6 +40,9 @@ public class FileStorageService {
     private final S3Props props;
     private final StorageProps props2;
     private final FileRepository fileRepository;
+
+    private static final int THUMB_SIZE = 200;
+    private static final Set<String> THUMBNAIL_TYPES = Set.of("image/jpeg", "image/png", "image/webp");
 
     public record StoredImage(
             String key,
@@ -56,7 +65,20 @@ public class FileStorageService {
         try {
             String key = "public/" + UUID.randomUUID() + ext(file.getOriginalFilename());
             String url = props.publicBaseUrl() + "/" + key;
-            create(key, url,  file);
+
+            String thumbnailUrl = null;
+            if (THUMBNAIL_TYPES.contains(file.getContentType())) {
+                thumbnailUrl = generateAndUploadThumbnail(file, key);
+            }
+
+            FileEntity entity = new FileEntity();
+            entity.setKey(key);
+            entity.setUrl(url);
+            entity.setThumbnailUrl(thumbnailUrl);
+            entity.setContentType(Objects.requireNonNull(file.getContentType()));
+            entity.setSizeBytes(file.getSize());
+            fileRepository.save(entity);
+
             put(file, key);
             return new StoredImage(key, url);
         } catch (IOException e) {
@@ -102,6 +124,48 @@ public class FileStorageService {
                 .build();
 
         return presigner.presignGetObject(presignReq).url();
+    }
+
+    private String generateAndUploadThumbnail(MultipartFile file, String originalKey) throws IOException {
+        return generateAndUploadThumbnailFromBytes(file.getInputStream().readAllBytes(), originalKey);
+    }
+
+    public String generateAndUploadThumbnailFromBytes(byte[] imageBytes, String originalKey) throws IOException {
+        BufferedImage original = ImageIO.read(new ByteArrayInputStream(imageBytes));
+        if (original == null) return null;
+
+        BufferedImage thumb = new BufferedImage(THUMB_SIZE, THUMB_SIZE, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g = thumb.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g.drawImage(original, 0, 0, THUMB_SIZE, THUMB_SIZE, null);
+        g.dispose();
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(thumb, "jpg", baos);
+        byte[] thumbBytes = baos.toByteArray();
+
+        String thumbKey = thumbKey(originalKey);
+        String thumbUrl = props.publicBaseUrl() + "/" + thumbKey;
+
+        var putReq = PutObjectRequest.builder()
+                .bucket(props.bucket())
+                .key(thumbKey)
+                .contentType("image/jpeg")
+                .cacheControl("public, max-age=31536000")
+                .build();
+
+        s3.putObject(putReq, RequestBody.fromInputStream(
+                new ByteArrayInputStream(thumbBytes), thumbBytes.length));
+
+        return thumbUrl;
+    }
+
+    static String thumbKey(String originalKey) {
+        int dot = originalKey.lastIndexOf('.');
+        if (dot >= 0) {
+            return originalKey.substring(0, dot) + "-thumb.jpg";
+        }
+        return originalKey + "-thumb.jpg";
     }
 
     private void put(MultipartFile file, String key) throws IOException {

@@ -9,6 +9,14 @@ import NotFound from "../error/NotFound.jsx";
 import ErrorMessage from "../error/ErrorMessage.jsx";
 import {Helmet} from "react-helmet-async";
 
+function deliveryEstimate(shippingMethod) {
+    if (!shippingMethod) return null;
+    const m = shippingMethod.toLowerCase();
+    if (m.includes("express")) return "2–3 business days";
+    if (m.includes("standard")) return "5–7 business days";
+    return null;
+}
+
 export default function OrderConfirmation() {
     const {orderId} = useParams();
     const [searchParams] = useSearchParams();
@@ -46,6 +54,12 @@ export default function OrderConfirmation() {
                 <h2>Order #{order.id.substring(0, 8)}</h2>
                 <p>Status: <strong>{order.status}</strong></p>
                 <p>Total: <strong>{Number(order.totalPrice).toFixed(2)} {order.currency}</strong></p>
+                {order.shippingMethod && (
+                    <p>Shipping: {order.shippingMethod}</p>
+                )}
+                {deliveryEstimate(order.shippingMethod) && (
+                    <p>Estimated delivery: <strong>{deliveryEstimate(order.shippingMethod)}</strong></p>
+                )}
 
                 <h3>Items</h3>
                 <ul className={styles.itemList}>

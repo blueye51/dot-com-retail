@@ -1,13 +1,70 @@
 import useFetch from "../../useFetch.js";
 import {useEffect, useMemo, useState} from "react";
-import {useSearchParams} from "react-router-dom";
+import {useSearchParams, Link} from "react-router-dom";
 import styles from "./ProductGrid.module.css"
 import {ProductCard} from "../productUI/ProductCard.jsx";
 import CategoryTree from "../../category/categoryTree/CategoryTree.jsx";
+import Stars from "../productUI/Stars.jsx";
+import defaultImage from "../../../assets/default_image.png";
+import {useDispatch, useSelector} from "react-redux";
+import {addToGuestCart, setCart} from "../../store.js";
+import {paths} from "../../routes.js";
 
+const BASE_URL = import.meta.env.VITE_API_BASE;
+
+
+function ProductListRow({ id, name, price, currency, brand, stock, averageRating, totalRatings, imageUrl }) {
+    const dispatch = useDispatch();
+    const { token } = useSelector((s) => s.auth);
+    const [adding, setAdding] = useState(false);
+
+    const handleAddToCart = async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (token) {
+            setAdding(true);
+            try {
+                const res = await fetch(`${BASE_URL}/api/cart`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+                    credentials: "include",
+                    body: JSON.stringify({ productId: id, quantity: 1 }),
+                });
+                if (res.ok) dispatch(setCart(await res.json()));
+            } catch {} finally { setAdding(false); }
+        } else {
+            dispatch(addToGuestCart({ productId: id, productName: name, price, currency, quantity: 1, stock, imageUrl }));
+        }
+    };
+
+    return (
+        <Link to={paths.product(id)} className={styles.listRow}>
+            <img className={styles.listThumb} src={imageUrl || defaultImage} alt={name} loading="lazy" />
+            <div className={styles.listInfo}>
+                <h3 className={styles.listName}>{name}</h3>
+                {brand && <span className={styles.listBrand}>{brand}</span>}
+                <Stars rating={averageRating} count={totalRatings} />
+            </div>
+            <div className={styles.listRight}>
+                <span className={styles.listPrice}>{Number(price).toFixed(2)} {currency}</span>
+                <span className={stock > 0 ? styles.inStock : styles.outOfStock}>
+                    {stock > 0 ? "In Stock" : "Out of Stock"}
+                </span>
+                <button
+                    className={styles.listCartBtn}
+                    disabled={stock <= 0 || adding}
+                    onClick={handleAddToCart}
+                >
+                    {adding ? "Adding..." : "Add to Cart"}
+                </button>
+            </div>
+        </Link>
+    );
+}
 
 export default function ProductGrid() {
     const [searchParams, setSearchParams] = useSearchParams();
+    const [view, setView] = useState("grid");
 
     const [pageSize, setPageSize] = useState(24);
     const [pageNumber, setPageNumber] = useState(0);
@@ -174,14 +231,35 @@ export default function ProductGrid() {
             </div>
 
             <div className={styles.content}>
-                <div className={styles.grid}>
-                    {loading
-                        ? "Loading..."
-                        : products.length !== 0
-                            ? products.map((p) => <ProductCard key={p.id} {...p}/>)
-                            : "No products found"
-                    }
+                <div className={styles.toolbar}>
+                    <span className={styles.resultCount}>{loading ? "" : `${products.length} product${products.length !== 1 ? "s" : ""}`}</span>
+                    <div className={styles.viewToggle}>
+                        <button
+                            className={`${styles.toggleBtn} ${view === "grid" ? styles.toggleActive : ""}`}
+                            onClick={() => setView("grid")}
+                            title="Grid view"
+                        >⊞</button>
+                        <button
+                            className={`${styles.toggleBtn} ${view === "list" ? styles.toggleActive : ""}`}
+                            onClick={() => setView("list")}
+                            title="List view"
+                        >☰</button>
+                    </div>
                 </div>
+
+                {loading ? (
+                    <div>Loading...</div>
+                ) : products.length === 0 ? (
+                    <div>No products found</div>
+                ) : view === "grid" ? (
+                    <div className={styles.grid}>
+                        {products.map((p) => <ProductCard key={p.id} {...p} />)}
+                    </div>
+                ) : (
+                    <div className={styles.list}>
+                        {products.map((p) => <ProductListRow key={p.id} {...p} />)}
+                    </div>
+                )}
 
                 {totalPages > 1 && (
                     <div className={styles.pagination}>

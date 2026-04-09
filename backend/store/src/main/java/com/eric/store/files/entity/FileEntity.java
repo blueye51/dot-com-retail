@@ -19,6 +19,8 @@ public class FileEntity {
 
     private String url;
 
+    private String thumbnailUrl;
+
     @Column(nullable = false)
     private String contentType;
 

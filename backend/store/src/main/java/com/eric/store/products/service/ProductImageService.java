@@ -75,7 +75,10 @@ public class ProductImageService {
         return productImageRepository.findThumbnails(productIds).stream()
                 .collect(Collectors.toMap(
                         img -> img.getProduct().getId(),
-                        img -> img.getFile().getUrl(),
+                        img -> {
+                            String thumb = img.getFile().getThumbnailUrl();
+                            return thumb != null ? thumb : img.getFile().getUrl();
+                        },
                         (a, b) -> a
                 ));
     }

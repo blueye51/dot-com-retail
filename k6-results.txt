@@ -1,0 +1,445 @@
+
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+
+     execution: local
+        script: load-test.js
+        output: -
+
+     scenarios: (100.00%) 4 scenarios, 37 max VUs, 1m25s max duration (incl. graceful stop):
+              * browse: Up to 20 looping VUs for 55s over 3 stages (gracefulRampDown: 30s, exec: browseProducts, gracefulStop: 30s)
+              * userFlow: Up to 5 looping VUs for 50s over 3 stages (gracefulRampDown: 30s, exec: authenticatedUserFlow, startTime: 5s, gracefulStop: 30s)
+              * admin: 2 looping VUs for 30s (exec: adminFlow, startTime: 10s, gracefulStop: 30s)
+              * authStress: 15.00 iterations/s for 20s (maxVUs: 10, exec: authEndpointStress, startTime: 10s, gracefulStop: 30s)
+
+
+running (0m01.0s), 01/37 VUs, 0 complete and 0 interrupted iterations
+browse       [   2% ] 01/20 VUs  01.0s/55.0s
+userFlow   • [   0% ] waiting    4.0s
+admin      • [   0% ] waiting    09.0s
+authStress • [   0% ] waiting    09.0s
+
+running (0m02.0s), 02/37 VUs, 0 complete and 0 interrupted iterations
+browse       [   4% ] 02/20 VUs  02.0s/55.0s
+userFlow   • [   0% ] waiting    3.0s
+admin      • [   0% ] waiting    08.0s
+authStress • [   0% ] waiting    08.0s
+
+running (0m03.0s), 03/37 VUs, 0 complete and 0 interrupted iterations
+browse       [   5% ] 03/20 VUs  03.0s/55.0s
+userFlow   • [   0% ] waiting    2.0s
+admin      • [   0% ] waiting    07.0s
+authStress • [   0% ] waiting    07.0s
+
+running (0m04.0s), 05/37 VUs, 1 complete and 0 interrupted iterations
+browse       [   7% ] 05/20 VUs  04.0s/55.0s
+userFlow   • [   0% ] waiting    1.0s
+admin      • [   0% ] waiting    06.0s
+authStress • [   0% ] waiting    06.0s
+
+running (0m05.0s), 06/37 VUs, 2 complete and 0 interrupted iterations
+browse       [   9% ] 06/20 VUs  05.0s/55.0s
+userFlow   • [   0% ] waiting    0.0s
+admin      • [   0% ] waiting    05.0s
+authStress • [   0% ] waiting    05.0s
+
+running (0m06.0s), 07/37 VUs, 4 complete and 0 interrupted iterations
+browse       [  11% ] 07/20 VUs  06.0s/55.0s
+userFlow     [   2% ] 0/5 VUs    01.0s/50.0s
+admin      • [   0% ] waiting    04.0s
+authStress • [   0% ] waiting    04.0s
+
+running (0m07.0s), 09/37 VUs, 8 complete and 0 interrupted iterations
+browse       [  13% ] 09/20 VUs  07.0s/55.0s
+userFlow     [   4% ] 0/5 VUs    02.0s/50.0s
+admin      • [   0% ] waiting    03.0s
+authStress • [   0% ] waiting    03.0s
+
+running (0m08.0s), 11/37 VUs, 10 complete and 0 interrupted iterations
+browse       [  15% ] 10/20 VUs  08.0s/55.0s
+userFlow     [   6% ] 1/5 VUs    03.0s/50.0s
+admin      • [   0% ] waiting    02.0s
+authStress • [   0% ] waiting    02.0s
+
+running (0m09.0s), 12/37 VUs, 14 complete and 0 interrupted iterations
+browse       [  16% ] 11/20 VUs  09.0s/55.0s
+userFlow     [   8% ] 1/5 VUs    04.0s/50.0s
+admin      • [   0% ] waiting    01.0s
+authStress • [   0% ] waiting    01.0s
+
+running (0m10.0s), 15/37 VUs, 19 complete and 0 interrupted iterations
+browse       [  18% ] 13/20 VUs  10.0s/55.0s
+userFlow     [  10% ] 2/5 VUs    05.0s/50.0s
+admin      • [   0% ] waiting    00.0s
+authStress • [   0% ] waiting    00.0s
+time="2026-04-09T15:23:49+03:00" level=info msg="Admin login failed (2FA may be enabled). Skipping admin scenario." source=console
+time="2026-04-09T15:23:49+03:00" level=info msg="Admin login failed (2FA may be enabled). Skipping admin scenario." source=console
+
+running (0m11.0s), 18/37 VUs, 39 complete and 0 interrupted iterations
+browse       [  20% ] 14/20 VUs  11.0s/55.0s
+userFlow     [  12% ] 2/5 VUs    06.0s/50.0s
+admin        [   3% ] 2 VUs      01.0s/30s 
+authStress   [   5% ] 00/10 VUs  01.0s/20s  15.00 iters/s
+
+running (0m12.0s), 20/37 VUs, 61 complete and 0 interrupted iterations
+browse       [  22% ] 15/20 VUs  12.0s/55.0s
+userFlow     [  14% ] 3/5 VUs    07.0s/50.0s
+admin        [   7% ] 2 VUs      02.0s/30s 
+authStress   [  10% ] 00/10 VUs  02.0s/20s  15.00 iters/s
+
+running (0m13.0s), 22/37 VUs, 84 complete and 0 interrupted iterations
+browse       [  24% ] 17/20 VUs  13.0s/55.0s
+userFlow     [  16% ] 3/5 VUs    08.0s/50.0s
+admin        [  10% ] 2 VUs      03.0s/30s 
+authStress   [  15% ] 00/10 VUs  03.0s/20s  15.00 iters/s
+
+running (0m14.0s), 24/37 VUs, 109 complete and 0 interrupted iterations
+browse       [  25% ] 18/20 VUs  14.0s/55.0s
+userFlow     [  18% ] 4/5 VUs    09.0s/50.0s
+admin        [  13% ] 2 VUs      04.0s/30s 
+authStress   [  20% ] 00/10 VUs  04.0s/20s  15.00 iters/s
+
+running (0m15.0s), 25/37 VUs, 136 complete and 0 interrupted iterations
+browse       [  27% ] 19/20 VUs  15.0s/55.0s
+userFlow     [  20% ] 4/5 VUs    10.0s/50.0s
+admin        [  17% ] 2 VUs      05.0s/30s 
+authStress   [  25% ] 00/10 VUs  05.0s/20s  15.00 iters/s
+
+running (0m16.0s), 27/37 VUs, 161 complete and 0 interrupted iterations
+browse       [  29% ] 20/20 VUs  16.0s/55.0s
+userFlow     [  22% ] 5/5 VUs    11.0s/50.0s
+admin        [  20% ] 2 VUs      06.0s/30s 
+authStress   [  30% ] 00/10 VUs  06.0s/20s  15.00 iters/s
+time="2026-04-09T15:23:55+03:00" level=info msg="Admin login failed (2FA may be enabled). Skipping admin scenario." source=console
+time="2026-04-09T15:23:55+03:00" level=info msg="Admin login failed (2FA may be enabled). Skipping admin scenario." source=console
+
+running (0m17.0s), 27/37 VUs, 192 complete and 0 interrupted iterations
+browse       [  31% ] 20/20 VUs  17.0s/55.0s
+userFlow     [  24% ] 5/5 VUs    12.0s/50.0s
+admin        [  23% ] 2 VUs      07.0s/30s 
+authStress   [  35% ] 00/10 VUs  07.0s/20s  15.00 iters/s
+
+running (0m18.0s), 27/37 VUs, 220 complete and 0 interrupted iterations
+browse       [  33% ] 20/20 VUs  18.0s/55.0s
+userFlow     [  26% ] 5/5 VUs    13.0s/50.0s
+admin        [  27% ] 2 VUs      08.0s/30s 
+authStress   [  40% ] 00/10 VUs  08.0s/20s  15.00 iters/s
+
+running (0m19.0s), 27/37 VUs, 247 complete and 0 interrupted iterations
+browse       [  35% ] 20/20 VUs  19.0s/55.0s
+userFlow     [  28% ] 5/5 VUs    14.0s/50.0s
+admin        [  30% ] 2 VUs      09.0s/30s 
+authStress   [  45% ] 00/10 VUs  09.0s/20s  15.00 iters/s
+
+running (0m20.0s), 27/37 VUs, 275 complete and 0 interrupted iterations
+browse       [  36% ] 20/20 VUs  20.0s/55.0s
+userFlow     [  30% ] 5/5 VUs    15.0s/50.0s
+admin        [  33% ] 2 VUs      10.0s/30s 
+authStress   [  50% ] 00/10 VUs  10.0s/20s  15.00 iters/s
+
+running (0m21.0s), 27/37 VUs, 304 complete and 0 interrupted iterations
+browse       [  38% ] 20/20 VUs  21.0s/55.0s
+userFlow     [  32% ] 5/5 VUs    16.0s/50.0s
+admin        [  37% ] 2 VUs      11.0s/30s 
+authStress   [  55% ] 00/10 VUs  11.0s/20s  15.00 iters/s
+
+running (0m22.0s), 27/37 VUs, 330 complete and 0 interrupted iterations
+browse       [  40% ] 20/20 VUs  22.0s/55.0s
+userFlow     [  34% ] 5/5 VUs    17.0s/50.0s
+admin        [  40% ] 2 VUs      12.0s/30s 
+authStress   [  60% ] 00/10 VUs  12.0s/20s  15.00 iters/s
+time="2026-04-09T15:24:01+03:00" level=info msg="Admin login failed (2FA may be enabled). Skipping admin scenario." source=console
+time="2026-04-09T15:24:01+03:00" level=info msg="Admin login failed (2FA may be enabled). Skipping admin scenario." source=console
+
+running (0m23.0s), 27/37 VUs, 361 complete and 0 interrupted iterations
+browse       [  42% ] 20/20 VUs  23.0s/55.0s
+userFlow     [  36% ] 5/5 VUs    18.0s/50.0s
+admin        [  43% ] 2 VUs      13.0s/30s 
+authStress   [  65% ] 00/10 VUs  13.0s/20s  15.00 iters/s
+
+running (0m24.0s), 27/37 VUs, 390 complete and 0 interrupted iterations
+browse       [  44% ] 20/20 VUs  24.0s/55.0s
+userFlow     [  38% ] 5/5 VUs    19.0s/50.0s
+admin        [  47% ] 2 VUs      14.0s/30s 
+authStress   [  70% ] 00/10 VUs  14.0s/20s  15.00 iters/s
+
+running (0m25.0s), 27/37 VUs, 416 complete and 0 interrupted iterations
+browse       [  45% ] 20/20 VUs  25.0s/55.0s
+userFlow     [  40% ] 5/5 VUs    20.0s/50.0s
+admin        [  50% ] 2 VUs      15.0s/30s 
+authStress   [  75% ] 00/10 VUs  15.0s/20s  15.00 iters/s
+
+running (0m26.0s), 27/37 VUs, 445 complete and 0 interrupted iterations
+browse       [  47% ] 20/20 VUs  26.0s/55.0s
+userFlow     [  42% ] 5/5 VUs    21.0s/50.0s
+admin        [  53% ] 2 VUs      16.0s/30s 
+authStress   [  80% ] 00/10 VUs  16.0s/20s  15.00 iters/s
+
+running (0m27.0s), 27/37 VUs, 473 complete and 0 interrupted iterations
+browse       [  49% ] 20/20 VUs  27.0s/55.0s
+userFlow     [  44% ] 5/5 VUs    22.0s/50.0s
+admin        [  57% ] 2 VUs      17.0s/30s 
+authStress   [  85% ] 00/10 VUs  17.0s/20s  15.00 iters/s
+
+running (0m28.0s), 27/37 VUs, 499 complete and 0 interrupted iterations
+browse       [  51% ] 20/20 VUs  28.0s/55.0s
+userFlow     [  46% ] 5/5 VUs    23.0s/50.0s
+admin        [  60% ] 2 VUs      18.0s/30s 
+authStress   [  90% ] 00/10 VUs  18.0s/20s  15.00 iters/s
+time="2026-04-09T15:24:07+03:00" level=info msg="Admin login failed (2FA may be enabled). Skipping admin scenario." source=console
+time="2026-04-09T15:24:07+03:00" level=info msg="Admin login failed (2FA may be enabled). Skipping admin scenario." source=console
+
+running (0m29.0s), 27/37 VUs, 531 complete and 0 interrupted iterations
+browse       [  53% ] 20/20 VUs  29.0s/55.0s
+userFlow     [  48% ] 5/5 VUs    24.0s/50.0s
+admin        [  63% ] 2 VUs      19.0s/30s 
+authStress   [  95% ] 00/10 VUs  19.0s/20s  15.00 iters/s
+
+running (0m30.0s), 27/37 VUs, 559 complete and 0 interrupted iterations
+browse       [  55% ] 20/20 VUs  30.0s/55.0s
+userFlow     [  50% ] 5/5 VUs    25.0s/50.0s
+admin        [  67% ] 2 VUs      20.0s/30s 
+authStress   [ 100% ] 00/10 VUs  20.0s/20s  15.00 iters/s
+
+running (0m31.0s), 27/37 VUs, 574 complete and 0 interrupted iterations
+browse       [  56% ] 20/20 VUs  31.0s/55.0s
+userFlow     [  52% ] 5/5 VUs    26.0s/50.0s
+admin        [  70% ] 2 VUs      21.0s/30s
+authStress ✓ [ 100% ] 00/10 VUs  20s  15.00 iters/s
+
+running (0m32.0s), 27/37 VUs, 587 complete and 0 interrupted iterations
+browse       [  58% ] 20/20 VUs  32.0s/55.0s
+userFlow     [  54% ] 5/5 VUs    27.0s/50.0s
+admin        [  73% ] 2 VUs      22.0s/30s
+authStress ✓ [ 100% ] 00/10 VUs  20s  15.00 iters/s
+
+running (0m33.0s), 27/37 VUs, 601 complete and 0 interrupted iterations
+browse       [  60% ] 20/20 VUs  33.0s/55.0s
+userFlow     [  56% ] 5/5 VUs    28.0s/50.0s
+admin        [  77% ] 2 VUs      23.0s/30s
+authStress ✓ [ 100% ] 00/10 VUs  20s  15.00 iters/s
+
+running (0m34.0s), 27/37 VUs, 613 complete and 0 interrupted iterations
+browse       [  62% ] 20/20 VUs  34.0s/55.0s
+userFlow     [  58% ] 5/5 VUs    29.0s/50.0s
+admin        [  80% ] 2 VUs      24.0s/30s
+authStress ✓ [ 100% ] 00/10 VUs  20s  15.00 iters/s
+time="2026-04-09T15:24:13+03:00" level=info msg="Admin login failed (2FA may be enabled). Skipping admin scenario." source=console
+time="2026-04-09T15:24:13+03:00" level=info msg="Admin login failed (2FA may be enabled). Skipping admin scenario." source=console
+
+running (0m35.0s), 27/37 VUs, 628 complete and 0 interrupted iterations
+browse       [  64% ] 20/20 VUs  35.0s/55.0s
+userFlow     [  60% ] 5/5 VUs    30.0s/50.0s
+admin        [  83% ] 2 VUs      25.0s/30s
+authStress ✓ [ 100% ] 00/10 VUs  20s  15.00 iters/s
+
+running (0m36.0s), 27/37 VUs, 642 complete and 0 interrupted iterations
+browse       [  65% ] 20/20 VUs  36.0s/55.0s
+userFlow     [  62% ] 5/5 VUs    31.0s/50.0s
+admin        [  87% ] 2 VUs      26.0s/30s
+authStress ✓ [ 100% ] 00/10 VUs  20s  15.00 iters/s
+
+running (0m37.0s), 27/37 VUs, 654 complete and 0 interrupted iterations
+browse       [  67% ] 20/20 VUs  37.0s/55.0s
+userFlow     [  64% ] 5/5 VUs    32.0s/50.0s
+admin        [  90% ] 2 VUs      27.0s/30s
+authStress ✓ [ 100% ] 00/10 VUs  20s  15.00 iters/s
+
+running (0m38.0s), 27/37 VUs, 667 complete and 0 interrupted iterations
+browse       [  69% ] 20/20 VUs  38.0s/55.0s
+userFlow     [  66% ] 5/5 VUs    33.0s/50.0s
+admin        [  93% ] 2 VUs      28.0s/30s
+authStress ✓ [ 100% ] 00/10 VUs  20s  15.00 iters/s
+
+running (0m39.0s), 27/37 VUs, 681 complete and 0 interrupted iterations
+browse       [  71% ] 20/20 VUs  39.0s/55.0s
+userFlow     [  68% ] 5/5 VUs    34.0s/50.0s
+admin        [  97% ] 2 VUs      29.0s/30s
+authStress ✓ [ 100% ] 00/10 VUs  20s  15.00 iters/s
+
+running (0m40.0s), 27/37 VUs, 691 complete and 0 interrupted iterations
+browse       [  73% ] 20/20 VUs  40.0s/55.0s
+userFlow     [  70% ] 5/5 VUs    35.0s/50.0s
+admin        [ 100% ] 2 VUs      30.0s/30s
+authStress ✓ [ 100% ] 00/10 VUs  20s  15.00 iters/s
+
+running (0m41.0s), 25/37 VUs, 708 complete and 0 interrupted iterations
+browse       [  75% ] 20/20 VUs  41.0s/55.0s
+userFlow     [  72% ] 5/5 VUs    36.0s/50.0s
+admin      ✓ [ 100% ] 2 VUs      30s 
+authStress ✓ [ 100% ] 00/10 VUs  20s  15.00 iters/s
+
+running (0m42.0s), 25/37 VUs, 721 complete and 0 interrupted iterations
+browse       [  76% ] 20/20 VUs  42.0s/55.0s
+userFlow     [  74% ] 5/5 VUs    37.0s/50.0s
+admin      ✓ [ 100% ] 2 VUs      30s 
+authStress ✓ [ 100% ] 00/10 VUs  20s  15.00 iters/s
+
+running (0m43.0s), 25/37 VUs, 733 complete and 0 interrupted iterations
+browse       [  78% ] 20/20 VUs  43.0s/55.0s
+userFlow     [  76% ] 5/5 VUs    38.0s/50.0s
+admin      ✓ [ 100% ] 2 VUs      30s 
+authStress ✓ [ 100% ] 00/10 VUs  20s  15.00 iters/s
+
+running (0m44.0s), 25/37 VUs, 746 complete and 0 interrupted iterations
+browse       [  80% ] 20/20 VUs  44.0s/55.0s
+userFlow     [  78% ] 5/5 VUs    39.0s/50.0s
+admin      ✓ [ 100% ] 2 VUs      30s 
+authStress ✓ [ 100% ] 00/10 VUs  20s  15.00 iters/s
+
+running (0m45.0s), 25/37 VUs, 758 complete and 0 interrupted iterations
+browse       [  82% ] 20/20 VUs  45.0s/55.0s
+userFlow     [  80% ] 5/5 VUs    40.0s/50.0s
+admin      ✓ [ 100% ] 2 VUs      30s 
+authStress ✓ [ 100% ] 00/10 VUs  20s  15.00 iters/s
+
+running (0m46.0s), 25/37 VUs, 770 complete and 0 interrupted iterations
+browse       [  84% ] 20/20 VUs  46.0s/55.0s
+userFlow     [  82% ] 5/5 VUs    41.0s/50.0s
+admin      ✓ [ 100% ] 2 VUs      30s 
+authStress ✓ [ 100% ] 00/10 VUs  20s  15.00 iters/s
+
+running (0m47.0s), 23/37 VUs, 784 complete and 0 interrupted iterations
+browse       [  85% ] 18/20 VUs  47.0s/55.0s
+userFlow     [  84% ] 5/5 VUs    42.0s/50.0s
+admin      ✓ [ 100% ] 2 VUs      30s 
+authStress ✓ [ 100% ] 00/10 VUs  20s  15.00 iters/s
+
+running (0m48.0s), 22/37 VUs, 798 complete and 0 interrupted iterations
+browse       [  87% ] 17/20 VUs  48.0s/55.0s
+userFlow     [  86% ] 5/5 VUs    43.0s/50.0s
+admin      ✓ [ 100% ] 2 VUs      30s 
+authStress ✓ [ 100% ] 00/10 VUs  20s  15.00 iters/s
+
+running (0m49.0s), 21/37 VUs, 808 complete and 0 interrupted iterations
+browse       [  89% ] 16/20 VUs  49.0s/55.0s
+userFlow     [  88% ] 5/5 VUs    44.0s/50.0s
+admin      ✓ [ 100% ] 2 VUs      30s 
+authStress ✓ [ 100% ] 00/10 VUs  20s  15.00 iters/s
+
+running (0m50.0s), 16/37 VUs, 821 complete and 0 interrupted iterations
+browse       [  91% ] 13/20 VUs  50.0s/55.0s
+userFlow     [  90% ] 3/5 VUs    45.0s/50.0s
+admin      ✓ [ 100% ] 2 VUs      30s 
+authStress ✓ [ 100% ] 00/10 VUs  20s  15.00 iters/s
+
+running (0m51.0s), 14/37 VUs, 829 complete and 0 interrupted iterations
+browse       [  93% ] 11/20 VUs  51.0s/55.0s
+userFlow     [  92% ] 3/5 VUs    46.0s/50.0s
+admin      ✓ [ 100% ] 2 VUs      30s 
+authStress ✓ [ 100% ] 00/10 VUs  20s  15.00 iters/s
+
+running (0m52.0s), 11/37 VUs, 836 complete and 0 interrupted iterations
+browse       [  95% ] 09/20 VUs  52.0s/55.0s
+userFlow     [  94% ] 2/5 VUs    47.0s/50.0s
+admin      ✓ [ 100% ] 2 VUs      30s 
+authStress ✓ [ 100% ] 00/10 VUs  20s  15.00 iters/s
+
+running (0m53.0s), 09/37 VUs, 844 complete and 0 interrupted iterations
+browse       [  96% ] 07/20 VUs  53.0s/55.0s
+userFlow     [  96% ] 2/5 VUs    48.0s/50.0s
+admin      ✓ [ 100% ] 2 VUs      30s 
+authStress ✓ [ 100% ] 00/10 VUs  20s  15.00 iters/s
+
+running (0m54.0s), 06/37 VUs, 848 complete and 0 interrupted iterations
+browse       [  98% ] 05/20 VUs  54.0s/55.0s
+userFlow     [  98% ] 1/5 VUs    49.0s/50.0s
+admin      ✓ [ 100% ] 2 VUs      30s 
+authStress ✓ [ 100% ] 00/10 VUs  20s  15.00 iters/s
+
+running (0m55.0s), 04/37 VUs, 851 complete and 0 interrupted iterations
+browse       [ 100% ] 03/20 VUs  55.0s/55.0s
+userFlow     [ 100% ] 1/5 VUs    50.0s/50.0s
+admin      ✓ [ 100% ] 2 VUs      30s 
+authStress ✓ [ 100% ] 00/10 VUs  20s  15.00 iters/s
+
+running (0m56.0s), 02/37 VUs, 853 complete and 0 interrupted iterations
+browse     ↓ [ 100% ] 03/20 VUs  55s 
+userFlow   ↓ [ 100% ] 1/5 VUs    50s 
+admin      ✓ [ 100% ] 2 VUs      30s 
+authStress ✓ [ 100% ] 00/10 VUs  20s  15.00 iters/s
+
+running (0m57.0s), 01/37 VUs, 854 complete and 0 interrupted iterations
+browse     ↓ [ 100% ] 03/20 VUs  55s 
+userFlow   ✓ [ 100% ] 0/5 VUs    50s 
+admin      ✓ [ 100% ] 2 VUs      30s 
+authStress ✓ [ 100% ] 00/10 VUs  20s  15.00 iters/s
+
+
+  █ THRESHOLDS 
+
+    browse_latency
+    ✓ 'p(95)<1500' p(95)=9.8ms
+
+    cart_latency
+    ✓ 'p(95)<2000' p(95)=20.27ms
+
+    errors
+    ✗ 'rate<0.3' rate=100.00%
+
+    http_req_duration
+    ✓ 'p(95)<2000' p(95)=9.78ms
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......: 2075   36.272856/s
+    checks_succeeded...: 32.19% 668 out of 2075
+    checks_failed......: 67.80% 1407 out of 2075
+
+    ✗ product list 200
+      ↳  2% — ✓ 10 / ✗ 349
+    ✗ filtered list 200
+      ↳  4% — ✓ 15 / ✗ 344
+    ✗ categories 200
+      ↳  6% — ✓ 22 / ✗ 337
+    ✗ brands 200
+      ↳  4% — ✓ 16 / ✗ 343
+    ✗ product detail 200
+      ↳  40% — ✓ 4 / ✗ 6
+    ✗ reviews 200
+      ↳  40% — ✓ 4 / ✗ 6
+    ✗ profile 200
+      ↳  25% — ✓ 2 / ✗ 6
+    ✗ get cart 200
+      ↳  0% — ✓ 0 / ✗ 8
+    ✗ orders 200
+      ↳  0% — ✓ 0 / ✗ 8
+    ✓ auth response 401 or 429
+    ✓ 429 has Retry-After
+
+    CUSTOM
+    auth_latency...................: avg=4.19ms  min=837.01µs med=2.01ms  max=111.81ms p(90)=4.85ms  p(95)=7.39ms  
+    browse_latency.................: avg=3.16ms  min=638.97µs med=2.11ms  max=51.45ms  p(90)=4.96ms  p(95)=9.8ms   
+    cart_latency...................: avg=6.75ms  min=956.26µs med=2.05ms  max=80.41ms  p(90)=12.33ms p(95)=20.27ms 
+    errors.........................: 100.00% 1584 out of 1584
+
+    HTTP
+    http_req_duration..............: avg=4.84ms  min=561.92µs med=2.08ms  max=546.55ms p(90)=5.09ms  p(95)=9.78ms  
+      { expected_response:true }...: avg=52.54ms min=5.36ms   med=13.53ms max=546.55ms p(90)=51.45ms p(95)=399.19ms
+    http_req_failed................: 96.12%  2260 out of 2351
+    http_reqs......................: 2351    41.097583/s
+
+    EXECUTION
+    iteration_duration.............: avg=1.33s   min=1ms      med=1s      max=6.14s    p(90)=2.42s   p(95)=2.44s   
+    iterations.....................: 855     14.946165/s
+    vus............................: 1       min=1            max=27
+    vus_max........................: 37      min=37           max=37
+
+    NETWORK
+    data_received..................: 1.5 MB  27 kB/s
+    data_sent......................: 423 kB  7.4 kB/s
+
+
+
+
+running (0m57.2s), 00/37 VUs, 855 complete and 0 interrupted iterations
+browse     ✓ [ 100% ] 00/20 VUs  55s 
+userFlow   ✓ [ 100% ] 0/5 VUs    50s 
+admin      ✓ [ 100% ] 2 VUs      30s 
+authStress ✓ [ 100% ] 00/10 VUs  20s  15.00 iters/s
+time="2026-04-09T15:24:36+03:00" level=error msg="thresholds on metrics 'errors' have been crossed"

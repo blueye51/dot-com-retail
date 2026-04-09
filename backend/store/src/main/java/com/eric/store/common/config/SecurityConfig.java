@@ -40,7 +40,8 @@ public class SecurityConfig {
                                 "/login/oauth2/**",
                                 "/api/email-verification/verify",
                                 "/api/payments/webhook",
-                                "/api/ratings/product/*/reviews")
+                                "/api/ratings/product/*/reviews",
+                                "/api/contact")
                         .permitAll()
                         .requestMatchers("/api/admin/**")
                         .hasRole("ADMIN")

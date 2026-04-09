@@ -46,6 +46,70 @@
     text-decoration: underline;
 }
 
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    font-size: 0.9rem;
+    color: #ccc;
+}
+
+.field input,
+.field textarea {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #444;
+    border-radius: 0.3rem;
+    background: #1a1a2e;
+    color: #eee;
+    font-size: 0.95rem;
+    font-family: inherit;
+}
+
+.field input:focus,
+.field textarea:focus {
+    outline: none;
+    border-color: #4a9eff;
+}
+
+.submitBtn {
+    padding: 0.6rem 1.2rem;
+    background: #4a9eff;
+    color: white;
+    border: none;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 600;
+    align-self: flex-start;
+}
+
+.submitBtn:hover:not(:disabled) {
+    background: #3a8eef;
+}
+
+.submitBtn:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.success {
+    color: #4caf50;
+    font-size: 1rem;
+    margin-top: 1rem;
+}
+
+.error {
+    color: #d32f2f;
+    font-size: 0.9rem;
+}
+
 .note {
     color: #888;
     font-size: 0.9rem;

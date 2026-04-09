@@ -6,6 +6,7 @@ import com.eric.store.categories.repository.CategoryRepository;
 import com.eric.store.files.config.S3Props;
 import com.eric.store.files.entity.FileEntity;
 import com.eric.store.files.repository.FileRepository;
+import com.eric.store.files.service.FileStorageService;
 import com.eric.store.products.entity.*;
 import com.eric.store.brands.repository.BrandRepository;
 import com.eric.store.products.repository.ProductRepository;
@@ -51,6 +52,7 @@ public class DataSeeder implements CommandLineRunner {
     private final RatingRepository ratingRepo;
     private final S3Client s3;
     private final S3Props s3Props;
+    private final FileStorageService fileStorageService;
 
     @Override
     @Transactional
@@ -204,9 +206,17 @@ public class DataSeeder implements CommandLineRunner {
                     RequestBody.fromBytes(bytes)
             );
 
+            String thumbnailUrl = null;
+            try {
+                thumbnailUrl = fileStorageService.generateAndUploadThumbnailFromBytes(bytes, key);
+            } catch (Exception ignored) {
+                // avif/webp not supported by ImageIO — thumbnail skipped
+            }
+
             var file = new FileEntity();
             file.setKey(key);
             file.setUrl(url);
+            file.setThumbnailUrl(thumbnailUrl);
             file.setContentType(contentType);
             file.setSizeBytes((long) bytes.length);
             return fileRepo.save(file);

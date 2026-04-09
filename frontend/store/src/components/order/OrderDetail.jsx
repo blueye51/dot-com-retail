@@ -10,6 +10,14 @@ import {Helmet} from "react-helmet-async";
 
 const BASE_URL = import.meta.env.VITE_API_BASE;
 
+function deliveryEstimate(shippingMethod) {
+    if (!shippingMethod) return null;
+    const m = shippingMethod.toLowerCase();
+    if (m.includes("express")) return "2–3 business days";
+    if (m.includes("standard")) return "5–7 business days";
+    return null;
+}
+
 export default function OrderDetail() {
     const {orderId} = useParams();
     const {token} = useSelector((s) => s.auth);
@@ -50,6 +58,9 @@ export default function OrderDetail() {
                 <p>Total: <strong>{Number(order.totalPrice).toFixed(2)} {order.currency}</strong></p>
                 {order.shippingMethod && (
                     <p>Shipping: {order.shippingMethod} ({Number(order.shippingCost).toFixed(2)} {order.currency})</p>
+                )}
+                {deliveryEstimate(order.shippingMethod) && (
+                    <p>Estimated delivery: <strong>{deliveryEstimate(order.shippingMethod)}</strong></p>
                 )}
                 <p>Placed: {new Date(order.createdAt).toLocaleString()}</p>
                 {order.failureReason && <p className={styles.error}>Failure: {order.failureReason}</p>}
