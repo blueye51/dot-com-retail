@@ -8,38 +8,6 @@ import defaultPfp from "../../assets/default_pfp.svg"
 
 const BASE_URL = import.meta.env.VITE_API_BASE;
 
-function IconSearch() {
-    return (
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-        </svg>
-    );
-}
-
-function IconCart() {
-    return (
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
-            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-        </svg>
-    );
-}
-
-function IconMenu() {
-    return (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
-            <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
-        </svg>
-    );
-}
-
-function IconClose() {
-    return (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
-            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-        </svg>
-    );
-}
 
 function Header () {
     const {roles, token, emailVerified} = useSelector((state) => state.auth);
@@ -133,7 +101,7 @@ function Header () {
                     {/* Search */}
                     <div className={styles.searchWrapper} ref={searchRef}>
                         <form className={styles.searchForm} onSubmit={handleSearch}>
-                            <span className={styles.searchIconWrap}><IconSearch /></span>
+                            <span className={styles.searchIconWrap}>🔍</span>
                             <input
                                 className={styles.searchInput}
                                 type="text"
@@ -168,7 +136,7 @@ function Header () {
                         {/* Cart */}
                         <div className={styles.cartWrapper} ref={cartRef}>
                             <button className={styles.iconBtn} onClick={() => setCartOpen(prev => !prev)} aria-label="Cart">
-                                <IconCart />
+                                <span className={styles.iconEmoji}>🛒</span>
                                 {cartCount > 0 && <span className={styles.cartBadge}>{cartCount}</span>}
                             </button>
                             {cartOpen && (
@@ -205,7 +173,7 @@ function Header () {
 
                         {/* Hamburger (mobile only) */}
                         <button className={styles.hamburger} onClick={() => setMenuOpen(o => !o)} aria-label="Menu">
-                            {menuOpen ? <IconClose /> : <IconMenu />}
+                            <span className={styles.iconEmoji}>{menuOpen ? "✕" : "☰"}</span>
                         </button>
                     </div>
 

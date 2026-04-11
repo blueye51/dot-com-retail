@@ -65,6 +65,7 @@ function ProductListRow({ id, name, price, currency, brand, stock, averageRating
 export default function ProductGrid() {
     const [searchParams, setSearchParams] = useSearchParams();
     const [view, setView] = useState("grid");
+    const [filterOpen, setFilterOpen] = useState(false);
 
     const [pageSize, setPageSize] = useState(24);
     const [pageNumber, setPageNumber] = useState(0);
@@ -141,7 +142,13 @@ export default function ProductGrid() {
 
     return (
         <div className={styles.main}>
-            <div className={styles.sidebar}>
+            {filterOpen && <div className={styles.filterOverlay} onClick={() => setFilterOpen(false)} />}
+
+            <div className={`${styles.sidebar} ${filterOpen ? styles.sidebarOpen : ""}`}>
+                <div className={styles.sidebarHeader}>
+                    <span className={styles.sidebarTitle}>Filters</span>
+                    <button className={styles.sidebarClose} onClick={() => setFilterOpen(false)}>✕</button>
+                </div>
                 <form onSubmit={handleSearchSubmit} className={styles.searchForm}>
                     <input
                         type="text"
@@ -229,6 +236,10 @@ export default function ProductGrid() {
                     <CategoryTree onSelect={(id) => handleFilterChange("categoryId", id)} />
                 </div>
             </div>
+
+            <button className={styles.filterFab} onClick={() => setFilterOpen(true)} aria-label="Open filters">
+                ⚙ Filters
+            </button>
 
             <div className={styles.content}>
                 <div className={styles.toolbar}>

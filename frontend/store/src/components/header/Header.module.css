@@ -67,9 +67,15 @@
 .searchIconWrap {
     display: flex;
     align-items: center;
-    padding: 0 0.6rem 0 0.75rem;
-    color: #888;
+    padding: 0 0.4rem 0 0.65rem;
+    font-size: 0.85rem;
     flex-shrink: 0;
+}
+
+.iconEmoji {
+    font-size: 1.1rem;
+    line-height: 1;
+    display: block;
 }
 
 .searchInput {
